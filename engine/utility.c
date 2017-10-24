@@ -1419,8 +1419,8 @@ void DRIVER_EXPORT free(void *addr)
 			if (block_used[size] == current)
 			{
 				block_used[size] = current->next;
-				if (current->next == current->prev)
-					block_used[size] = 0;
+				if (current->next == current)
+					block_used[size] = NULL;
 			}
 			if (current->prev == 0)
 			{
