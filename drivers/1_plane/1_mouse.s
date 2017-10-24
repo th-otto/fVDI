@@ -36,6 +36,7 @@ _mouse_draw:
 	btst	#4,d0
 	beq	.skip_shape_setup
 	move.l	shape_data,d2
+	beq		.finish
 .shape_setup:
 	move.l	d2,a0				; Points to mouse structure
 	move.l	mouse_hotspot(a0),hotspot	; Both coordinates
