@@ -207,10 +207,14 @@ static Option options[] = {
  */
 static void relocate(unsigned char *prog_addr, Prgheader *header)
 {
-	unsigned char *code, *rtab, rval;
+	unsigned char *code, *rtab;
+	unsigned long rval;
 
 	rtab = prog_addr + header->tsize + header->dsize;
-	code = prog_addr + *(long *) rtab;
+	rval = *(unsigned long *) rtab;
+	if (rval == 0)
+		return;
+	code = prog_addr + rval;
 	rtab += 4;
 
 	*(long *) code += (long) prog_addr;
@@ -284,12 +288,6 @@ static int load_driver(const char *name, Driver *driver, Virtual *vwk, char *opt
 	reloc_size = file_size - program_size;
 	program_size += header.bsize;
 
-	if (header.relocflag != 0 || reloc_size < 4)
-	{
-		Fclose(file);
-		return 0;
-	}
-	
 	if ((addr = (unsigned char *) malloc(MAX(file_size, program_size))) == 0)
 	{
 		Fclose(file);
@@ -303,7 +301,10 @@ static int load_driver(const char *name, Driver *driver, Virtual *vwk, char *opt
 	Fread(file, reloc_size, addr + header.tsize + header.dsize);
 	Fclose(file);
 
-	relocate(addr, &header);
+	if (header.relocflag == 0 && reloc_size > 4)
+		relocate(addr, &header);
+
+	/* Clear the BSS */
 	memset(addr + header.tsize + header.dsize, 0, header.bsize);
 	
 	/* This will cause trouble if ever called from supervisor mode! */
