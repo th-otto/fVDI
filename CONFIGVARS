@@ -60,7 +60,7 @@ endif
 #ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype-2.2.1
 #ft2_srcdir     = $(top_srcdir)/../freetype2
 #libkern_srcdir = $(top_srcdir)/../freemint/sys/libkern
-ft2_srcdir     = $(HOME)/gtk/freetype-2.5.2
+ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype
 
 #stdlib_srcdir  =
 #ft2_srcdir     =
