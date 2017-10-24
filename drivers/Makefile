@@ -2,6 +2,7 @@ SUBDIRS = \
 	aranym \
 	bitplane \
 	uaegfx \
+	saga \
 	$(empty)
 
 all clean:

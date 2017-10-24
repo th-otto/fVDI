@@ -8,20 +8,20 @@
 # gcc >= 2.95.3 (sparemint) version
 #
 
-TARGET = uaegfx.sys
+TARGET = saga.sys
 
 all: $(TARGET)
 
 top_srcdir = ../..
 
+CPU     = 040
+OPTS    = -mshort -O2 -fomit-frame-pointer
+
 include $(top_srcdir)/CONFIGVARS
 
-#CPU     = 000
-
-OPTS = -mshort -O2 -fomit-frame-pointer -g
 LDFLAGS = -s
 
-CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
+CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include $(M68K_ATARI_MINT_CFLAGS) -Wall
 ASFLAGS = $(CPUSWITCH) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
 SINCSRC = \
@@ -41,16 +41,17 @@ SSRC = \
 CSRC = \
 	../common/init.c \
 	../common/colours.c \
-	uaegfx.c \
-	uaelib.c \
-	uae_spec.c \
-	uae_exp.c \
-	uae_blit.c \
-	uae_line.c \
-	uae_fill.c \
-	uae_scr.c \
-	uae_pal.c \
-	uae_mous.c
+	sag_spec.c \
+	saga.c \
+	modeline_vesa.c \
+	saga_pll.c \
+	../16_bit/16b_exp.c \
+	../16_bit/16b_blit.c \
+	../16_bit/16b_line.c \
+	../16_bit/16b_fill.c \
+	../16_bit/16b_scr.c \
+	../16_bit/16b_pal.c \
+	../uaegfx/uae_mous.c
 
 # handle DevPac -> gas conversions
 # defines SSRC_GNU and SINCSRC_GNU variables

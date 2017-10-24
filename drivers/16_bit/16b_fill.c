@@ -22,6 +22,7 @@
 #endif
 
 #include "fvdi.h"
+#include "../bitplane/bitplane.h"
 
 /*
  * Make it as easy as possible for the C compiler.
@@ -91,6 +92,7 @@ static void s_transparent(short *addr, short *addr_fast, int line_add, short *pa
 	int i, j;
 	unsigned int pattern_word, mask;
 
+	(void) background;
 	i = y;
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
@@ -141,6 +143,8 @@ static void s_xor(short *addr, short *addr_fast, int line_add, short *pattern, i
 	int i, j;
 	unsigned int pattern_word, mask, v;
 
+	(void) foreground;
+	(void) background;
 	i = y;
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
@@ -201,6 +205,7 @@ static void s_revtransp(short *addr, short *addr_fast, int line_add, short *patt
 	int i, j;
 	unsigned int pattern_word, mask;
 
+	(void) background;
 	i = y;
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
@@ -262,6 +267,7 @@ static void replace(short *addr, short *addr_fast, int line_add, short *pattern,
 	int i, j;
 	unsigned int pattern_word, mask;
 
+	(void) addr_fast;
 	i = y;
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
@@ -314,6 +320,8 @@ static void transparent(short *addr, short *addr_fast, int line_add, short *patt
 	int i, j;
 	unsigned int pattern_word, mask;
 
+	(void) addr_fast;
+	(void) background;
 	i = y;
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
@@ -364,6 +372,9 @@ static void xor(short *addr, short *addr_fast, int line_add, short *pattern, int
 	int i, j;
 	unsigned int pattern_word, mask, v;
 
+	(void) addr_fast;
+	(void) foreground;
+	(void) background;
 	i = y;
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
@@ -424,6 +435,8 @@ static void revtransp(short *addr, short *addr_fast, int line_add, short *patter
 	int i, j;
 	unsigned int pattern_word, mask;
 
+	(void) addr_fast;
+	(void) background;
 	i = y;
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
@@ -479,23 +492,28 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 {
 	Workstation *wk;
 	short *addr, *addr_fast;
+	long colours;
 	short foreground, background;
   	int line_add;
 	long pos;
 	short *table;
 
+	(void) interior_style;
 	table = 0;
 	if ((long)vwk & 1) {
 		if ((y & 0xffff) != 0)
 			return -1;		/* Don't know about this kind of table operation */
 		table = (short *)x;
+		(void) table;
 		h = (y >> 16) & 0xffff;
 		vwk = (Virtual *)((long)vwk - 1);
 		return -1;			/* Don't know about anything yet */
 	}
 
-	c_get_colour(vwk, colour, &foreground, &background);
-
+	colours = c_get_colour(vwk, colour);
+	foreground = colours;
+	background = colours >> 16;
+	
 	wk = vwk->real_address;
 
 	pos = (short)y * (long)wk->screen.wrap + x * 2;
@@ -503,7 +521,7 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 	line_add = (wk->screen.wrap - w * 2) >> 1;
 
 #ifdef BOTH
-	if (addr_fast = wk->screen.shadow.address) {
+	if ((addr_fast = wk->screen.shadow.address) != 0) {
 
 		addr += pos >> 1;
 #ifdef BOTH

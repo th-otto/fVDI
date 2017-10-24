@@ -1,6 +1,6 @@
 /*
- * uae_spec.c - Specification/initialization file
- * This is part of the WinUAE RTG driver for fVDI
+ * sag_spec.c - Specification/initialization file
+ * This is part of the SAGA driver for fVDI
  * Derived from Johan Klockars's example in ../16_bit/16b_spec.c
  *
  * Copyright (C) 2017 Vincent Riviere
@@ -20,15 +20,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/*#define ENABLE_KDEBUG*/
-
 #include "fvdi.h"
 #include "driver.h"
 #include "relocate.h"
-#include "uaegfx.h"
-#include "uaelib.h"
-
-#include "driver.h"
+#include "saga.h"
+#include "video.h"
+#include <os.h>
 #include "string/memset.h"
 
 char r_16[] = {5, 11, 12, 13, 14, 15};
@@ -41,7 +38,7 @@ Mode mode[1] =
 
 extern Device device;
 
-char driver_name[] = "uaegfx.card";
+char driver_name[] = "SAGA";
 
 struct {
 	short used; /* Whether the mode option was used or not. */
@@ -77,6 +74,21 @@ long CDECL (*get_colour_r)(Virtual *vwk, long colour) = c_get_colour;
 void CDECL (*get_colours_r)(Virtual *vwk, long colour, long *foreground, long *background) = 0;
 void CDECL (*set_colours_r)(Virtual *vwk, long start, long entries, unsigned short *requested, Colour palette[]) = c_set_colours;
 
+static void saga_puts(const char* message)
+{
+	access->funcs.puts("SAGA: ");
+	access->funcs.puts(message);
+	access->funcs.puts("\x0d\x0a");
+}
+
+static void panic(const char* message)
+{
+	/* Unfortunately, fVDI can't recover from driver initialization failure.
+	 * So we just wait forever. */
+	saga_puts(message);
+	for(;;);
+}
+
 long wk_extend = 0;
 
 short accel_s = 0;
@@ -85,7 +97,6 @@ short accel_c = A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX | A_BLIT | A_FILL 
 Mode *graphics_mode = &mode[0];
 
 short debug = 0;
-
 
 static char *get_num(char *token, short *num)
 {
@@ -108,7 +119,6 @@ static char *get_num(char *token, short *num)
 	return token;
 }
 
-
 static int set_bpp(int bpp)
 {
 	switch (bpp) {
@@ -123,7 +133,6 @@ static int set_bpp(int bpp)
 
 	return bpp;
 }
-
 
 static long set_mode(const char **ptr)
 {
@@ -148,7 +157,7 @@ static long set_mode(const char **ptr)
 	return 1;
 }
 
-static Option options[] = {
+Option options[] = {
 	{"debug",      &debug,             2},  /* debug, turn on debugging aids */
 	{"mode",       set_mode,          -1},  /* mode WIDTHxHEIGHTxDEPTH@FREQ */
 };
@@ -191,7 +200,7 @@ long check_token(char *token, const char **ptr)
             *(short *)options[i].varfunc += -1 + 2 * normal;
             return 1;
          case 3:
-           if (!(*ptr = access->funcs.skip_space(*ptr)))
+           if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
            {
               ;  /* *********** Error, somehow */
            }
@@ -205,71 +214,50 @@ long check_token(char *token, const char **ptr)
    return 0;
 }
 
-/* This BoardInfo will be passed to all Picasso96 functions */
-struct BoardInfo my_BoardInfo;
-static struct BitMapExtra bme;
+static struct ModeInfo *mi;
+static UBYTE *screen_address;
 
-/* We only support this pixel format */
-RGBFTYPE my_RGBFormat = RGBFB_R5G6B5;
-
-/* Matching video mode found during enumeration */
-static struct LibResolution* my_LibResolution = NULL;
-
-/* Initialize the RTG card with the requested video mode */
-static int init_rtg_card(void)
+/* Fix all ModeInfo with PLL data */
+static void fix_all_mode_info(void)
 {
-	long ret;
-	struct MinNode *minnode;
+	int i;
 
-	/* Initialize the UAE Library */
-	if (!uaelib_init()) {
-		panic_help("Function uaelib_demux() not found.");
-		return 0;
+	for (i = 0; i < modeline_vesa_entries; i++) {
+		struct ModeInfo *mi = &modeline_vesa_entry[i];
+		saga_fix_mode(mi);
+	}
+}
+
+/* Find ModeInfo according to requested video mode */
+static struct ModeInfo *find_mode_info(void)
+{
+	int i;
+
+	for (i = 0; i < modeline_vesa_entries; i++) {
+		struct ModeInfo *p = &modeline_vesa_entry[i];
+		if (p->Width == resolution.width && p->Height == resolution.height)
+			return p;
 	}
 
-	/* Initialize the BoardInfo struct before calling the Picasso96 API */
-	BOARDINFO_MEMBER(struct BitMapExtra*, BitMapExtra) = &bme;
-	NewMinList(&BOARDINFO_MEMBER(struct MinList, ResolutionsList));
+	panic("Requested video mode mode not available.");
+	return NULL;
+}
 
-	/* Find the card. This only succeeds if an RTG graphics card is enabled
-	 * in WinUAE settings. */
-	ret = uaelib_picasso_FindCard(&my_BoardInfo);
-	if (ret != -1) {
-		panic_help("picasso_FindCard() failed.");
-		return 0;
-	}
+/* Allocate screen buffer */
+static UBYTE *saga_alloc_vram(UWORD width, UWORD height)
+{
+	ULONG buffer;
+	ULONG vram_size = (ULONG)width * height * sizeof(short);
+	const int alignment = 32; /* Size of SAGA burst reads */
 
-	KINFO(("UAEGFX: BoardInfo=%p MemoryBase=%p MemorySize=%lu\n",
-		&my_BoardInfo,
-		BOARDINFO_MEMBER(UBYTE*, MemoryBase),
-		BOARDINFO_MEMBER(ULONG, MemorySize)
-	));
+	/* SAGA screen buffers reside in Alt-RAM */
+	buffer = (ULONG)Mxalloc(vram_size + alignment - 1, 1);
+	if (!buffer)
+		panic("Mxalloc() failed to allocate screen buffer.");
 
-	/* Initialize the card. This populates the ResolutionsList. */
-	ret = uaelib_picasso_InitCard(&my_BoardInfo);
-	if (ret != -1) {
-		panic("picasso_InitCard() failed.");
-		return 0;
-	}
+	buffer = (buffer + alignment - 1) & -alignment;
 
-	/* Warning: The card must have been properly configured by the OS with
-	 * AUTOCONFIG. Otherwise, the RTG memory is not mapped, and the loop
-	 * below will not find anything. */
-	ForEachMinNode(&BOARDINFO_MEMBER(struct MinList, ResolutionsList), minnode)
-	{
-		struct LibResolution *rez = (struct LibResolution*)minnode;
-
-		KDEBUG(("%p LibResolution %dx%d %s\n", rez, rez->Width, rez->Height, rez->Name));
-
-		if ((long)rez->Width == resolution.width && (long)rez->Height == resolution.height) {
-			my_LibResolution = rez;
-			KDEBUG(("Requested video mode %dx%d found\n", resolution.width, resolution.height));
-			return 1;
-		}
-	}
-
-	panic("Requested video mode not available.");
-	return 0;
+	return (UBYTE *)buffer;
 }
 
 /*
@@ -283,18 +271,17 @@ long CDECL initialize(Virtual *vwk)
 	int old_palette_size;
 	Colour *old_palette_colours;
 
-	KDEBUG(("UAEGFX: initialize vwk=%p\n", vwk));
-
 	/* Display startup banner */
 	access->funcs.puts("\r\n");
-	access->funcs.puts("\ep WinUAE RTG driver for fVDI \eq\r\n");
+	access->funcs.puts("\ep SAGA driver for fVDI \eq\r\n");
 	access->funcs.puts("\xbd 2017 Vincent Rivi\x8are\r\n");
 	access->funcs.puts("Free Software distributed under GPLv2\r\n");
 	access->funcs.puts("\r\n");
 
 	/* Initialize the RTG card with the requested video mode */
-	if (!init_rtg_card())
-		return 0;
+	fix_all_mode_info();
+	mi = find_mode_info();
+	screen_address = saga_alloc_vram(resolution.width, resolution.height);
 
 	vwk = me->default_vwk;	/* This is what we're interested in */	
 	wk = vwk->real_address;
@@ -335,7 +322,6 @@ long CDECL initialize(Virtual *vwk)
 
 	pixel.width = wk->screen.pixel.width;
 	pixel.height = wk->screen.pixel.height;
-	KDEBUG(("VDI pixel size = %dx%d\n", pixel.width, pixel.height));
 
 	return 1;
 }
@@ -367,34 +353,19 @@ long CDECL setup(long type, long value)
  */
 Virtual* CDECL opnwk(Virtual *vwk)
 {
-	struct ModeInfo* my_ModeInfo = my_LibResolution->Modes[P96_HICOLOR];
 	Workstation *wk;
-	UBYTE* screen_address = BOARDINFO_MEMBER(UBYTE*, MemoryBase);
-	uae_u32 ret;
-
-	KDEBUG(("UAEGFX: opnwk vwk=%p\n", vwk));
-
-	KINFO(("screen_address = %p\n", screen_address));
-
 	vwk = me->default_vwk;  /* This is what we're interested in */
 	wk = vwk->real_address;
 
-	/* Set the video mode we found in init_rtg_card() */
-	ret = uaelib_picasso_SetGC(&my_BoardInfo, my_ModeInfo, 0);
-	if (!ret)
-		panic("picasso_SetGC() failed.");
-
-	/* Set proper display area */
-	bme.Width = my_LibResolution->Width;
-	bme.Height = my_LibResolution->Height;
-	ret = uaelib_picasso_SetPanning(&my_BoardInfo, screen_address, my_LibResolution->Width, 0, 0, my_RGBFormat);
-	if (!ret)
-		panic("picasso_SetPanning() failed.");
+	/* Switch to SAGA screen */
+	saga_set_clock(mi);
+	saga_set_modeline(mi, SAGA_VIDEO_FORMAT_RGB16);
+	saga_set_panning(screen_address);
 
 	/* update the settings */
-	wk->screen.mfdb.width = my_ModeInfo->Width;
-	wk->screen.mfdb.height = my_ModeInfo->Height;
-	wk->screen.mfdb.bitplanes = my_ModeInfo->Depth;
+	wk->screen.mfdb.width = mi->Width;
+	wk->screen.mfdb.height = mi->Height;
+	wk->screen.mfdb.bitplanes = resolution.bpp;
 
 	/*
 	 * Some things need to be changed from the
@@ -420,9 +391,6 @@ Virtual* CDECL opnwk(Virtual *vwk)
 	else									/*	 or fixed DPI (negative) */
 		wk->screen.pixel.height = 25400 / -pixel.height;
 
-	/* Switch to the RTG screen */
-	uaelib_picasso_SetSwitch(&my_BoardInfo, 1);
-
 	return 0;
 }
 
@@ -432,6 +400,4 @@ Virtual* CDECL opnwk(Virtual *vwk)
 void CDECL clswk(Virtual *vwk)
 {
 	(void) vwk;
-	/* Switch to the standard screen */
-	uaelib_picasso_SetSwitch(&my_BoardInfo, 0);
 }

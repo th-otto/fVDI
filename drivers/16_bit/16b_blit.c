@@ -21,6 +21,7 @@
 
 #include "fvdi.h"
 #include "driver.h"
+#include "../bitplane/bitplane.h"
 
 #define PIXEL		short
 #define PIXEL_SIZE	sizeof(PIXEL)
@@ -60,7 +61,7 @@ s_blit_copy(PIXEL *src_addr, int src_line_add,
 		for(j = w - 1; j >= 0; j--) {
 			v = *src_addr++;
 #ifdef BOTH
-			*(volatile PIXEL *)dst_addr_fast++ = v, 0;   /* Silly compiler... */
+			*(volatile PIXEL *)dst_addr_fast++ = v;   /* Silly compiler... */
 #endif
 			*dst_addr++ = v;
 		}
@@ -86,7 +87,7 @@ s_blit_or(PIXEL *src_addr, int src_line_add,
 			v = *src_addr++;
 #ifdef BOTH
 			v |= *dst_addr_fast;
-			*(volatile PIXEL *)dst_addr_fast++ = v, 0;   /* Silly compiler... */
+			*(volatile PIXEL *)dst_addr_fast++ = v;   /* Silly compiler... */
 			*dst_addr++ = v;
 #else
 			*dst_addr++ |= v;
@@ -119,6 +120,7 @@ s_blit(PIXEL *src_addr, int src_line_add,
 #endif
 			switch(operation) {
 			case 0:
+			default:
 				v = 0;
 				break;
 			case 1:
@@ -168,7 +170,7 @@ s_blit(PIXEL *src_addr, int src_line_add,
 				break;
 			}
 #ifdef BOTH
-			*(volatile PIXEL *)dst_addr_fast++ = v, 0;   /* Silly compiler... */
+			*(volatile PIXEL *)dst_addr_fast++ = v;   /* Silly compiler... */
 #endif
 			*dst_addr++ = v;
 		}
@@ -193,7 +195,7 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 		for(j = w - 1; j >= 0; j--) {
 			v = *--src_addr;
 #ifdef BOTH
-			*(volatile PIXEL *)--dst_addr_fast = v, 0;   /* Silly compiler... */
+			*(volatile PIXEL *)--dst_addr_fast = v;   /* Silly compiler... */
 #endif
 			*--dst_addr = v;
 		}
@@ -219,7 +221,7 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
 			v = *--src_addr;
 #ifdef BOTH
 			v |= *--dst_addr_fast;
-			*(volatile PIXEL *)dst_addr_fast = v, 0;   /* Silly compiler... */
+			*(volatile PIXEL *)dst_addr_fast = v;   /* Silly compiler... */
 			*--dst_addr = v;
 #else
 			*--dst_addr |= v;
@@ -252,6 +254,7 @@ s_pan_backwards(PIXEL *src_addr, int src_line_add,
 #endif
 			switch(operation) {
 			case 0:
+			default:
 				v = 0;
 				break;
 			case 1:
@@ -301,7 +304,7 @@ s_pan_backwards(PIXEL *src_addr, int src_line_add,
 				break;
 			}
 #ifdef BOTH
-			*(volatile PIXEL *)dst_addr_fast = v, 0;   /* Silly compiler... */
+			*(volatile PIXEL *)dst_addr_fast = v;   /* Silly compiler... */
 #endif
 			*dst_addr = v;
 		}
@@ -331,6 +334,7 @@ blit_copy(PIXEL *src_addr, int src_line_add,
 	int i, j;
 	PIXEL v;
 	
+	(void) dst_addr_fast;
 	for(i = h - 1; i >= 0; i--) {
 		for(j = w - 1; j >= 0; j--) {
 			v = *src_addr++;
@@ -356,6 +360,7 @@ blit_or(PIXEL *src_addr, int src_line_add,
 	int i, j;
 	PIXEL v;
 	
+	(void) dst_addr_fast;
 	for(i = h - 1; i >= 0; i--) {
 		for(j = w - 1; j >= 0; j--) {
 			v = *src_addr++;
@@ -377,13 +382,14 @@ blit_or(PIXEL *src_addr, int src_line_add,
 
 
 static void
-blit(PIXEL *src_addr, int src_line_add,
+blit_16b(PIXEL *src_addr, int src_line_add,
      PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
      int w, int h, int operation)
 {
 	int i, j;
 	PIXEL v, vs, vd;
 	
+	(void) dst_addr_fast;
 	for(i = h - 1; i >= 0; i--) {
 		for(j = w - 1; j >= 0; j--) {
 			vs = *src_addr++;
@@ -394,6 +400,7 @@ blit(PIXEL *src_addr, int src_line_add,
 #endif
 			switch(operation) {
 			case 0:
+			default:
 				v = 0;
 				break;
 			case 1:
@@ -464,6 +471,7 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 	int i, j;
 	PIXEL v;
 	
+	(void) dst_addr_fast;
 	for(i = h - 1; i >= 0; i--) {
 		for(j = w - 1; j >= 0; j--) {
 			v = *--src_addr;
@@ -489,6 +497,7 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
 	int i, j;
 	PIXEL v;
 	
+	(void) dst_addr_fast;
 	for(i = h - 1; i >= 0; i--) {
 		for(j = w - 1; j >= 0; j--) {
 			v = *--src_addr;
@@ -517,6 +526,7 @@ pan_backwards(PIXEL *src_addr, int src_line_add,
 	int i, j;
 	PIXEL v, vs, vd;
 	
+	(void) dst_addr_fast;
 	for(i = h - 1; i >= 0; i--) {
 		for(j = w - 1; j >= 0; j--) {
 			vs = *--src_addr;
@@ -527,6 +537,7 @@ pan_backwards(PIXEL *src_addr, int src_line_add,
 #endif
 			switch(operation) {
 			case 0:
+			default:
 				v = 0;
 				break;
 			case 1:
@@ -604,16 +615,14 @@ c_blit_area(Virtual *vwk, MFDB *src, long src_x, long src_y,
 	int src_wrap, dst_wrap;
 	int src_line_add, dst_line_add;
 	unsigned long src_pos, dst_pos;
-	int from_screen, to_screen;
+	int to_screen;
 
 	wk = vwk->real_address;
 
-	from_screen = 0;
 	if (!src || !src->address || (src->address == wk->screen.mfdb.address)) {		/* From screen? */
 		src_wrap = wk->screen.wrap;
 		if (!(src_addr = wk->screen.shadow.address))
 			src_addr = wk->screen.mfdb.address;
-		from_screen = 1;
 	} else {
 		src_wrap = (long)src->wdwidth * 2 * src->bitplanes;
 		src_addr = src->address;
@@ -681,7 +690,7 @@ c_blit_area(Virtual *vwk, MFDB *src, long src_x, long src_y,
 				blit_or(src_addr, src_line_add, dst_addr, 0, dst_line_add, w, h);
 				break;
 			default:
-				blit(src_addr, src_line_add, dst_addr, 0, dst_line_add, w, h, operation);
+				blit_16b(src_addr, src_line_add, dst_addr, 0, dst_line_add, w, h, operation);
 				break;
 			}
 		}
