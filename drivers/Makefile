@@ -1,6 +1,7 @@
 SUBDIRS = \
 	aranym \
 	bitplane \
+	uaegfx \
 	$(empty)
 
 all clean:
