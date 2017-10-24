@@ -20,6 +20,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/*#define ENABLE_KDEBUG*/
+
 #include "fvdi.h"
 #include "driver.h"
 #include "uaegfx.h"
@@ -211,6 +213,8 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h, short *patt
 	short foreground, background;
   	int line_add;
 	long pos;
+
+	KDEBUG(("c_fill_area %ld,%ld at %ld,%ld\n", w, h, x, y));
 
 	(void) interior_style;
 	if ((long)vwk & 1) {

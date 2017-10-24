@@ -20,6 +20,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/*#define ENABLE_KDEBUG*/
+
 #include "fvdi.h"
 #include "driver.h"
 #include "relocate.h"
@@ -38,6 +40,8 @@ long CDECL c_get_colour(Virtual *vwk, long colour)
 	short foreground, background;
 	Colour *local_palette, *global_palette;
 	Colour *fore_pal, *back_pal;
+
+	KDEBUG(("c_get_colour colour=%ld\n", colour));
 
 	local_palette = vwk->palette;
 	if (local_palette && !((long)local_palette & 1))	/* Complete local palette? */
@@ -68,6 +72,8 @@ void CDECL c_set_colours(Virtual *vwk, long start, long entries, unsigned short 
 	unsigned long tc_word;
 	int i;
 	
+	KDEBUG(("c_set_colours start=%ld entries=%ld\n", start, entries));
+
 	(void) vwk;
 	if ((long)requested & 1) {			/* New entries? */
 		requested = (unsigned short *)((long)requested & 0xfffffffeL);

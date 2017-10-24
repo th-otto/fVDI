@@ -20,6 +20,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/*#define ENABLE_KDEBUG*/
+
 #include "fvdi.h"
 #include "driver.h"
 #include "relocate.h"
@@ -35,6 +37,8 @@ long CDECL c_write_pixel(Virtual *vwk, MFDB *dst, long x, long y, long colour)
 	Workstation *wk;
 	long offset;
 	
+	KDEBUG(("c_write_pixel %ld,%ld\n", x, y));
+
 	if ((long)vwk & 1)
 		return 0;
 
