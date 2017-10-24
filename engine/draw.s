@@ -325,13 +325,15 @@ no_arrow:
 	tst.l	d0
 	beq	.no_wide
 
+	move.l	d0,-(a7)	; For free_block below
+
 	move.l	d2,-(a7)
 
 	moveq	#0,d2
 	move.w	vwk_mode(a0),d2
 	move.l	d2,-(a7)
 
-	move.l	d0,-(a7)	; For free_block below (and _wide_line call)
+	move.l	d0,-(a7)	; For _wide_line call
 	move.l	d1,-(a7)
 	moveq	#0,d0
 	move.w	0(a1),d0
@@ -339,10 +341,10 @@ no_arrow:
 	move.l	2(a1),-(a7)
 	move.l	a0,-(a7)
 	jsr	_wide_line
-	add.w	#16,a7
+	add.w	#24,a7
 
-	bsr	free_block
-	addq.l	#8,a7
+	bsr	free_block	; Block address is already on the stack
+	addq.l	#4,a7
 
 	move.l	(a7)+,d2
 	rts
@@ -1036,6 +1038,8 @@ lib_v_bez_fill:
 	tst.l	d0
 	beq	.no_poly
 
+	move.l	d0,-(a7)	; For free_block below
+
 	tst.w	d3
 	beq	.no_jumps
 
@@ -1063,11 +1067,10 @@ lib_v_bez_fill:
 	move.l	a2,-(a7)
 	move.l	a0,-(a7)
 	jsr	_filled_poly_m
-	add.w	#20,a7
+	add.w	#40,a7
 
-	bsr	free_block
+	bsr	free_block	; Block address is already on the stack
 	addq.l	#4,a7
-	add.w	#16,a7
 .no_poly:		; .end
 
 	bra	.end_bez_draw_f		; Should check for outline
@@ -1150,10 +1153,10 @@ lib_v_bez_fill:
 	move.l	a2,-(a7)
 	move.l	a0,-(a7)
 	jsr	_filled_poly
-	add.w	#20,a7
+	add.w	#32,a7
 
-	bsr	free_block
-	add.w	#12,a7
+	bsr	free_block	; Block address is already on the stack
+	addq.l	#4,a7
 	bra	.no_poly
 		
 .normal_fill:
@@ -1177,21 +1180,23 @@ lib_v_bez_fill:
 	tst.l	d0
 	beq	.no_wide_bez_f
 
+	move.l	d0,-(a7)	; For free_block below
+
 	moveq	#0,d2
 	move.w	vwk_mode(a0),d2
 	move.l	d2,-(a7)
 
-	move.l	d0,-(a7)	; For free_block below (and _wide_line call)
+	move.l	d0,-(a7)	; For _wide_line call
 	move.l	d1,-(a7)
 	ext.l	d6
 	move.l	d6,-(a7)
 	move.l	a2,-(a7)
 	move.l	a0,-(a7)
 	jsr	_wide_line
-	add.w	#16,a7
+	add.w	#24,a7
 
-	bsr	free_block
-	addq.l	#8,a7
+	bsr	free_block	; Block address is already on the stack
+	addq.l	#4,a7
 
 	bra	.end_bez_draw_f
 
@@ -1231,6 +1236,8 @@ lib_v_fillarea:
 	tst.l	d0
 	beq	.end_lib_v_fillarea
 
+	move.l	d0,-(a7)	; For free_block below
+
 	move.w	vwk_fill_interior(a0),d7
 	swap	d7
 	move.w	vwk_fill_style(a0),d7
@@ -1250,10 +1257,10 @@ lib_v_fillarea:
 	move.l	(a1),-(a7)
 	move.l	a0,-(a7)
 	jsr	_filled_poly
-	add.w	#20,a7
+	add.w	#32,a7
 
-	bsr	free_block
-	add.w	#12,a7
+	bsr	free_block	; Block address is already on the stack
+	addq.l	#4,a7
 
 .end_lib_v_fillarea:		; .end
 	movem.l	(a7)+,d2-d7
