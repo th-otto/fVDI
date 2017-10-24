@@ -1,0 +1,546 @@
+2007-01-11 - standa
+Outline effect implemented for FT2 scalable fonts. There is some
+code for bitmap fonts which is #if 0 as it crashes for unknown
+reason to me.
+
+2006-12-08 - standa
+Save some more registers in vst_effects() and fVDI runs in TOS4.04
+again here.
+Ft2 module is more FreeType2 library error agnostic now. For example
+if the glyph doesn't render nothing is displayed, but it should not
+crash the application anymore.
+More 2.1.10 vs. 2.2.1 changes (read the migration notes this time ;).
+Added the 'mrproper' target which does 'make clean' and also removes
+all FT2 related .o/.a files. 
+
+2006-12-04 - johan
+Changed to the latest stable release of FreeType (2.2.1).
+
+2006-11-29 - standa
+Hopefully NVDI compatible spdchar.map handling now in place. Default
+NVDI mapping added. Can use our 'Czech KEYBCS' spdchar.map table
+with no problem. IMHO 98% of character mappings should be correct.
+Adding the #include <freetype/internal/internal.h> to the
+ft2_ftsystem.c to get FreeType2 2.2.1 build working.
+
+2006-11-27 - johan
+Cache flush enabled after driver load.
+Turned on supervisor memory access flag in engine binary.
+fVDI engine version bumped to 0.968beta.
+
+2006-11-25/26 - standa
+Using the newly created lib_vrt_cpyfm_nocheck to mono/8bit expand text
+(fixes vst_fg_color() using Papyrus X demo text color rendering).
+
+2006-11-15 - standa
+Underline effect doesn't need to keep a font glyph cached (done in the
+text rendering function directly.
+Fontextra.ref_count introduced to fix fundamental Fontheader memory 
+management bug that must have been causing crashes and rendering
+errors because of use of unallocated memory.
+
+2006-11-13 - standa
+Some vertical font alignment tuning. Still not completely right IMHO.
+
+2006-11-12 - standa
+Implementing algorithmic FreeType font vst_effects() algorithms.
+Left the 'outline' for later.
+
+2006-07-14 - standa
+FreeType antialiased rendering uses the glyph->minx too now. No weird
+kerning anymore.
+Glyph debugging added for debug > 3.
+
+2006-06-05 - johan
+Reversed bit order for 32 bit vr_trnfm.
+Fix for debug output of return values.
+Correction of colour selection for mono-expand blit in ARAnyM driver.
+
+2006-06-02 - johan
+Correction for vq_devinfo debug output.
+
+2006-05-26 - johan
+vqt_ctab now uses correct palette address and returns real colour values.
+Made vrt_cpyfm disregard clip rectangle for non-screen destinations.
+
+2006-05-19 - johan
+Fixed bug in creation of extra handle table.
+
+2006-04-26 - johan
+Bug fix for bitplane driver mouse cursor removal.
+
+2006-04-25 - johan
+Made vrt_cpyfm disregard clip rectangle for non-screen destinations.
+Fixed a bug that made vq_ctab sometimes use an incorrect palette address.
+Made vq_ctab return the real colour values.
+
+2006-04-19 - johan
+Fixed a bug in the creation of extra handle tables.
+
+2006-03-07 - johan
+Various optimizations in the bitplane driver mouse drawing code.
+
+2006-03-05 - johan
+Made vst_arbpt() do something useful for non-vector fonts.
+Made vst_font() call vst_point() for size setting.
+
+2006-03-01 - johan
+Fixed alignment for vst_charmap.
+Some further optimizations for FreeType2 rendering from cached bitmaps.
+
+2006-03-01 - standa
+Made it possible to have file debug output go to a non-seekable device.
+
+2006-02-28 - standa
+vst_charmap() and vst_map_mode() implemented. Highwire maps characters
+directly to UNICODE when NVDI >4.0 is available. Highwire displays
+everything nicely again.
+Initial spdchar.map load implemented. Will test and enable later on.
+Warning! The Virtual vwk structure has changed! Recompile all the drivers!
+
+2006-02-27 - standa
+Virtual* propagated into all FT2 functions as they need DPI information
+eventually.
+Font ID is now an adjusted family_name+style_name hashcode (stays the
+same if you add a font to your setup - if doesn't conflict with any
+previously added font).
+
+2006-02-26 - standa
+Hardcoded 95DPI for the FT2 vst_font() height until we adjust the code
+to propagate the vwk and get wvk->screen.pixel.height * 25400.
+Pixmap glyph storage added to get bitmap from getbitmap_info even when
+antialias is on.
+Little un-#if0ying in ft2.c.
+
+2006-02-24 - johan
+Proper prototypes for stack change calls.
+Fix for too long names in vqt_xfntnames().
+
+2006-02-23 - standa
+Fixed an obvious bug which might have caused a buffer overflow for
+'non-antialias' mode and bitmap FT2 fonts.
+A memory optimization in PIXMAP glyph pitch size.
+
+2006-02-23 - johan
+Replaced a bunch of strcpy() with strncpy().
+
+2006-02-22 - johan
+Significant optimizations for FreeType2 rendering from cached bitmaps.
+Fixed rendering bug for overlapping characters.
+File cache system consistency check added.
+Bug fix for problem with zero size FreeType2 font request.
+
+2006-02-21 - standa
+FT2 antialiasing with a small help of the aranym driver which is now
+able to expandArea() with 8bit chunky data (mfdb_standard = 0x0100).
+Small adjustments in fixed witdth fonts detection and short font
+name in the vqt_fontheader().
+
+2006-02-21 - johan
+FT2 alternative for vqt_fontheader -> PapyrusX knows about font names.
+A couple of bug fixes.
+
+2006-02-20 - standa
+FT2 alternatives for vqt_xfntinfo(), vqt_getbitmap_info() and
+vqt_advance() -> PapyrusX displays the text quite reasonably now.
+
+2006-02-20 - johan
+Nearly complete implementation of vqt_xfntinfo.
+Preliminary implementation of vqt_fontheader.
+
+2006-02-18 - johan
+Added whole file caching system for FreeType2 engine.
+Made it possible to redirect debug output to a file.
+
+2006-02-10 - johan
+Added a couple of debug options for the bitplane mouse.
+Made memory settings more configurable for the RageII driver.
+
+2006-01-20 - johan
+Changed some 'int' parameter and return types to 'long' among the libc
+replacement functions, to enable calls from modules with any size 'int'.
+Added memchr() and memrchr().
+Extended sprintf() to cover just about everything.
+
+2006-01-19 - johan
+The bitplane driver finally has a fast mouse drawing routine.
+
+2005-12-20 - johan
+Minor fix for the Bconout redirection.
+
+2005-12-16 - standa
+Made ARAnyM debug output not go through the cookie (CVS MiNT
+kernel says PRIVILEGE VIOLATION if the cookie structure address
+space is accessed (utility.c).
+Bconout option implementation: redirects Bconout(con) output
+to puts(), from the moment the physical screen workstation is opened,
+and returns it afterwards (now the CVS XaAES boots again with lineafix).
+
+2005-12-15 - johan
+Some improvements to the memory allocation debug facilities.
+
+2005-12-13 - johan
+Made it possible to preallocate memory.
+Added extensive memory allocation debug facilities.
+
+2005-12-13 - standa
+Fixed a forgotten 0x4000 flag use for vector fonts also textlib.c.
+
+2005-12-12 - johan
+Corrected a bug concerning allocation of the negative palette indices.
+
+2005-12-09 - johan
+Corrected a bug that recently crept in regarding names for fonts
+handled by the FreeType2 engine.
+
+2005-12-07 - johan
+Fixed the colour selection in the bitplane driver.
+Corrected OR mode fill for the bitplane driver.
+The mouse cursor for the bitplane driver is now clipped against the
+screen and has correct colours and hotspot.
+Removed redirection for keyboard handling.
+
+2005-12-06 - johan
+Corrected the pixel size setting for the monochrome and bitplane drivers.
+
+2005-12-05 - johan
+Made some changes to enable gcc build for 68000.
+
+2005-12-04 - johan
+Added line drawing support to the bitplane driver.
+
+2005-12-02 - johan
+A few more bug fixes for the bitplane driver.
+
+2005-12-01 - johan
+Fixed a serious bug concerning colour handling in the bitplane driver.
+
+2005-11-30 - johan
+Various improvements for the bitplane driver.
+Added fill routine from the EmuTOS VDI to the bitplane driver.
+Added mouse drawing support to the bitplane driver.
+
+2005-11-29 - johan
+Restored the Calamus clip rectangle handling. It is necessary since the
+code is actually "borrowing" the original workstation opened by the AES.
+
+2005-11-28 - johan
+Added a bitplane driver written in C, based on a significantly modified
+version of the EmuTOS VDI blit routines. Definitely needs more work,
+but it can at least display a desktop (sort of ;-)
+
+2005-11-23 - standa
+Basic ft2 bitmap font support (tested with MS Win .fon fonts).
+Performed tests of type-1 as well as TrueType fonts.
+
+A few implementaiton notes:
+* font->underline == 0 is used to determine whether metrics for the
+  particular font->size were loaded
+* font->flags & 0x8000 is FreeType2 handled font flag
+* font->flags & 0x4000 is scalable font flag
+
+2005-11-22 - standa
+Calamus does all the clipping for the external driver on its own.
+Removing wrong wdwidth formulas from the aranym and Calamus drivers.
+
+2005-11-22 - johan
+Fixed previously unknown bug in the dispatcher that crashed Calamus.
+fVDI engine version bumped to 0.965beta.
+
+2005-11-21 - johan
+Modified version of Standa's Calamus support added.
+Implemented vsm_string.
+
+2005-11-17 - johan
+Made it possible to force call to the fVDI mouse movement vector.
+Fix for vbl handler install/remove.
+
+2005-11-15 - johan
+Fixed bug that made it impossible to do operations on non-fVDI handles
+if running in standalone mode.
+Partially implemented vq_devinfo.
+Debug messages added for non-fVDI workstation open.
+Made it possible to force VDI fallback (old VDI workstation open).
+
+2005-11-09 - johan
+The Atari character set is now mapped to Unicode for TrueType fonts.
+Significant optimizations for TrueType rendering from cached bitmaps.
+Check for other GDOS is now always done at startup.
+Disabled vector font size debug code.
+
+2005-09-24 - johan
+The 16 bit driver can now be built using gcc.
+
+2005-09-20 - johan
+The ARAnyM driver now queries the host about the type of mouse cursor
+handling to use, and informs the engine if the host takes care of moves.
+
+2005-08-14 - johan
+Some debug code addded to text functions to try to figure out what was
+going wrong with the old vector font size limitation.
+	
+2005-08-12 - johan
+Made it possible for C functions to call with separate stack.
+Converted a bunch of text functions to C.
+
+2005-08-10 - johan
+All vq_extnd variants converted to C.
+
+2005-08-09 - johan
+All palette handling converted to C.
+
+2005-08-04 - johan
+Partial implementation of v_getbitmap_info.
+Implemented vs_ctab and vdi<->index conversions.
+Added text acceleration support to ARAnyM driver.
+
+2005-08-02 - johan
+Fixed problem with large number of open virtual workstations.
+Fake implementations of a number of vector font functions.
+Some bug fixes and minor improvements.
+	
+2005-07-26 - johan
+New memory allocation algorithm that requests largish blocks from the OS
+at once, splits them into pieces to satisfy requests, and keeps released
+blocks around for reuse.
+FreeType support upgraded for version 2.1.10.
+Change to allow FreeType font files to be kept open for longer intervals
+under some circumstances.
+Partial vr_transfer_bits implementation.
+Fake implementations of the colour table related functions.
+
+2005-07-18 - johan
+Initial support for vr_transfer_bits.
+Debug printouts for non-implemented VDI functions.
+Signed/unsigned support for structer.
+fVDI engine version bumped to 0.965beta.
+	
+2005-07-09 - johan
+Fixed bug that caused polygon fill to overwrite low memory.
+Fixed bug concerning filled rounded boxes.
+
+2005-07-06 - johan
+Added default size selection for vector fonts.
+Fixed bug that caused for example QED to fail to draw vector fonts.
+Fixes for Lattice C support.
+Began conversion to new driver interface.
+
+2005-07-01 - johan
+Bug fixed and improved label handling for FVDI.SYS.
+Miscellaneous small fixes to make the RageII driver build with gcc.
+
+2005-06-29 - johan
+Changed vq_gdos response if requested.
+Made '=' a token separator for better FVDI.SYS handling.
+Implemented vst_arbpt (only allowed for vector fonts).
+Faked vst_height by making it equivalent to vst_point.
+vqt_name updated to report vector font information (assumes TrueType).
+Improved debug output.
+
+2005-06-11 - patrice
+Removed the function from last entry.
+
+2005-06-08 - patrice
+Function to get real frame buffer bit organization in ARAnyM driver.
+	
+2005-06-07 - johan
+Support for forced mouse positioning.
+New option to suppress debug information for specific VDI functions.
+	
+2005-06-01 - johan
+Module initialization fails if module uses unsupported interface version.
+Various minor bug fixes for mouse/vblank support.
+
+2005-05-30 - johan
+Improved dependency handling.
+Added interrupt handler for Natfeat events in the ARAnyM driver (irq option).
+An fVDI driver is now a module.
+Added an event() function for mouse/vblank support.
+Vertical blank handler when standalone (unless a vblank event occurs).
+vq_mouse, vq_key_s and vex_* support (requires event() to be used).
+
+2005-05-25 - johan
+ARAnyM driver now always passes OK clip data to native side.
+The driver initialize() function is allowed to return with failure (0),
+but nothing is done yet about that (fVDI crash likely on v_opnwk).
+Some very minor changes for conv2gas and structer.
+Proper dependency handling in the engine Makefile.
+Loading of modules (such as for mouse handling) supported.
+Fake NVDI and Speedo cookies if requested.
+Added information about FreeType support and integer size in fVDI
+version message at startup.
+A bunch of .cvsignore files added.
+	
+2005-05-22 - johan
+Forced the ARAnyM fVDI driver to set itself up according to getBpp().
+
+2005-05-11 - johan
+Bug fixes for the internal FreeType support code.
+FreeType support now works without external libraries!
+
+2005-05-11 - patrice
+Added getBpp() function to the ARAnyM fVDI driver.
+Needed when using fVDI driver with OpenGL rendering.
+
+2005-05-09 - johan
+Miscellaneous additions to make it possible to build fVDI with
+FreeType support without depending on external library code.
+(Still untested functionality, but it builds OK.)
+Minor change to vqt_name for vector font support.
+FreeType stuff checked into CVS.
+
+2005-05-07 - standa
+Fatal Return stack issue fixed. Now the FreeType2 again works with
+the changed asm parts.
+Fix in lib_vqt_extent() where the justifications didn't necessarilly
+work due to register number confusion.
+
+2005-05-06 - johan/standa
+Updates to support Standa's new FreeType2 machinery.
+
+2005-04-28 - johan
+Fixed problem that caused 32 bit (without -mshort) gcc build to hang.
+Made the engine understand that v_clswk on pass-through handles are of
+no concern to fVDI drivers.
+	
+2005-04-25 - johan
+Support for redirection of vex_wheelv to an underlying VDI.
+	
+2005-04-24 - standa
+Buildsystem switch to GNU make
+
+2005-04-23 - johan
+ARAnyM driver synchronized with the ARAnyM CVS repository (relevant
+changes have been added to this file).
+ARAnyM driver now builds using gcc!
+Fix for a bug concerning negative mouse x-coordinates in the ARAnyM driver.
+Updated ARAnyM debug printf usage.
+Bug fixes and conversions to C for arcs and rounded boxes.
+fVDI engine version bumped to 0.964beta.
+
+2005-03-20 - standa
+For the ARAnyM driver:
+ Ensure the wk->screen.pixel.* values are setup from the actual fvdi.sys
+ values in any setup_wk() call.
+ The problem was that the setup_wk() used to selfmodify the value based
+ on the ones got from common driver init() method. The method setup_wk()
+ is called twice however before the open_wk().
+
+2005-01-24 - standa
+For the ARAnyM driver:
+ openwk() and closewk() added to the NF api -> boot bug fixed.
+ Large cleanup in the m68k part.
+
+2005-01-20 - standa
+For the ARAnyM driver:
+ Some warning cleanup.
+ Uneffective assumenf and noshadow features removed.
+ Bitplane modes are now marked as bitplane.
+ Fixing some issue with palette setting. The palette is system wide (not
+ per virtual workstation).
+
+2004-11-01 - pmandin
+For the ARAnyM driver:
+ Moved some code around, for the host resolution to be read.
+
+2004-10-24 - johan
+A couple of 16 vs 32 bit fixes. GNU build now works almost 100%!
+Added support for workstation close.
+	
+2004-10-17 - johan
+Finally, support for the GNU suite!
+
+2004-09-24 - pmandin
+For the ARAnyM driver:
+ Added functions to read screen size really set by the host.
+
+2004-09-09 - johan
+Conversion of various functionality to C.
+New header files for functions and global variables.
+Fix for programs that use upside-down clip rectangles.
+Escape functions debugged.
+
+2004-01-05 - standa
+For the ARAnyM driver:
+ Palette handling reworked. Old non-NF dispatch removed.
+
+2003-02-05 - johan
+Support for rounded boxes. Polymarker code added.
+Bezier call code converted to C.
+Miscellaneous improvements, cleanups and bug fixes.
+
+2003-01-21 - standa <opichals@seznam.cz>
+ARAnyM driver NatFeat calls dispatch casts added in c_mouse_draw
+call.
+
+2002-10-21 - johan
+ARAnyM driver NatFeat support.
+Miscellaneous minor improvements and cleanups for ARAnyM driver.
+
+2002-08-03 - johan
+Fixes to make the ARAnyM driver work with the new native API.
+A couple of minor bug fixes.
+
+2002-07-10 - johan
+Version bumped to 0.96 due to incompatibility with old drivers.
+Driver API updated to make it mostly independent of the fVDI structures.
+Some driver API conversion layer changes for generalization.
+Fix for the PureC local label problem.
+A couple of minor bug fixes.
+
+2002-07-03 - johan
+Various fixes to make the engine and drivers build properly
+with both Lattice C and PureC.
+ARAnyM driver synchronized with the one from the ARAnyM CVS.
+
+2002-07-01 - johan
+Added support for the VDI screen ESC functions.
+Workaround for a local label problem with the PureC assembler.
+This file added to the repository.
+
+2002-06-27 - johan
+Update to reenable PureC compilation.
+Removed engine dependency on compiler.inc.
+
+2002-06-08 - johan
+Somewhat improved debug functionality.
+	
+2002-06-07 - johan
+Fixed a bug in v_justified.
+Got file headers from January into the repository.
+
+2002-05-16 - johan
+Updated ACC to support gcc and new GEM libraries.
+
+2002-05-15 - johan
+Minor updates to draw.s, blit.s, types.inc and vdi.inc.
+
+2002-05-14 - johan
+Updated profiler to support gcc.
+
+2002-05-13 - johan
+Added union support and GPL file headers to structer.
+
+2002-05-11 - johan
+Updated readme.now and fvdi.sys.
+
+2002-01-20 - johan
+RageII and mach64 file headers added.
+
+2001-12-15 - johan
+Various file headers added and modified.
+
+2001-11-29 - johan
+ARAnyM driver implementation of polygon fill and some fixes.
+
+2001-11-18 - johan
+ARAnyM driver added.
+
+2001-11-01 - johan
+Some compilation setup corrections.
+
+2001-10-29 - johan
+Support for standalone (no other VDI used) operation added.
+
+2001-10-27 - johan
+CVS repository created.

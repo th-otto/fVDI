@@ -1,0 +1,1 @@
+#include <stdio.h>#include <stddef.h>typedef char chop;typedef chop hello[3];typedef struct some_ {   char ch1;   short t;   char ch2;} some;typedef struct my_ {   char r;   hello array_of_hello[7];   some array_of_some[2];} my;int main(void){#define ps(x) printf("sizeof " #x ": %d\n", (int)sizeof(x))	ps(chop);	ps(hello);	ps(some);	ps(my);	return 0;}

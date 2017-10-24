@@ -1,0 +1,36 @@
+# To be included after the SINCSRC and SSRC are defined
+
+CONV2GAS = $(top_srcdir)/utility/conv2gas/conv2gas
+
+SYMBOLS = --defsym gas=1 --defsym lattice=0
+ifeq ($(CPU),000)
+ SYMBOLS += --defsym mc68000=1
+else
+ SYMBOLS += --defsym mc68000=0
+endif
+ifeq ($(DEBUG),yes)
+ SYMBOLS += --defsym FVDI_DEBUG=1
+else
+ SYMBOLS += --defsym FVDI_DEBUG=0
+endif
+
+# Use native compiler when cross compiling
+$(CONV2GAS): $(top_srcdir)/utility/conv2gas/conv2gas.c
+	$(MAKE) -C $(top_srcdir)/utility/conv2gas
+
+
+SINCSRC_GNU = $(SINCSRC:=.gnu)
+SSRC_GNU    = $(SSRC:=.gnu)
+
+# -> .gnu conversion
+%.gnu: $(basename %.gnu) $(CONV2GAS)
+	$(AM_V_GEN)$(CONV2GAS).sh $<
+
+# Assember for .gnu
+%.gnu.o: %.gnu
+	$(AM_V_AS)$(AS) $(ASFLAGS) $(SYMBOLS) -o $@ $<
+
+clean_gnu:
+	$(RM) $(SINCSRC_GNU) $(SSRC_GNU)
+
+.PHONY:	clean_gnu

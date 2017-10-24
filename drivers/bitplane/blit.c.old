@@ -1,0 +1,434 @@
+#if 0
+static inline void do_blit(blit * blt)
+{
+	ULONG blt_src_in;
+	UWORD blt_src_out, blt_dst_in, blt_dst_out, mask_out;
+	int xc, yc, last, first;
+
+#if DBG_BLIT
+	kprintf("bitblt: Start\n");
+	kprintf("HALFT[] 0x%04x-%04x-%04x-%04x\n", (UWORD) blt->halftone[0], blt->h
+			alftone[1], blt->halftone[2], blt->halftone[3]);
+	kprintf("X COUNT 0x%04x\n", (UWORD) blt->x_cnt);
+	kprintf("Y COUNT 0x%04x\n", (UWORD) blt->y_cnt);
+	kprintf("X S INC 0x%04x\n", (UWORD) blt->src_x_inc);
+	kprintf("Y S INC 0x%04x\n", (UWORD) blt->src_y_inc);
+	kprintf("X D INC 0x%04x\n", (UWORD) blt->dst_x_inc);
+	kprintf("Y D INC 0x%04x\n", (UWORD) blt->dst_y_inc);
+	kprintf("ENDMASK 0x%04x-%04x-%04x\n", (UWORD) blt->end_1, (UWORD) blt->end_ 2, (UWORD) blt->end_3);
+	kprintf("S_ADDR  0x%08lx\n", blt->src_addr);
+	kprintf("D_ADDR  0x%08lx\n", blt->dst_addr);
+	kprintf("HOP=%01d, OP=%02d\n", blt->hop & 0x3, blt->op & 0xf);
+	kprintf("HOPline=%02d\n", blt->status & 0xf);
+	kprintf("NFSR=%d, FXSR=%d, SKEW=%02d\n", (blt->skew & NFSR) != 0, (blt->skew & FXSR) != 0, (blt->skew & SKEW));
+#endif
+	if (blt->x_cnt == 0)
+		blt->x_cnt = 65535;
+	if (blt->y_cnt == 0)
+		blt->y_cnt = 65535;
+
+	xc = 0;
+	yc = blt->y_cnt;
+	while (yc-- > 0)
+	{
+		xc = blt->x_cnt;
+		first = 1;
+		blt_src_in = 0;
+		/* next line to get rid of obnoxious compiler warnings */
+		blt_src_out = blt_dst_out = 0;
+		while (xc-- > 0)
+		{
+			last = (xc == 0);
+			/* read source into blt_src_in */
+			if (blt->src_x_inc >= 0)
+			{
+				if (first && (blt->hop & FXSR))
+				{
+					blt_src_in = GetMemW(blt->src_addr);
+					blt->src_addr += blt->src_x_inc;
+				}
+				blt_src_in <<= 16;
+
+				if (last && (blt->hop & NFSR))
+				{
+					blt->src_addr -= blt->src_x_inc;
+				} else
+				{
+					blt_src_in |= GetMemW(blt->src_addr);
+					if (!last)
+					{
+						blt->src_addr += blt->src_x_inc;
+					}
+				}
+			} else
+			{
+				if (first && (blt->hop & FXSR))
+				{
+					blt_src_in = GetMemW(blt->src_addr);
+					blt->src_addr += blt->src_x_inc;
+				} else
+				{
+					blt_src_in >>= 16;
+				}
+				if (last && (blt->hop & NFSR))
+				{
+					blt->src_addr -= blt->src_x_inc;
+				} else
+				{
+					blt_src_in |= (GetMemW(blt->src_addr) << 16);
+					if (!last)
+					{
+						blt->src_addr += blt->src_x_inc;
+					}
+				}
+			}
+			/* shift blt->skew times into blt_src_out */
+			blt_src_out = blt_src_in >> (blt->skew & SKEW);
+
+			/* read destination into blt_dst_in */
+			blt_dst_in = GetMemW(blt->dst_addr);
+			/* op into blt_dst_out */
+			switch (blt->op & 0xf)
+			{
+			case 0:
+				blt_dst_out = 0;
+				break;
+			case 1:
+				blt_dst_out = blt_src_out & blt_dst_in;
+				break;
+			case 2:
+				blt_dst_out = blt_src_out & ~blt_dst_in;
+				break;
+			case 3:
+				blt_dst_out = blt_src_out;
+				break;
+			case 4:
+				blt_dst_out = ~blt_src_out & blt_dst_in;
+				break;
+			case 5:
+				blt_dst_out = blt_dst_in;
+				break;
+			case 6:
+				blt_dst_out = blt_src_out ^ blt_dst_in;
+				break;
+			case 7:
+				blt_dst_out = blt_src_out | blt_dst_in;
+				break;
+			case 8:
+				blt_dst_out = ~blt_src_out & ~blt_dst_in;
+				break;
+			case 9:
+				blt_dst_out = ~blt_src_out ^ blt_dst_in;
+				break;
+			case 0xa:
+				blt_dst_out = ~blt_dst_in;
+				break;
+			case 0xb:
+				blt_dst_out = blt_src_out | ~blt_dst_in;
+				break;
+			case 0xc:
+				blt_dst_out = ~blt_src_out;
+				break;
+			case 0xd:
+				blt_dst_out = ~blt_src_out | blt_dst_in;
+				break;
+			case 0xe:
+				blt_dst_out = ~blt_src_out | ~blt_dst_in;
+				break;
+			case 0xf:
+				blt_dst_out = 0xffff;
+				break;
+			}
+
+			/* and endmask */
+			if (first)
+			{
+				mask_out = (blt_dst_out & blt->end_1) | (blt_dst_in & ~blt->end_1);
+			} else if (last)
+			{
+				mask_out = (blt_dst_out & blt->end_3) | (blt_dst_in & ~blt->end_3);
+			} else
+			{
+				mask_out = (blt_dst_out & blt->end_2) | (blt_dst_in & ~blt->end_2);
+			}
+			SetMemW(blt->dst_addr, mask_out);
+			if (!last)
+			{
+				blt->dst_addr += blt->dst_x_inc;
+			}
+			first = 0;
+		}
+		blt->status = (blt->status + ((blt->dst_y_inc >= 0) ? 1 : 15)) & 0xef;
+		blt->src_addr += blt->src_y_inc;
+		blt->dst_addr += blt->dst_y_inc;
+	}
+	/* blt->status &= ~BUSY; */
+	blt->y_cnt = 0;
+}
+
+
+#else
+#if 0
+
+static void do_blit_0(blit * blt)
+{
+	int xc, yc, x_cnt;
+	ULONG dst_addr = blt->dst_addr;
+	ULONG dst_x_inc = blt->dst_x_inc;
+	ULONG dst_y_inc = blt->dst_y_inc;
+	WORD end_1 = blt->end_1;
+	WORD end_2;
+
+	WORD end_3 = blt->end_3;
+
+#if 1
+	if (blt->x_cnt == 0)
+		blt->x_cnt = 65535;
+	if (blt->y_cnt == 0)
+		blt->y_cnt = 65535;
+#endif
+
+	x_cnt = blt->x_cnt;
+	yc = blt->y_cnt - 1;
+
+	end_1 = ~end_1;
+	end_2 = (long) yc >> 16;			// Force compiler to use 0 in a register!
+	if (x_cnt > 1)
+	{
+		end_3 = ~end_3;
+		x_cnt -= 3;
+		for (; yc >= 0; yc--)
+		{
+			*(UWORD *) dst_addr &= end_1;
+			dst_addr += dst_x_inc;
+
+#if 1
+			for (xc = x_cnt; xc >= 0; xc--)
+			{
+				SetMemW(dst_addr, end_2);
+				dst_addr += dst_x_inc;
+			}
+#else
+			if (x_cnt >= 0)
+			{
+				xc = ((x_cnt + 1 + 7) >> 3) - 1;
+				switch ((x_cnt + 1) & 0x07)
+				{
+				case 0:
+					do
+					{
+						SetMemW(dst_addr, end_2);
+						dst_addr += dst_x_inc;
+				case 7:
+						SetMemW(dst_addr, end_2);
+						dst_addr += dst_x_inc;
+				case 6:
+						SetMemW(dst_addr, end_2);
+						dst_addr += dst_x_inc;
+				case 5:
+						SetMemW(dst_addr, end_2);
+						dst_addr += dst_x_inc;
+				case 4:
+						SetMemW(dst_addr, end_2);
+						dst_addr += dst_x_inc;
+				case 3:
+						SetMemW(dst_addr, end_2);
+						dst_addr += dst_x_inc;
+				case 2:
+						SetMemW(dst_addr, end_2);
+						dst_addr += dst_x_inc;
+				case 1:
+						SetMemW(dst_addr, end_2);
+						dst_addr += dst_x_inc;
+					} while (--xc >= 0);
+				}
+			}
+#endif
+
+			*(UWORD *) dst_addr &= end_3;
+			dst_addr += dst_y_inc;
+		}
+	} else
+	{
+		for (; yc >= 0; yc--)
+		{
+			*(UWORD *) dst_addr &= end_1;
+			dst_addr += dst_y_inc;
+		}
+	}
+}
+
+
+static void do_blit_15(blit * blt)
+{
+	int xc, yc, x_cnt;
+	ULONG dst_addr = blt->dst_addr;
+	ULONG dst_x_inc = blt->dst_x_inc;
+	ULONG dst_y_inc = blt->dst_y_inc;
+	WORD end_1 = blt->end_1;
+	WORD end_2;
+	WORD end_3 = blt->end_3;
+
+#if 1
+	if (blt->x_cnt == 0)
+		blt->x_cnt = 65535;
+	if (blt->y_cnt == 0)
+		blt->y_cnt = 65535;
+#endif
+
+	x_cnt = blt->x_cnt;
+	yc = blt->y_cnt - 1;
+
+	end_2 = ~((long) yc >> 16);			// Force compiler to use 0xffff in a register!
+
+	if (x_cnt > 1)
+	{
+		x_cnt -= 3;
+		for (; yc >= 0; yc--)
+		{
+			*(UWORD *) dst_addr |= end_1;
+			dst_addr += dst_x_inc;
+
+			for (xc = x_cnt; xc >= 0; xc--)
+			{
+				SetMemW(dst_addr, end_2);
+				dst_addr += dst_x_inc;
+			}
+
+			*(UWORD *) dst_addr |= end_3;
+			dst_addr += dst_y_inc;
+		}
+	} else
+	{
+		for (; yc >= 0; yc--)
+		{
+			*(UWORD *) dst_addr |= end_1;
+			dst_addr += dst_y_inc;
+		}
+	}
+}
+#endif
+
+#endif
+
+
+
+long CDECL x_expand_area(Workstation * wk, MFDB * src, long src_x, long src_y, MFDB * dst, long dst_x, long dst_y, long w, long h, long operation, long colour)
+{
+	struct blit_frame info;				/* Holds some internal info for bit_blt */
+
+	short foreground;
+
+	short background;
+
+#if 1
+	x_get_colours(wk, colour, &foreground, &background);
+#else
+	foreground = colour & 0xffff;
+	background = (colour >> 16) & 0xffff;
+#endif
+
+#if 0
+	/* If mode is made up of more than the first 5 bits */
+	if (operation & ~0x001f)
+		return;							/* Mode is invalid */
+#else
+	operation = ((operation - 1) & 0x03) + 1;
+#endif
+
+	/* Check the pattern flag (bit 5) and revert to log op # */
+	info.p_addr = 0;					/* Get pattern pointer */
+
+	/* If true, the plane count is invalid or clipping took all! */
+	if (setup_info(wk, &info, src, dst, src_x, src_y, dst_x, dst_y, w, h))
+		return 1;
+
+	/*
+	 * COPY RASTER TRANSPARENT - copies a monochrome raster area
+	 * from source form to a color area. A writing mode and color
+	 * indices for both 0's and 1's are specified in the INTIN array.
+	 */
+
+	/* Is source area one plane? */
+	if (info.s_nxwd != 2)
+		return 1;						/* Source must be mono plane */
+
+	info.s_nxpl = 0;					/* Use only one plane of source */
+
+	switch (operation)
+	{
+	case 2:
+		info.op_tab[0] = 04;			/* fg:0 bg:0  D' <- [not S] and D */
+		info.op_tab[2] = 07;			/* fg:1 bg:0  D' <- S or D */
+		info.fg_col = foreground;		/* We're only interested in one color */
+		info.bg_col = 0;				/* Save the color of interest */
+		break;
+
+	case 1:
+		/* CHECK: bug, that colors are reversed? */
+		info.op_tab[0] = 00;			/* fg:0 bg:0  D' <- 0 */
+		info.op_tab[1] = 12;			/* fg:0 bg:1  D' <- not S */
+		info.op_tab[2] = 03;			/* fg:1 bg:0  D' <- S */
+		info.op_tab[3] = 15;			/* fg:1 bg:1  D' <- 1 */
+		info.bg_col = background;		/* Save fore and background colors */
+		info.fg_col = foreground;
+		break;
+
+	case 3:
+		info.op_tab[0] = 06;			/* fg:0 bg:0  D' <- S xor D */
+		info.bg_col = 0;
+		info.fg_col = 0;
+		break;
+
+	case 4:
+		info.op_tab[0] = 01;			/* fg:0 bg:0  D' <- S and D */
+		info.op_tab[1] = 13;			/* fg:0 bg:1  D' <- [not S] or D */
+		info.fg_col = 0;				/* We're only interested in one color */
+		info.bg_col = background;		/* Save the color of interest */
+		break;
+
+	default:
+		return 1;						/* Unsupported mode */
+	}
+
+	bit_blt(&info);
+
+	return 1;
+}
+
+
+long CDECL
+x_blit_area(Workstation * wk, MFDB * src, long src_x, long src_y, MFDB * dst,
+			long dst_x, long dst_y, long w, long h, long operation)
+{
+	struct blit_frame info;				/* Holds some internal info for bit_blt */
+
+	/* If mode is made up of more than the first 5 bits */
+#if 0
+	if (operation & ~0x001f)
+		return 1;						/* Mode is invalid */
+#else
+	operation &= 0x0f;
+#endif
+
+	/* Check the pattern flag (bit 5) and revert to log op # */
+	info.p_addr = 0;					/* Clear pattern pointer */
+
+	/* If true, the plane count is invalid or clipping took all! */
+	if (setup_info(wk, &info, src, dst, src_x, src_y, dst_x, dst_y, w, h))
+		return 1;
+
+	/* Planes of source and destination must be equal in number */
+	if (info.s_nxwd != info.d_nxwd)
+		return 1;
+
+	info.op_tab[0] = operation;			/* fg:0 bg:0 */
+	info.bg_col = 0;					/* bg:0 & fg:0 => only first OP_TAB */
+	info.fg_col = 0;					/* entry will be referenced */
+
+	bit_blt(&info);
+
+	return 1;
+}
+
+

@@ -1,0 +1,1150 @@
+Archive member included to satisfy reference by file (symbol)
+
+../modules/ft2/libft2.a(ftinit.o)
+                              ../modules/ft2/ft2.o (FT_Init_FreeType)
+../modules/ft2/libft2.a(ftbase.o)
+                              ../modules/ft2/ft2.o (FT_MulFix)
+../modules/ft2/libft2.a(ftglyph.o)
+                              ../modules/ft2/ft2.o (FT_Glyph_Get_CBox)
+../modules/ft2/libft2.a(ftsynth.o)
+                              ../modules/ft2/ft2.o (FT_GlyphSlot_Embolden)
+../modules/ft2/libft2.a(ftbitmap.o)
+                              ../modules/ft2/libft2.a(ftglyph.o) (FT_Bitmap_New)
+../modules/ft2/libft2.a(ftstroke.o)
+                              ../modules/ft2/ft2.o (FT_Stroker_New)
+../modules/ft2/libft2.a(autofit.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (autofit_module_class)
+../modules/ft2/libft2.a(psaux.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (psaux_module_class)
+../modules/ft2/libft2.a(psnames.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (psnames_module_class)
+../modules/ft2/libft2.a(pshinter.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (pshinter_module_class)
+../modules/ft2/libft2.a(raster.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (ft_raster1_renderer_class)
+../modules/ft2/libft2.a(smooth.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (ft_smooth_lcdv_renderer_class)
+../modules/ft2/libft2.a(sfnt.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (sfnt_module_class)
+../modules/ft2/libft2.a(cff.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (cff_driver_class)
+../modules/ft2/libft2.a(type1.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (t1_driver_class)
+../modules/ft2/libft2.a(type42.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (t42_driver_class)
+../modules/ft2/libft2.a(type1cid.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (t1cid_driver_class)
+../modules/ft2/libft2.a(truetype.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (tt_driver_class)
+../modules/ft2/libft2.a(bdf.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (bdf_driver_class)
+../modules/ft2/libft2.a(pfr.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (pfr_driver_class)
+../modules/ft2/libft2.a(winfnt.o)
+                              ../modules/ft2/libft2.a(ftinit.o) (winfnt_driver_class)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD fvdi.s.gnu.o
+LOAD blit.s.gnu.o
+LOAD colours.s.gnu.o
+LOAD draw.s.gnu.o
+LOAD expand.s.gnu.o
+LOAD fill_sq.s.gnu.o
+LOAD gnu.s.gnu.o
+LOAD line_sq.s.gnu.o
+LOAD mark_sq.s.gnu.o
+LOAD mouse.s.gnu.o
+LOAD simple.s.gnu.o
+LOAD support.s.gnu.o
+LOAD sys_call.s.gnu.o
+LOAD textrndr.s.gnu.o
+LOAD text.s.gnu.o
+LOAD text_sq.s.gnu.o
+LOAD traptabl.s.gnu.o
+LOAD unimpl.s.gnu.o
+LOAD vdi_misc.s.gnu.o
+LOAD dcsdstub.s.gnu.o
+LOAD bconstub.s.gnu.o
+LOAD setjmp.s.gnu.o
+LOAD startup.o
+LOAD utility.o
+LOAD bezier.o
+LOAD conic.o
+LOAD escape.o
+LOAD fonts.o
+LOAD line.o
+LOAD loader.o
+LOAD math.o
+LOAD patterns.o
+LOAD polygon.o
+LOAD setup.o
+LOAD workstn.o
+LOAD colour.o
+LOAD textlib.o
+LOAD calamus.o
+LOAD bconout.o
+LOAD default.o
+LOAD ../modules/ft2/ft2.o
+LOAD ../modules/ft2/atari2unicode.o
+LOAD ../modules/ft2/atari2bics.o
+LOAD ../modules/ft2/bics2unicode.o
+LOAD ../modules/ft2/ft2_ftsystem.o
+LOAD ../modules/ft2/libft2.a
+
+.text           0x00000000000000e4    0x7d00c
+ CREATE_OBJECT_SYMBOLS
+ *(.text)
+ .text          0x00000000000000e4      0x384 fvdi.s.gnu.o
+                0x00000000000000e4                init
+                0x000000000000014a                trap2_address
+                0x000000000000014e                trap2_temp
+                0x00000000000001b2                vdi_address
+                0x00000000000001b2                vdi_address
+                0x00000000000001b6                vdi_dispatch
+                0x00000000000002c8                bad_or_non_fvdi_handle
+                0x0000000000000344                sub_call
+                0x0000000000000344                sub_call
+                0x0000000000000370                opcode5
+                0x000000000000039a                opcode11
+                0x00000000000003ba                eddi_dispatch
+                0x00000000000003d2                trap14_address
+                0x00000000000003d6                trap14
+                0x0000000000000432                lineA_address
+                0x0000000000000436                lineA
+ .text          0x0000000000000468      0xc98 blit.s.gnu.o
+                0x0000000000000476                v_get_pixel
+                0x00000000000004a2                lib_v_get_pixel
+                0x00000000000004f8                v_bar
+                0x000000000000050a                lib_v_bar
+                0x00000000000005ce                vr_recfl
+                0x00000000000005e0                lib_vr_recfl
+                0x000000000000066a                fill_area
+                0x00000000000006c2                default_fill
+                0x00000000000007ec                vrt_cpyfm
+                0x0000000000000822                lib_vrt_cpyfm
+                0x0000000000000822                lib_vrt_cpyfm
+                0x000000000000084a                lib_vrt_cpyfm_nocheck
+                0x000000000000090e                default_expand
+                0x00000000000009f4                vro_cpyfm
+                0x0000000000000a26                lib_vro_cpyfm
+                0x0000000000000a26                lib_vro_cpyfm
+                0x0000000000000ada                default_blit
+                0x0000000000000b66                vr_transfer_bits
+                0x0000000000000bac                colour_entry
+                0x0000000000000bf4                set_colour_table
+                0x0000000000000c34                colour_table
+                0x0000000000000c7a                inverse_table
+                0x0000000000000cbc                vr_trn_fm
+                0x0000000000000ccc                lib_vr_trn_fm
+                0x0000000000000ccc                lib_vr_trn_fm
+ .text          0x0000000000001100      0x220 colours.s.gnu.o
+                0x0000000000001100                set_palette
+                0x0000000000001132                vs_fg_color
+                0x0000000000001178                vs_bg_color
+                0x00000000000011bc                vs_x_color
+                0x00000000000011d6                vq_x_color
+                0x0000000000001202                vq_fg_color
+                0x0000000000001246                vq_bg_color
+                0x0000000000001286                vq_color
+                0x00000000000012e0                vs_color
+ .text          0x0000000000001320      0xb60 draw.s.gnu.o
+                0x0000000000001320                call_draw_line
+                0x000000000000135c                c_pline
+                0x000000000000138a                v_pline
+                0x0000000000001416                v_bez_accel
+                0x000000000000146e                lib_v_pline
+                0x0000000000001476                lib_v_pline
+                0x00000000000015fa                default_line
+                0x000000000000177c                v_circle
+                0x0000000000001798                v_arc
+                0x00000000000017b4                v_pie
+                0x0000000000001816                v_ellarc
+                0x0000000000001866                v_ellpie
+                0x00000000000018b8                v_ellipse
+                0x00000000000018fe                v_rbox
+                0x0000000000001946                v_rfbox
+                0x0000000000001990                v_pmarker
+                0x00000000000019dc                v_fillarea
+                0x0000000000001db2                fill_poly
+                0x0000000000001dfe                hline
+                0x0000000000001e46                fill_spans
+ .text          0x0000000000001e80      0x818 expand.s.gnu.o
+                0x0000000000001e80                expand_area
+                0x0000000000001f6a                mreplace
+                0x0000000000001fb2                replace
+ .text          0x0000000000002698      0x174 fill_sq.s.gnu.o
+                0x00000000000026a4                vsf_color
+                0x00000000000026d4                vsf_interior
+                0x0000000000002700                vsf_style
+                0x0000000000002734                vsf_perimeter
+                0x0000000000002760                vsf_udpat
+                0x000000000000277c                lib_vsf_udpat
+                0x00000000000027f0                vqf_attributes
+ .text          0x000000000000280c      0x1d8 gnu.s.gnu.o
+                0x000000000000280c                set_stack_call_lppll
+                0x000000000000280c                set_stack_call_lvppl
+                0x000000000000280c                set_stack_call_lplll
+                0x000000000000280c                set_stack_call_lvplp
+                0x000000000000280c                set_stack_call_pvlpl
+                0x0000000000002832                set_stack_call_lpppll
+                0x000000000000285a                lib_vdi_s
+                0x0000000000002872                lib_vdi_sp
+                0x0000000000002890                lib_vdi_spppp
+                0x00000000000028c0                lib_vdi_pp
+                0x00000000000028d4                Mxalloc
+                0x00000000000028ea                Malloc
+                0x00000000000028fc                Mfree
+                0x000000000000290e                Cconws
+                0x0000000000002920                Cconis
+                0x000000000000292e                Crawcin
+                0x000000000000293c                Bconout
+                0x000000000000294e                Super
+                0x0000000000002960                Setexc
+                0x0000000000002976                Fopen
+                0x000000000000298c                Fread
+                0x00000000000029a8                Fclose
+                0x00000000000029ba                Fsetdta
+                0x00000000000029cc                Fsfirst
+ .text          0x00000000000029e4      0x174 line_sq.s.gnu.o
+                0x00000000000029f0                vsl_color
+                0x0000000000002a1e                vsl_width
+                0x0000000000002a66                vsl_type
+                0x0000000000002a98                vsl_udsty
+                0x0000000000002ab0                vsl_ends
+                0x0000000000002af0                vql_attributes
+                0x0000000000002b1e                v_bez_con
+ .text          0x0000000000002b58       0xf4 mark_sq.s.gnu.o
+                0x0000000000002b64                vsm_color
+                0x0000000000002b92                vsm_height
+                0x0000000000002bae                lib_vsm_height
+                0x0000000000002bf8                vsm_type
+                0x0000000000002c2e                vqm_attributes
+ .text          0x0000000000002c4c      0x638 mouse.s.gnu.o
+                0x0000000000002c56                vsc_form
+                0x0000000000002c76                lib_vsc_form
+                0x0000000000002cf0                v_show_c
+                0x0000000000002d12                lib_v_show_c
+                0x0000000000002d7e                v_hide_c
+                0x0000000000002d96                lib_v_hide_c
+                0x0000000000002e04                vq_mouse
+                0x0000000000002e2e                vrq_string
+                0x0000000000002e96                vq_key_s
+                0x0000000000002ec8                vex_butv
+                0x0000000000002efe                vex_motv
+                0x0000000000002f34                vex_curv
+                0x0000000000002f6c                vex_wheelv
+                0x0000000000002fa2                vex_timv
+                0x000000000000300c                mouse_move
+                0x0000000000003026                mouse_timer
+                0x0000000000003216                do_nothing
+                0x0000000000003226                vector_call
+                0x0000000000003254                vbl_handler
+ .text          0x0000000000003284      0x4a0 simple.s.gnu.o
+                0x000000000000328e                v_opnwk
+                0x00000000000032b0                v_opnvwk
+                0x00000000000032d4                v_clsvwk
+                0x00000000000032f8                v_clswk
+                0x000000000000331e                vq_devinfo
+                0x0000000000003340                vs_clip
+                0x00000000000033e0                vswr_mode
+                0x0000000000003410                vq_extnd
+                0x000000000000346e                vq_chcells
+                0x00000000000034a2                v_exit_cur
+                0x00000000000034cc                v_enter_cur
+                0x00000000000034f2                v_curup
+                0x000000000000351a                v_curdown
+                0x0000000000003542                v_curright
+                0x000000000000356a                v_curleft
+                0x0000000000003592                v_curhome
+                0x00000000000035b6                v_eeos
+                0x00000000000035da                v_eeol
+                0x0000000000003606                vs_curaddress
+                0x0000000000003642                v_curtext
+                0x0000000000003678                v_rvon
+                0x000000000000369e                v_rvoff
+                0x00000000000036ca                vq_curaddress
+                0x00000000000036fc                v_dspcur
+ .text          0x0000000000003724      0x1b0 support.s.gnu.o
+                0x0000000000003730                flip_words
+                0x0000000000003748                flip_longs
+                0x000000000000376e                redirect
+                0x00000000000037b0                redirect_d0
+                0x00000000000037c6                call_other
+                0x00000000000037ce                call_other
+                0x000000000000381e                initialize_palette
+                0x0000000000003858                allocate_block
+                0x0000000000003878                free_block
+                0x000000000000389a                cache_flush
+ .text          0x00000000000038d4      0x424 sys_call.s.gnu.o
+                0x00000000000038d4                appl_init
+                0x00000000000038fc                appl_exit
+                0x000000000000392a                graf_handle
+                0x0000000000003952                call_v_opnwk
+                0x00000000000039bc                scall_v_opnwk
+                0x0000000000003a26                scall_v_clswk
+                0x0000000000003a4c                call_v_opnvwk
+                0x0000000000003ac2                call_v_clsvwk
+                0x0000000000003aec                vq_extnd
+                0x0000000000003b44                vq_color
+                0x0000000000003b94                set_inout
+                0x0000000000003be6                vdi
+                0x0000000000003c14                sub_vdi
+                0x0000000000003c42                fvdi
+                0x0000000000003c70                get_sub_call
+                0x0000000000003c7e                vq_gdos
+                0x0000000000003ce8                linea_fonts
+ .text          0x0000000000003cf8      0x7bc textrndr.s.gnu.o
+                0x0000000000003cf8                text_area
+                0x0000000000003cf8                text_area
+ .text          0x00000000000044b4      0x8c8 text.s.gnu.o
+                0x00000000000044be                v_gtext
+                0x00000000000044f0                lib_v_gtext
+                0x0000000000004554                draw_text
+                0x000000000000458a                v_ftext
+                0x0000000000004672                v_justified
+                0x0000000000004804                default_text
+                0x0000000000004c64                bitmap_outline
+ .text          0x0000000000004d7c      0x964 text_sq.s.gnu.o
+                0x0000000000004d8a                vqt_trackkern
+                0x0000000000004d8a                vqt_pairkern
+                0x0000000000004da4                vst_kern
+                0x0000000000004dc4                v_getbitmap_info
+                0x0000000000004e62                vqt_advance
+                0x0000000000004ee8                vst_skew
+                0x0000000000004f02                vst_color
+                0x0000000000004f32                vst_effects
+                0x0000000000004fb8                vst_alignment
+                0x0000000000004ff6                vst_rotation
+                0x000000000000503a                lib_vst_rotation
+                0x000000000000507e                vst_charmap
+                0x0000000000005096                vst_font
+                0x00000000000050cc                vqt_name
+                0x00000000000051c2                vqt_font_info
+                0x000000000000520e                vqt_fontheader
+                0x0000000000005240                vqt_xfntinfo
+                0x000000000000529c                vqt_f_extent
+                0x000000000000529c                vqt_extent
+                0x0000000000005392                vqt_width
+                0x0000000000005456                lib_vqt_width
+                0x00000000000054bc                vst_height
+                0x0000000000005578                lib_vst_height
+                0x00000000000055e0                vst_arbpt
+                0x000000000000562e                vst_point
+                0x0000000000005680                vqt_attributes
+                0x00000000000056b4                vst_load_fonts
+                0x00000000000056da                vst_unload_fonts
+ .text          0x00000000000056e0        0x0 traptabl.s.gnu.o
+ .text          0x00000000000056e0       0xd4 unimpl.s.gnu.o
+                0x00000000000056e0                start_unimpl
+                0x000000000000570c                special_5
+                0x000000000000570c                nothing
+                0x000000000000570c                special_11
+                0x0000000000005726                v_updwk
+                0x0000000000005726                v_clrwk
+                0x0000000000005738                vrq_choice
+                0x0000000000005738                vqin_mode
+                0x0000000000005738                vrq_locator
+                0x0000000000005738                vrq_valuator
+                0x000000000000574e                vsin_mode
+                0x0000000000005780                vq_cellarray
+                0x000000000000578e                v_kill_outline
+                0x000000000000579a                v_flushcache
+                0x000000000000579a                v_loadcache
+                0x000000000000579a                vst_name
+                0x000000000000579a                vqt_cachesize
+                0x000000000000579a                vst_scratch
+                0x000000000000579a                v_savecache
+                0x000000000000579a                vqt_get_table
+                0x000000000000579a                vst_width
+                0x000000000000579a                vst_error
+                0x000000000000579a                v_getoutline
+                0x000000000000579a                v_set_app_buff
+                0x000000000000579a                vst_setsize
+                0x00000000000057a6                v_hardcopy
+                0x00000000000057a6                vq_tabstatus
+                0x00000000000057a6                v_clear_disp_list
+                0x00000000000057a6                v_form_adv
+                0x00000000000057a6                v_bit_image
+                0x00000000000057a6                v_rmcur
+                0x00000000000057a6                v_output_window
+                0x00000000000057b4                end_unimpl
+                0x00000000000057b4                v_contourfill
+                0x00000000000057b4                v_cellarray
+ .text          0x00000000000057b4      0x360 vdi_misc.s.gnu.o
+                0x00000000000057c0                clip_rect
+                0x000000000000580c                clip_point
+                0x0000000000005840                setup_blit
+                0x00000000000059d2                setup_plot
+                0x0000000000005a34                clip_line
+ .text          0x0000000000005b14       0x58 dcsdstub.s.gnu.o
+                0x0000000000005b20                dcsd_stub_active
+                0x0000000000005b28                dcsd_stub_getbase
+                0x0000000000005b30                dcsd_stub_gettlt
+                0x0000000000005b44                dcsd_stub_blit_from_screen
+                0x0000000000005b58                dcsd_stub_blit_to_screen
+ .text          0x0000000000005b6c       0x34 bconstub.s.gnu.o
+                0x0000000000005b74                bconout_address
+                0x0000000000005b78                bconout_stub
+ .text          0x0000000000005ba0       0x38 setjmp.s.gnu.o
+                0x0000000000005ba0                _mint_setjmp
+                0x0000000000005bb0                _mint_longjmp
+ .text          0x0000000000005bd8      0xaa0 startup.o
+                0x0000000000005e3a                nvdi_patch
+                0x0000000000006080                startup
+                0x0000000000006626                recheck_mtask
+ .text          0x0000000000006678     0x25e4 utility.o
+                0x00000000000066be                get_l
+                0x00000000000066c6                get_protected_l
+                0x00000000000066ee                get_cookie
+                0x000000000000676e                allocate_block
+                0x0000000000006792                free_block
+                0x00000000000067a4                copymem
+                0x00000000000067c0                copy
+                0x00000000000067d0                cat
+                0x00000000000067f2                length
+                0x0000000000006806                numeric
+                0x0000000000006818                _mint_atol
+                0x0000000000006948                ltoa
+                0x00000000000069ce                free
+                0x0000000000006b2e                puts
+                0x0000000000006cd0                equal
+                0x0000000000006d0c                next_line
+                0x0000000000006d5a                get_token
+                0x0000000000006e1a                get_size
+                0x0000000000006e76                event
+                0x000000000000701a                misc
+                0x0000000000007046                skip_space
+                0x00000000000070ae                error
+                0x0000000000007128                str2long
+                0x0000000000007148                set_l
+                0x0000000000007152                set_protected_l
+                0x0000000000007180                remove_xbra
+                0x000000000000722e                copymem_aligned
+                0x000000000000728c                memcpy
+                0x0000000000007306                memmove
+                0x0000000000007376                _mint_strlen
+                0x0000000000007388                _mint_strcmp
+                0x00000000000073b4                _mint_strstr
+                0x0000000000007436                _mint_strncmp
+                0x000000000000748a                _mint_memcmp
+                0x00000000000074d2                _mint_strcpy
+                0x00000000000074e4                _mint_strncpy
+                0x0000000000007536                _mint_strcat
+                0x000000000000755a                _mint_strchr
+                0x0000000000007594                _mint_strrchr
+                0x00000000000075c6                _mint_memchr
+                0x0000000000007600                memrchr
+                0x0000000000007632                check_base
+                0x0000000000007698                isdigit
+                0x00000000000076aa                isxdigit
+                0x00000000000076f6                isalnum
+                0x000000000000773a                isspace
+                0x000000000000775c                ultoa
+                0x00000000000077cc                memset
+                0x000000000000786e                vsprintf
+                0x0000000000007ecc                sprintf
+                0x0000000000007ee8                printf
+                0x0000000000007f5a                fmalloc
+                0x000000000000807c                allocate
+                0x00000000000080f8                malloc
+                0x0000000000008318                set_cookie
+                0x0000000000008440                initialize_pool
+                0x00000000000084bc                strdup
+                0x00000000000084e2                qsort
+                0x00000000000085f6                realloc
+                0x0000000000008682                free_size
+                0x00000000000087e0                free_all
+                0x0000000000008848                skip_only_space
+                0x000000000000889e                init_utility
+                0x0000000000008bd6                calloc
+ .text          0x0000000000008c5c      0x920 bezier.o
+                0x0000000000008d16                calc_bez
+                0x000000000000937e                lib_v_bez
+ .text          0x000000000000957c      0x778 conic.o
+                0x000000000000957c                ellipsearc
+                0x00000000000099f2                rounded_box
+ .text          0x0000000000009cf4      0x428 escape.o
+                0x0000000000009cf4                vq_chcells
+                0x0000000000009d38                v_curup
+                0x0000000000009d70                v_curdown
+                0x0000000000009daa                v_curright
+                0x0000000000009de4                v_curleft
+                0x0000000000009e1c                v_eeol
+                0x0000000000009eb2                v_eeos
+                0x0000000000009f58                v_curhome
+                0x0000000000009f62                v_exit_cur
+                0x0000000000009f7c                v_enter_cur
+                0x0000000000009f98                vs_curaddress
+                0x000000000000a034                v_curtext
+                0x000000000000a0c6                v_rvon
+                0x000000000000a0d2                v_rvoff
+                0x000000000000a0dc                vq_curaddress
+ .text          0x000000000000a11c      0x430 fonts.o
+                0x000000000000a11c                unpack_font
+                0x000000000000a224                fixup_font
+                0x000000000000a386                load_font
+                0x000000000000a44e                insert_font
+ .text          0x000000000000a54c      0xaf8 line.o
+                0x000000000000aa32                do_arrow
+                0x000000000000aace                wide_line
+ .text          0x000000000000b044     0x21e8 loader.o
+                0x000000000000c7b0                tokenize
+                0x000000000000c932                load_prefs
+ .text          0x000000000000d22c       0xec math.o
+                0x000000000000d22c                Isin
+                0x000000000000d2a6                Icos
+                0x000000000000d2bc                isqrt
+ .text          0x000000000000d318        0x0 patterns.o
+ .text          0x000000000000d318      0x6a0 polygon.o
+                0x000000000000d318                filled_poly
+                0x000000000000d5e0                filled_poly_m
+ .text          0x000000000000d9b8      0xba0 setup.o
+                0x000000000000da66                initialize_vdi
+                0x000000000000dd60                link_mouse_routines
+                0x000000000000de14                unlink_mouse_routines
+                0x000000000000de66                setup_vbl_handler
+                0x000000000000deca                shutdown_vbl_handler
+                0x000000000000df24                copy_workstations
+                0x000000000000e524                shut_down
+                0x000000000000e528                setup_fallback
+ .text          0x000000000000e558      0xcc4 workstn.o
+                0x000000000000e67e                linea_setup
+                0x000000000000e790                v_clsvwk
+                0x000000000000e846                v_clswk
+                0x000000000000e8a8                vq_devinfo
+                0x000000000000e8ee                lib_vq_extnd
+                0x000000000000eb3c                lib_vs_clip
+                0x000000000000ebda                v_opnvwk
+                0x000000000000f05e                v_opnwk
+ .text          0x000000000000f21c      0x900 colour.o
+                0x000000000000f2f2                lib_vs_color
+                0x000000000000f348                lib_vq_color
+                0x000000000000f408                lib_vs_fg_color
+                0x000000000000f544                lib_vs_bg_color
+                0x000000000000f67e                lib_vq_fg_color
+                0x000000000000f6f8                lib_vq_bg_color
+                0x000000000000f772                colour_entry
+                0x000000000000f7aa                set_colour_table
+                0x000000000000f890                colour_table
+                0x000000000000fad2                inverse_table
+ .text          0x000000000000fb1c      0x7e0 textlib.o
+                0x000000000000fb1c                lib_vst_effects
+                0x000000000000fb32                lib_vst_alignment
+                0x000000000000fb68                lib_vqt_name
+                0x000000000000fbd8                lib_vqt_font_info
+                0x000000000000fc4a                lib_vqt_xfntinfo
+                0x000000000000fe24                lib_vqt_fontheader
+                0x000000000000ff00                lib_vqt_extent
+                0x0000000000010010                lib_vst_point
+                0x00000000000100f6                lib_vst_font
+                0x00000000000101c4                lib_vst_arbpt
+                0x00000000000102a4                lib_vqt_attributes
+                0x00000000000102e8                lib_vst_load_fonts
+                0x00000000000102f8                lib_vst_unload_fonts
+ .text          0x00000000000102fc      0x260 calamus.o
+                0x0000000000010388                dcsd_active
+                0x0000000000010390                dcsd_getbase
+                0x0000000000010398                dcsd_gettlt
+                0x00000000000103ae                dcsd_blit_from_screen
+                0x0000000000010460                dcsd_blit_to_screen
+                0x0000000000010514                calamus_initialize_cookie
+ .text          0x000000000001055c       0xac bconout.o
+                0x000000000001055c                bconout_char
+ .text          0x0000000000010608      0xb1c default.o
+                0x0000000000010608                retry_line
+                0x00000000000107ea                vr_transfer_bits
+ .text          0x0000000000011124     0x2cc4 ../modules/ft2/ft2.o
+                0x0000000000012412                ft2_term
+                0x000000000001247e                ft2_init
+                0x00000000000124c4                ft2_load_font
+                0x0000000000012792                ft2_fontheader
+                0x00000000000128c4                ft2_xfntinfo
+                0x00000000000129cc                ft2_char_advance
+                0x0000000000012a1a                ft2_char_bitmap
+                0x0000000000012a84                ft2_text_render_default
+                0x00000000000131b0                ft2_char_width
+                0x00000000000131e8                ft2_text_width
+                0x0000000000013220                ft2_set_effects
+                0x0000000000013274                ft2_vst_point
+ .text          0x0000000000013de8        0x0 ../modules/ft2/atari2unicode.o
+ .text          0x0000000000013de8        0x0 ../modules/ft2/atari2bics.o
+ .text          0x0000000000013de8        0x0 ../modules/ft2/bics2unicode.o
+ .text          0x0000000000013de8      0x638 ../modules/ft2/ft2_ftsystem.o
+                0x0000000000014330                ft_keep_open
+                0x000000000001433a                ft_keep_closed
+                0x0000000000014342                FT_Stream_Open
+                0x00000000000143de                FT_New_Memory
+                0x000000000001440c                FT_Done_Memory
+ .text          0x0000000000014420       0xfc ../modules/ft2/libft2.a(ftinit.o)
+                0x0000000000014420                FT_Add_Default_Modules
+                0x000000000001444a                FT_Init_FreeType
+                0x00000000000144ae                FT_Done_FreeType
+ .text          0x000000000001451c     0x8ae0 ../modules/ft2/libft2.a(ftbase.o)
+                0x0000000000015054                FT_RoundFix
+                0x0000000000015074                FT_CeilFix
+                0x0000000000015092                FT_FloorFix
+                0x00000000000150a4                FT_MSB
+                0x0000000000015282                FT_MulDiv
+                0x000000000001529c                FT_MulDiv_No_Round
+                0x000000000001537c                FT_MulFix
+                0x0000000000015396                FT_DivFix
+                0x000000000001542a                FT_Matrix_Multiply
+                0x0000000000015616                FT_Matrix_Invert
+                0x0000000000015704                FT_Matrix_Multiply_Scaled
+                0x0000000000015930                FT_Vector_Transform_Scaled
+                0x0000000000015a3c                ft_corner_orientation
+                0x0000000000015b12                ft_corner_is_flat
+                0x0000000000015baa                FT_GlyphLoader_Rewind
+                0x0000000000015bea                FT_GlyphLoader_Reset
+                0x0000000000015d50                FT_GlyphLoader_Done
+                0x0000000000015d5c                FT_GlyphLoader_Prepare
+                0x0000000000015dc6                FT_GlyphLoader_Add
+                0x0000000000015e12                ft_service_list_lookup
+                0x0000000000015e54                ft_validator_init
+                0x0000000000015e6e                ft_validator_run
+                0x0000000000015e72                ft_validator_error
+                0x0000000000015e92                FT_Stream_Free
+                0x0000000000015ed0                ft_glyphslot_free_bitmap
+                0x0000000000015eee                ft_glyphslot_set_bitmap
+                0x0000000000015f20                FT_Done_GlyphSlot
+                0x000000000001608a                FT_Set_Transform
+                0x000000000001612c                FT_Reference_Face
+                0x000000000001613c                FT_Done_Face
+                0x00000000000161e4                FT_Done_Size
+                0x00000000000162b2                FT_Match_Size
+                0x00000000000162e0                ft_synthesize_vertical_metrics
+                0x000000000001634e                FT_Select_Metrics
+                0x0000000000016402                FT_Request_Metrics
+                0x000000000001677e                FT_Select_Size
+                0x0000000000016882                FT_Request_Size
+                0x00000000000168a8                FT_Set_Char_Size
+                0x000000000001695c                FT_Set_Pixel_Sizes
+                0x00000000000169fc                FT_Get_Kerning
+                0x0000000000016b58                FT_Get_Track_Kerning
+                0x0000000000016bc2                FT_Select_Charmap
+                0x0000000000016c28                FT_Get_Charmap_Index
+                0x0000000000016c5c                FT_Get_Char_Index
+                0x0000000000016c7e                FT_Get_Next_Char
+                0x0000000000016cda                FT_Get_First_Char
+                0x0000000000016d50                FT_Get_Name_Index
+                0x0000000000016dd6                FT_Get_Glyph_Name
+                0x0000000000016e92                FT_Get_Postscript_Name
+                0x0000000000016f12                FT_Get_Sfnt_Table
+                0x0000000000016f62                FT_Load_Sfnt_Table
+                0x0000000000016fd0                FT_Sfnt_Table_Info
+                0x0000000000017046                FT_Get_CMap_Language_ID
+                0x000000000001709e                FT_Get_CMap_Format
+                0x00000000000170f6                FT_Set_Charmap
+                0x00000000000171a2                FT_Face_GetCharVariantIndex
+                0x00000000000171fa                FT_Face_GetCharVariantIsDefault
+                0x000000000001723a                FT_Face_GetVariantSelectors
+                0x0000000000017274                FT_Face_GetVariantsOfChar
+                0x00000000000172b4                FT_Face_GetCharsOfVariant
+                0x00000000000172f4                FT_Activate_Size
+                0x0000000000017314                FT_Lookup_Renderer
+                0x0000000000017370                FT_Get_Renderer
+                0x000000000001739e                FT_Set_Renderer
+                0x00000000000174fc                FT_Render_Glyph_Internal
+                0x00000000000175e8                FT_Render_Glyph
+                0x0000000000017614                FT_Get_Module
+                0x000000000001766a                FT_Get_Module_Interface
+                0x000000000001768a                ft_module_get_service
+                0x00000000000176f2                FT_Remove_Module
+                0x00000000000178e2                FT_Property_Set
+                0x000000000001791e                FT_Property_Get
+                0x0000000000017958                FT_Reference_Library
+                0x0000000000017964                FT_Library_Version
+                0x00000000000179b0                FT_Done_Library
+                0x0000000000017aae                FT_Set_Debug_Hook
+                0x0000000000017aec                FT_Get_TrueType_Engine_Type
+                0x0000000000017b1c                FT_Get_SubGlyph_Info
+                0x0000000000017b88                FT_Outline_Decompose
+                0x0000000000017f5a                FT_Outline_Check
+                0x0000000000017fa6                FT_Load_Glyph
+                0x00000000000184d4                FT_Get_Advances
+                0x00000000000185d8                FT_Get_Advance
+                0x000000000001868c                FT_Load_Char
+                0x00000000000186d4                FT_Outline_Copy
+                0x000000000001875c                FT_Outline_Done_Internal
+                0x00000000000187d8                FT_Outline_Done
+                0x00000000000187ec                FT_Outline_Get_CBox
+                0x0000000000018800                FT_Outline_Translate
+                0x000000000001883e                FT_Outline_Reverse
+                0x00000000000188c8                FT_Outline_Render
+                0x00000000000188ea                FT_Outline_Get_Bitmap
+                0x000000000001894a                FT_Vector_Transform
+                0x000000000001895e                FT_Outline_Transform
+                0x0000000000018972                FT_Outline_Get_Orientation
+                0x0000000000018988                FT_Raccess_Guess
+                0x0000000000018a2c                FT_Get_Sfnt_Name_Count
+                0x0000000000018a44                FT_Stream_OpenMemory
+                0x0000000000018a64                FT_Stream_Close
+                0x0000000000018a78                FT_Stream_Seek
+                0x0000000000018ab8                FT_Stream_Skip
+                0x0000000000018b00                FT_Stream_Pos
+                0x0000000000018b0a                FT_Stream_ReadAt
+                0x0000000000018b80                FT_Stream_Read
+                0x0000000000018b9c                FT_Stream_TryRead
+                0x0000000000018c08                FT_Stream_ReleaseFrame
+                0x0000000000018c36                FT_Stream_EnterFrame
+                0x0000000000018d2c                FT_Stream_ExtractFrame
+                0x0000000000018d56                FT_Stream_ExitFrame
+                0x0000000000018d84                FT_Stream_GetChar
+                0x0000000000018da4                FT_Stream_GetUShort
+                0x0000000000018dd4                FT_Stream_GetUShortLE
+                0x0000000000018e04                FT_Stream_GetUOffset
+                0x0000000000018e3c                FT_Stream_GetULong
+                0x0000000000018e60                FT_Stream_GetULongLE
+                0x0000000000018e8a                FT_Stream_ReadChar
+                0x0000000000018f02                FT_Stream_ReadUShort
+                0x0000000000018f82                FT_Raccess_Get_HeaderInfo
+                0x0000000000019126                FT_Stream_ReadUShortLE
+                0x00000000000191a6                FT_Stream_ReadUOffset
+                0x000000000001922e                FT_Stream_ReadULong
+                0x0000000000019412                FT_Stream_ReadULongLE
+                0x000000000001948c                FT_Stream_ReadFields
+                0x0000000000019690                FT_Cos
+                0x00000000000196be                FT_Sin
+                0x00000000000196f2                FT_Tan
+                0x0000000000019722                FT_Atan2
+                0x0000000000019762                FT_Vector_Unit
+                0x000000000001979e                FT_Vector_Rotate
+                0x000000000001983a                FT_Vector_Length
+                0x00000000000198bc                FT_Hypot
+                0x00000000000198da                FT_Outline_EmboldenXY
+                0x0000000000019dde                FT_Outline_Embolden
+                0x0000000000019df4                FT_Vector_Polarize
+                0x0000000000019e6e                FT_Vector_From_Polar
+                0x0000000000019e84                FT_Angle_Diff
+                0x0000000000019ece                ft_mem_alloc
+                0x0000000000019f22                FT_GlyphLoader_New
+                0x000000000001a26e                FT_Stream_New
+                0x000000000001a28e                FT_Attach_Stream
+                0x000000000001a37e                FT_Attach_File
+                0x000000000001a5ae                ft_glyphslot_alloc_bitmap
+                0x000000000001a63a                FT_New_GlyphSlot
+                0x000000000001a8cc                FT_New_Library
+                0x000000000001a96a                FT_New_Size
+                0x000000000001aa64                FT_Add_Module
+                0x000000000001ad52                ft_mem_qalloc
+                0x000000000001ad8c                ft_mem_qrealloc
+                0x000000000001aeb4                ft_mem_realloc
+                0x000000000001af30                FT_GlyphLoader_CreateExtra
+                0x000000000001afba                FT_GlyphLoader_CheckPoints
+                0x000000000001b1c6                FT_GlyphLoader_CopyPoints
+                0x000000000001b2fc                FT_GlyphLoader_CheckSubGlyphs
+                0x000000000001b380                FT_CMap_Done
+                0x000000000001b484                FT_CMap_New
+                0x000000000001b578                FT_Outline_New_Internal
+                0x000000000001b66a                FT_Outline_New
+                0x000000000001b67e                FT_Raccess_Get_DataOffsets
+                0x000000000001bf5e                FT_Open_Face
+                0x000000000001c720                FT_New_Face
+                0x000000000001c75a                FT_New_Memory_Face
+                0x000000000001cb32                FT_Get_Sfnt_Name
+                0x000000000001ccd8                ft_mem_free
+                0x000000000001ccea                ft_mem_dup
+                0x000000000001cd54                ft_mem_strdup
+                0x000000000001cd9a                ft_mem_strcpyn
+                0x000000000001cdd0                FT_List_Find
+                0x000000000001cdf6                FT_List_Add
+                0x000000000001ce22                FT_List_Insert
+                0x000000000001ce4a                FT_List_Remove
+                0x000000000001ce7c                FT_List_Up
+                0x000000000001cebe                FT_List_Iterate
+                0x000000000001cef2                FT_List_Finalize
+                0x000000000001cf42                ft_highpow2
+                0x000000000001cfb2                ft_raccess_guess_table
+ .text          0x000000000001cffc      0x764 ../modules/ft2/libft2.a(ftglyph.o)
+                0x000000000001d292                FT_Glyph_Transform
+                0x000000000001d2f2                FT_Glyph_Get_CBox
+                0x000000000001d398                FT_Done_Glyph
+                0x000000000001d3cc                FT_Glyph_Copy
+                0x000000000001d470                FT_Get_Glyph
+                0x000000000001d558                FT_Glyph_To_Bitmap
+                0x000000000001d71e                ft_outline_glyph_class
+                0x000000000001d73e                ft_bitmap_glyph_class
+ .text          0x000000000001d760      0x140 ../modules/ft2/libft2.a(ftsynth.o)
+                0x000000000001d760                FT_GlyphSlot_Oblique
+                0x000000000001d7a6                FT_GlyphSlot_Embolden
+ .text          0x000000000001d8a0      0xc14 ../modules/ft2/libft2.a(ftbitmap.o)
+                0x000000000001d8a0                FT_Bitmap_New
+                0x000000000001d8bc                FT_Bitmap_Copy
+                0x000000000001d9f2                FT_Bitmap_Convert
+                0x000000000001de70                FT_Bitmap_Embolden
+                0x000000000001e3d2                FT_GlyphSlot_Own_Bitmap
+                0x000000000001e46a                FT_Bitmap_Done
+ .text          0x000000000001e4b4     0x2788 ../modules/ft2/libft2.a(ftstroke.o)
+                0x000000000001f124                FT_Outline_GetInsideBorder
+                0x000000000001f13a                FT_Outline_GetOutsideBorder
+                0x000000000001f150                FT_Stroker_New
+                0x000000000001f1dc                FT_Stroker_Set
+                0x000000000001f24c                FT_Stroker_Rewind
+                0x000000000001f270                FT_Stroker_Done
+                0x000000000001f2fa                FT_Stroker_LineTo
+                0x000000000001f420                FT_Stroker_ConicTo
+                0x000000000001f9ec                FT_Stroker_CubicTo
+                0x0000000000020284                FT_Stroker_BeginSubPath
+                0x0000000000020316                FT_Stroker_EndSubPath
+                0x0000000000020828                FT_Stroker_GetBorderCounts
+                0x0000000000020890                FT_Stroker_GetCounts
+                0x0000000000020912                FT_Stroker_ExportBorder
+                0x0000000000020946                FT_Stroker_Export
+                0x000000000002098a                FT_Stroker_ParseOutline
+                0x00000000000209c8                FT_Glyph_Stroke
+                0x0000000000020ae2                FT_Glyph_StrokeBorder
+ .text          0x0000000000020c3c     0x65ec ../modules/ft2/libft2.a(autofit.o)
+                0x0000000000026b94                autofit_module_class
+                0x0000000000026bb8                af_autofitter_interface
+                0x0000000000026bec                af_deva_script_class
+                0x0000000000026c40                af_indic_writing_system_class
+                0x0000000000026c5c                af_hani_script_class
+                0x0000000000026d78                af_cjk_writing_system_class
+                0x0000000000026d94                af_hebr_script_class
+                0x0000000000026da8                af_cyrl_script_class
+                0x0000000000026dbc                af_grek_script_class
+                0x0000000000026dd0                af_latn_script_class
+                0x0000000000026ef4                af_latin_writing_system_class
+                0x0000000000026f10                af_dflt_script_class
+                0x0000000000026f24                af_dummy_writing_system_class
+                0x0000000000026f40                af_script_classes
+                0x0000000000026f60                af_writing_system_classes
+                0x0000000000026f74                af_blue_stringsets
+                0x0000000000027022                af_blue_strings
+ .text          0x0000000000027228     0x4568 ../modules/ft2/libft2.a(psaux.o)
+                0x000000000002b5b0                t1_cmap_unicode_class_rec
+                0x000000000002b5d8                t1_cmap_custom_class_rec
+                0x000000000002b600                t1_cmap_expert_class_rec
+                0x000000000002b628                t1_cmap_standard_class_rec
+                0x000000000002b6c2                psaux_module_class
+                0x000000000002b702                t1_cmap_classes
+                0x000000000002b712                afm_parser_funcs
+                0x000000000002b71e                t1_decoder_funcs
+                0x000000000002b72a                t1_builder_funcs
+                0x000000000002b74a                ps_parser_funcs
+                0x000000000002b77e                ps_table_funcs
+ .text          0x000000000002b790     0xf950 ../modules/ft2/libft2.a(psnames.o)
+                0x000000000002bd92                psnames_module_class
+ .text          0x000000000003b0e0     0x3164 ../modules/ft2/libft2.a(pshinter.o)
+                0x000000000003c6a4                ps_hints_apply
+                0x000000000003e214                pshinter_module_class
+ .text          0x000000000003e244     0x2208 ../modules/ft2/libft2.a(raster.o)
+                0x00000000000403b4                ft_raster5_renderer_class
+                0x00000000000403f8                ft_raster1_renderer_class
+                0x0000000000040434                ft_standard_raster
+ .text          0x000000000004044c     0x1c30 ../modules/ft2/libft2.a(smooth.o)
+                0x0000000000041f84                ft_smooth_lcdv_renderer_class
+                0x0000000000041fcc                ft_smooth_lcd_renderer_class
+                0x0000000000042010                ft_smooth_renderer_class
+                0x000000000004204c                ft_grays_raster
+ .text          0x000000000004207c     0x7eb0 ../modules/ft2/libft2.a(sfnt.o)
+                0x0000000000049c0c                sfnt_module_class
+                0x0000000000049d58                tt_cmap14_class_rec
+                0x0000000000049d8c                tt_cmap13_class_rec
+                0x0000000000049dc0                tt_cmap12_class_rec
+                0x0000000000049df4                tt_cmap10_class_rec
+                0x0000000000049e28                tt_cmap8_class_rec
+                0x0000000000049e5c                tt_cmap6_class_rec
+                0x0000000000049e90                tt_cmap4_class_rec
+                0x0000000000049ec4                tt_cmap2_class_rec
+                0x0000000000049ef8                tt_cmap0_class_rec
+ .text          0x0000000000049f2c     0x9874 ../modules/ft2/libft2.a(cff.o)
+                0x00000000000528ec                cff_cmap_unicode_class_rec
+                0x0000000000052914                cff_cmap_encoding_class_rec
+                0x0000000000053674                cff_driver_class
+ .text          0x00000000000537a0     0x577c ../modules/ft2/libft2.a(type1.o)
+                0x00000000000585dc                t1_driver_class
+ .text          0x0000000000058f1c     0x1f0c ../modules/ft2/libft2.a(type42.o)
+                0x000000000005a9d0                t42_driver_class
+ .text          0x000000000005ae28     0x237c ../modules/ft2/libft2.a(type1cid.o)
+                0x000000000005c7dc                t1cid_driver_class
+ .text          0x000000000005d1a4    0x17d48 ../modules/ft2/libft2.a(truetype.o)
+                0x0000000000065308                TT_RunIns
+                0x0000000000067cea                TT_New_Context
+                0x0000000000074da6                tt_default_graphics_state
+                0x0000000000074dec                tt_driver_class
+ .text          0x0000000000074eec     0x44c4 ../modules/ft2/libft2.a(bdf.o)
+                0x0000000000078912                bdf_driver_class
+                0x00000000000789a8                bdf_cmap_class
+ .text          0x00000000000793b0     0x2da4 ../modules/ft2/libft2.a(pfr.o)
+                0x000000000007bfe8                pfr_driver_class
+                0x000000000007c082                pfr_metrics_service_rec
+                0x000000000007c08e                pfr_cmap_class_rec
+ .text          0x000000000007c154      0xf9c ../modules/ft2/libft2.a(winfnt.o)
+                0x000000000007cece                winfnt_driver_class
+                0x000000000007d0f0                _etext = .
+                0x000000000007d0f0                __etext = .
+
+.data           0x000000000007d0f0     0x1818
+ *(.data)
+ .data          0x000000000007d0f0        0x0 fvdi.s.gnu.o
+                0x000000000007d0f0                data_start
+ .data          0x000000000007d0f0       0x10 blit.s.gnu.o
+ .data          0x000000000007d100        0x0 colours.s.gnu.o
+ .data          0x000000000007d100        0x0 draw.s.gnu.o
+ .data          0x000000000007d100       0x28 expand.s.gnu.o
+                0x000000000007d100                mode_table
+ .data          0x000000000007d128        0x0 fill_sq.s.gnu.o
+ .data          0x000000000007d128        0x0 gnu.s.gnu.o
+ .data          0x000000000007d128        0x0 line_sq.s.gnu.o
+ .data          0x000000000007d128        0x0 mark_sq.s.gnu.o
+ .data          0x000000000007d128        0x0 mouse.s.gnu.o
+ .data          0x000000000007d128        0x0 simple.s.gnu.o
+ .data          0x000000000007d128        0x0 support.s.gnu.o
+ .data          0x000000000007d128       0x2c sys_call.s.gnu.o
+ .data          0x000000000007d154        0x0 textrndr.s.gnu.o
+ .data          0x000000000007d154        0x0 text.s.gnu.o
+ .data          0x000000000007d154        0x0 text_sq.s.gnu.o
+ .data          0x000000000007d154      0x8a4 traptabl.s.gnu.o
+                0x000000000007d15c                default_functions
+                0x000000000007d15c                default_functions
+                0x000000000007d95e                default_opcode5
+                0x000000000007d95e                default_opcode5
+                0x000000000007d9c0                default_opcode11
+                0x000000000007d9c0                default_opcode11
+ .data          0x000000000007d9f8        0x8 unimpl.s.gnu.o
+ .data          0x000000000007da00       0x50 vdi_misc.s.gnu.o
+ .data          0x000000000007da50        0x0 dcsdstub.s.gnu.o
+ .data          0x000000000007da50        0x0 bconstub.s.gnu.o
+ .data          0x000000000007da50        0x0 setjmp.s.gnu.o
+ .data          0x000000000007da50        0xc startup.o
+                0x000000000007da50                vdi_stack_size
+                0x000000000007da54                vdi_stack_top
+                0x000000000007da58                old_gdos
+ .data          0x000000000007da5c       0x18 utility.o
+                0x000000000007da70                access
+ .data          0x000000000007da74        0x4 bezier.o
+                0x000000000007da74                max_poly_points
+ .data          0x000000000007da78        0x0 conic.o
+ .data          0x000000000007da78        0x0 escape.o
+ .data          0x000000000007da78        0x0 fonts.o
+ .data          0x000000000007da78        0x0 line.o
+ .data          0x000000000007da78       0x8c loader.o
+                0x000000000007da78                size_count
+                0x000000000007da7a                sizes
+                0x000000000007da9a                vq_gdos_value
+                0x000000000007da9f                silent
+                0x000000000007dac0                debug_out
+                0x000000000007dac2                arc_max
+                0x000000000007dac4                arc_min
+                0x000000000007dac6                arc_split
+                0x000000000007dac8                log_size
+                0x000000000007dacc                block_size
+                0x000000000007dad0                blocks
+                0x000000000007dad2                memlink
+                0x000000000007dad4                external_fontheader
+                0x000000000007dad8                external_xfntinfo
+                0x000000000007dadc                external_char_advance
+                0x000000000007dae0                external_char_bitmap
+                0x000000000007dae4                external_renderer
+                0x000000000007dae8                external_vst_point
+                0x000000000007daec                external_vst_effects
+                0x000000000007daf0                external_vqt_width
+                0x000000000007daf4                external_vqt_extent
+                0x000000000007daf8                external_load_font
+                0x000000000007dafc                external_term
+                0x000000000007db00                external_init
+ .data          0x000000000007db04       0xb8 math.o
+ .data          0x000000000007dbbc      0x4dc patterns.o
+                0x000000000007dbbc                pattern_ptrs
+                0x000000000007e06c                solid
+                0x000000000007e08c                line_types
+ .data          0x000000000007e098        0x0 polygon.o
+ .data          0x000000000007e098        0x0 setup.o
+ .data          0x000000000007e098        0x4 workstn.o
+ .data          0x000000000007e09c        0x0 colour.o
+ .data          0x000000000007e09c        0x0 textlib.o
+ .data          0x000000000007e09c        0x0 calamus.o
+ .data          0x000000000007e09c        0x4 bconout.o
+ .data          0x000000000007e0a0        0x0 default.o
+ .data          0x000000000007e0a0        0x0 ../modules/ft2/ft2.o
+ .data          0x000000000007e0a0      0x200 ../modules/ft2/atari2unicode.o
+                0x000000000007e0a0                Atari2Unicode
+ .data          0x000000000007e2a0      0x200 ../modules/ft2/atari2bics.o
+                0x000000000007e2a0                Atari2Bics
+ .data          0x000000000007e4a0      0x468 ../modules/ft2/bics2unicode.o
+                0x000000000007e4a0                Bics2Unicode
+ .data          0x000000000007e908        0x0 ../modules/ft2/ft2_ftsystem.o
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(ftinit.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(ftbase.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(ftglyph.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(ftsynth.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(ftbitmap.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(ftstroke.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(autofit.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(psaux.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(psnames.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(pshinter.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(raster.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(smooth.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(sfnt.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(cff.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(type1.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(type42.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(type1cid.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(truetype.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(bdf.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(pfr.o)
+ .data          0x000000000007e908        0x0 ../modules/ft2/libft2.a(winfnt.o)
+                0x000000000007e908                _edata = .
+                0x000000000007e908                __edata = .
+
+.bss            0x000000000007e908     0x3890
+                0x000000000007e908                __bss_start = .
+ *(.bss)
+ .bss           0x000000000007e908        0x0 fvdi.s.gnu.o
+                0x000000000007e908                bss_start
+ .bss           0x000000000007e908        0x0 blit.s.gnu.o
+ .bss           0x000000000007e908        0x0 colours.s.gnu.o
+ .bss           0x000000000007e908        0x0 draw.s.gnu.o
+ .bss           0x000000000007e908        0x0 expand.s.gnu.o
+ .bss           0x000000000007e908        0x0 fill_sq.s.gnu.o
+ .bss           0x000000000007e908        0x0 gnu.s.gnu.o
+ .bss           0x000000000007e908        0x0 line_sq.s.gnu.o
+ .bss           0x000000000007e908        0x0 mark_sq.s.gnu.o
+ .bss           0x000000000007e908        0x0 mouse.s.gnu.o
+ .bss           0x000000000007e908        0x0 simple.s.gnu.o
+ .bss           0x000000000007e908        0x0 support.s.gnu.o
+ .bss           0x000000000007e908       0x94 sys_call.s.gnu.o
+                0x000000000007e908                control
+                0x000000000007e93c                int_in
+                0x000000000007e95c                pts_in
+                0x000000000007e96c                int_out
+                0x000000000007e974                pts_out
+                0x000000000007e97c                addr_in
+                0x000000000007e98c                addr_out
+ .bss           0x000000000007e99c        0x0 textrndr.s.gnu.o
+ .bss           0x000000000007e99c        0x0 text.s.gnu.o
+ .bss           0x000000000007e99c        0x0 text_sq.s.gnu.o
+ .bss           0x000000000007e99c        0x0 traptabl.s.gnu.o
+ .bss           0x000000000007e99c        0x0 unimpl.s.gnu.o
+ .bss           0x000000000007e99c        0x0 vdi_misc.s.gnu.o
+ .bss           0x000000000007e99c        0x0 dcsdstub.s.gnu.o
+ .bss           0x000000000007e99c        0x0 bconstub.s.gnu.o
+ .bss           0x000000000007e99c        0x0 setjmp.s.gnu.o
+ .bss           0x000000000007e99c     0x2124 startup.o
+                0x000000000007e99c                stack_address
+                0x000000000007e9a0                vdi_stack
+                0x00000000000809a0                base_page
+                0x00000000000809a4                old_nvdi
+                0x00000000000809a8                old_fsmc
+                0x00000000000809ac                old_eddi
+                0x00000000000809b0                super
+                0x00000000000809b4                readable
+                0x00000000000809b8                int_is_short
+                0x00000000000809ba                initialized
+                0x00000000000809bc                fake_bp
+                0x0000000000080abc                basepage
+ .bss           0x0000000000080ac0      0x138 utility.o
+                0x0000000000080ac0                block_chain
+                0x0000000000080ac4                mxalloc
+                0x0000000000080ac6                pid
+                0x0000000000080aca                pid_addr
+                0x0000000000080ace                magic
+                0x0000000000080ad2                mint
+                0x0000000000080ad6                eddi
+                0x0000000000080ada                nvdi
+                0x0000000000080ade                video
+                0x0000000000080ae2                frb
+                0x0000000000080ae6                fpu
+                0x0000000000080aea                cpu
+                0x0000000000080aee                TT
+                0x0000000000080af0                Falcon
+                0x0000000000080af2                real_access
+ .bss           0x0000000000080bf8        0x0 bezier.o
+ .bss           0x0000000000080bf8        0x0 conic.o
+ .bss           0x0000000000080bf8        0x0 escape.o
+ .bss           0x0000000000080bf8        0x0 fonts.o
+ .bss           0x0000000000080bf8        0x0 line.o
+ .bss           0x0000000000080bf8       0x98 loader.o
+                0x0000000000080bf8                debug_file
+                0x0000000000080bfc                antialiasing
+                0x0000000000080bfe                file_cache_size
+                0x0000000000080c00                bconout
+                0x0000000000080c02                ext_malloc
+                0x0000000000080c04                move_mouse
+                0x0000000000080c06                fall_back
+                0x0000000000080c08                old_malloc
+                0x0000000000080c0a                size_user
+                0x0000000000080c0c                silentx
+                0x0000000000080c0e                calamus_cookie
+                0x0000000000080c10                speedo_cookie
+                0x0000000000080c12                nvdi_cookie
+                0x0000000000080c14                stand_alone
+                0x0000000000080c16                interactive
+                0x0000000000080c18                no_vex
+                0x0000000000080c1a                singlebend
+                0x0000000000080c1c                xbiosfix
+                0x0000000000080c1e                lineafix
+                0x0000000000080c20                key_stored
+                0x0000000000080c22                key_pressed
+                0x0000000000080c24                nvdifix
+                0x0000000000080c26                debug
+                0x0000000000080c28                keep
+                0x0000000000080c2a                oldmouse
+                0x0000000000080c2c                fakeboot
+                0x0000000000080c2e                booted
+                0x0000000000080c30                disabled
+                0x0000000000080c32                module_list
+                0x0000000000080c36                driver_list
+ .bss           0x0000000000080c90        0x0 math.o
+ .bss           0x0000000000080c90        0x0 patterns.o
+ .bss           0x0000000000080c90        0x0 polygon.o
+ .bss           0x0000000000080c90       0xa4 setup.o
+                0x0000000000080c90                old_timv
+                0x0000000000080c94                old_curv
+                0x0000000000080c98                screen_vwk
+                0x0000000000080c9c                screen_wk
+                0x0000000000080ca0                vbl_handler_installed
+                0x0000000000080ca2                old_wk_handle
+                0x0000000000080ca4                non_fvdi_wk
+                0x0000000000080ca8                non_fvdi_vwk
+                0x0000000000080cac                handle
+                0x0000000000080d2c                screen_virtual
+                0x0000000000080d30                default_virtual
+ .bss           0x0000000000080d34       0x20 workstn.o
+                0x0000000000080d34                handle_link
+ .bss           0x0000000000080d54        0x0 colour.o
+ .bss           0x0000000000080d54        0x0 textlib.o
+ .bss           0x0000000000080d54       0x1c calamus.o
+                0x0000000000080d54                is_active
+                0x0000000000080d58                dcsd_offscreen_mfdb
+ .bss           0x0000000000080d70        0x8 bconout.o
+ .bss           0x0000000000080d78        0x0 default.o
+ .bss           0x0000000000080d78     0x1230 ../modules/ft2/ft2.o
+ .bss           0x0000000000081fa8        0x0 ../modules/ft2/atari2unicode.o
+ .bss           0x0000000000081fa8        0x0 ../modules/ft2/atari2bics.o
+ .bss           0x0000000000081fa8        0x0 ../modules/ft2/bics2unicode.o
+ .bss           0x0000000000081fa8      0x1f0 ../modules/ft2/ft2_ftsystem.o
+                0x0000000000081fa8                keep_open
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(ftinit.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(ftbase.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(ftglyph.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(ftsynth.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(ftbitmap.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(ftstroke.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(autofit.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(psaux.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(psnames.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(pshinter.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(raster.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(smooth.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(sfnt.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(cff.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(type1.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(type42.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(type1cid.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(truetype.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(bdf.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(pfr.o)
+ .bss           0x0000000000082198        0x0 ../modules/ft2/libft2.a(winfnt.o)
+ *(COMMON)
+                0x0000000000082198                _end = .
+                0x0000000000082198                __end = .
+OUTPUT(fvdi_gnu.prg a.out-mintprg)

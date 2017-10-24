@@ -1,0 +1,114 @@
+# Handle cross compilation
+
+NATIVE_CC = gcc
+NATIVE_CFLAGS = -O2
+
+CROSS_SH=case `uname -s` in *mint*|*MINT*) echo no ;; *) echo yes ;; esac
+M68K_ATARI_MINT_CROSS := $(shell $(CROSS_SH))
+
+ifeq ($(M68K_ATARI_MINT_CROSS),yes)
+ CROSSPREFIX = m68k-atari-mint
+
+ CC     = $(CROSSPREFIX)-gcc
+ AS     = $(CROSSPREFIX)-as
+ LD     = $(CROSSPREFIX)-ld
+ AR     = $(CROSSPREFIX)-ar
+ RANLIB = $(CROSSPREFIX)-ranlib
+ STRIP  = $(CROSSPREFIX)-strip
+ FLAGS  = $(CROSSPREFIX)-flags
+else
+ CC     = gcc
+ AS     = as
+ LD     = ld
+ AR     = ar
+ RANLIB = ranlib
+ STRIP  = strip
+ FLAGS  = flags
+endif
+
+# Debug build (mainly FreeType2 debugs here)
+DEBUG  = no
+
+# CPU to compile for
+CPU    = 040
+
+# General compilation and optimization options (CFLAGS)
+WARNINGS = -Wall -W -Wunused -Wundef -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Werror
+OPTS   = -O2 -fomit-frame-pointer -fno-common -g
+# OPTS   +=  -mshort
+ifeq ($(DEBUG),yes)
+  OPTS += -DFVDI_DEBUG
+endif
+
+ifeq ($(CPU),coldfire)
+CPUSWITCH=-mcpu=5475
+else
+CPUSWITCH=-m68$(CPU)
+endif
+
+# If building for 68000 (no long multiply instruction),
+# this must be set to point to the gcc library.
+ifeq ($(CPU),000)
+ LIBS = `$(CC) $(CPUSWICH) --print-file-name=libgcc.a`
+endif
+
+
+# Set these to point to the correct directories for FreeType support!
+#stdlib_srcdir  = $(top_srcdir)/modules/ft2/stdlib
+#ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype-2.1.9
+#ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype-2.1.10
+#ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype-2.2.1
+#ft2_srcdir     = $(top_srcdir)/../freetype2
+#libkern_srcdir = $(top_srcdir)/../freemint/sys/libkern
+ft2_srcdir     = $(HOME)/gtk/freetype-2.5.2
+
+#stdlib_srcdir  =
+#ft2_srcdir     =
+#libkern_srcdir =
+
+ifeq ($(DEBUG),yes)
+ FT2_DEBUG_OPTS = -I$(top_srcdir)/modules/ft2/devel
+else
+ FT2_DEBUG_OPTS =
+endif
+
+
+#
+# for silent make rules
+# use make V=1 to override
+#
+AM_DEFAULT_VERBOSITY = 0
+
+AM_V_GEN    = $(am__v_GEN_$(V))
+am__v_GEN_  = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN     " $@;
+am__v_GEN_1 = 
+
+AM_V_at     = $(am__v_at_$(V))
+am__v_at_   = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0  = @
+am__v_at_1  = 
+
+AM_V_CC     = $(am__v_CC_$(V))
+am__v_CC_   = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0  = @echo "  CC      " $@;
+am__v_CC_1  = 
+
+AM_V_AS     = $(am__v_AS_$(V))
+am__v_AS_   = $(am__v_AS_$(AM_DEFAULT_VERBOSITY))
+am__v_AS_0  = @echo "  AS      " $@;
+am__v_AS_1  = 
+
+AM_V_LD     = $(am__v_LD_$(V))
+am__v_LD_   = $(am__v_LD_$(AM_DEFAULT_VERBOSITY))
+am__v_LD_0  = @echo "  LD      " $@;
+am__v_LD_1  = 
+
+AM_V_AR     = $(am__v_AR_$(V))
+am__v_AR_   = $(am__v_AR_$(AM_DEFAULT_VERBOSITY))
+am__v_AR_0  = @echo "  AR      " $@;
+am__v_AR_1  = 
+
+COMPILE.c = $(AM_V_CC)$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+COMPILE.s = $(AM_V_AS)$(AS) $(ASFLAGS) $(SYMBOLS) $(TARGET_ARCH) -c
+COMPILE.S = $(AM_V_AS)$(CC) $(ASFLAGS) -Dgas=1 -Dlattice=0 $(TARGET_ARCH) -c

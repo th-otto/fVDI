@@ -1,0 +1,11 @@
+long CDECL write_pixel(Virtual *vwk, MFDB *mfdb, long x, long y, long colour);
+long CDECL read_pixel(Virtual *vwk, MFDB *mfdb, long x, long y);
+long CDECL line_draw)(Virtual * vwk, long x1, long y1, long x2, long y2, long pattern, long colour, long mode);
+long CDECL expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour);
+long CDECL fill_area(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style);
+long CDECL fill_poly(Virtual *vwk, short points[], long n, short index[], long moves, short *pattern, long colour, long mode, long interior_style);
+long CDECL blit_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation);
+long CDECL text_area(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets);
+long CDECL mouse_draw(Workstation *wk, long x, long y, Mouse *mouse);
+void CDECL set_colours(Virtual *vwk, long start, long entries, unsigned short *requested, Colour palette[]);
+long CDECL get_colour(Virtual *vwk, long colour);

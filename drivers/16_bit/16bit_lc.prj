@@ -1,0 +1,19 @@
+16bit_lc.sys
+.C	[-b0 -b4 -r6 -v -d0 -m0 -rs -fm -i..\..\include -i..\ -j*e]
+.S	[-dmc68000 -dlattice=1 -dgas=0 -d -m0 -i..\..\include\]
+.L	[DRISYM TTMALLOC TTLOAD ADDSYM]
+=
+..\COMMON\INIT.C	[-b0 -b4 -r6 -v -d1 -m0 -rs -fm -i..\..\include -i..\include -j*e -Oloop,alias]	(../../include/fvdi.h,../../include/relocate.h)
+..\COMMON\COLOURS.C		[-b0 -b4 -r6 -v -d1 -m0 -rs -fm -i..\..\include -j*e -Oloop,alias]
+..\COMMON\LINEACHK.S	(../../include/vdi.inc,../../include/types.inc,../../include/linea.inc)
+..\COMMON\CLIP.S		(../../include/vdi.inc,../../include/types.inc)
+..\COMMON\COMMON.S	(../../include/vdi.inc,../../include/types.inc)
+..\COMMON\C_COMMON.S	(../../include/vdi.inc,../../include/types.inc)
+16B_SPEC.C	[-b0 -b4 -r6 -v -d1 -m0 -rs -fm -i..\..\include -i..\include -j*e -Oloop,alias]	(../../include/fvdi.h)
+16B_FILL.C	[-b0 -b4 -r6 -v -d1 -m0 -rs -fm -i..\..\include -j*e -Oloop,alias]	(../../include/fvdi.h)
+16B_BLIT.C	[-b0 -b4 -r6 -v -d1 -m0 -rs -fm -i..\..\include -j*e -Oloop,alias]	(../../include/fvdi.h)
+16B_EXP.C	[-b0 -b4 -r6 -v -d1 -m0 -rs -fm -i..\..\include -j*e -Oloop,alias]	(../../include/fvdi.h)
+16B_LINE.C	[-b0 -b4 -r6 -v -d1 -m0 -rs -fm -i..\..\include -j*e -Oloop,alias]	(../../include/fvdi.h)
+16B_PAL.C	[-b0 -b4 -r6 -v -d1 -m0 -rs -fm -i..\..\include -j*e -Oloop,alias]	(../../include/fvdi.h)
+16B_SCR.C	[-b0 -b4 -r6 -v -d1 -m0 -rs -fm -i..\..\include -j*e -Oloop,alias]	(../../include/fvdi.h)
+LC.LIB
