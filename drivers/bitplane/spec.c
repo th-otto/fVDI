@@ -29,7 +29,7 @@ char green[] = { 6 };
 char blue[] = { 6 };
 char none[] = { 0 };
 
-Mode mode[1] = { {1, CHECK_PREVIOUS, {red, green, blue, none, none, none}, 0, 0, 1, 1} };
+Mode mode[1] = { { 1, CHECK_PREVIOUS, { red, green, blue, none, none, none}, 0, 0, 1, 1 } };
 
 char driver_name[] = "Bitplane (shadow)";
 
@@ -60,13 +60,9 @@ Mode *graphics_mode = &mode[0];
 short colour_bits = 18;
 
 short shadow = 0;
-
 short fix_shape = 0;
-
 short no_restore = 0;
-
 short debug = 0;
-
 short depth = 0;
 
 
@@ -93,13 +89,11 @@ long check_token(char *token, const char **ptr)
  * and which couldn't be done directly while loading.
  * Supplied is the default fVDI virtual workstation.
  */
-long initialize(Virtual * vwk)
+long initialize(Virtual *vwk)
 {
 	Workstation *wk;
-
 #ifdef FAST
 	char *buf;
-
 	int fast_w_bytes;
 #endif
 #if 0
@@ -148,8 +142,67 @@ long initialize(Virtual * vwk)
 	else								/*   or fixed DPI (negative) */
 		wk->screen.pixel.height = 25400 / -wk->screen.pixel.height;
 
+#if 0
+	device.format = mode[depth].format;
+	device.clut = mode[depth].clut;
+	device.bit_depth = mode[depth].bpp;
+	device.dummy1 = (1L << mode[depth].bpp) >> 16;
+	device.colours = (1L << mode[depth].bpp) & 0xffff;
+#endif
 	device.byte_width = wk->screen.wrap;
 	device.address = wk->screen.mfdb.address;
+#if 0
+	device.bits.red = mode[depth].bits.red[0];
+	device.bits.green = mode[depth].bits.green[0];
+	device.bits.blue = mode[depth].bits.blue[0];
+	device.bits.alpha = mode[depth].bits.alpha[0];
+	device.bits.genlock = mode[depth].bits.genlock[0];
+	device.bits.unused = mode[depth].bits.unused[0];
+	device.bits.organization = mode[depth].org;
+	device.dummy2 = 0;
+	if (device.clut == 2)
+	{
+		for(i = 0; i < mode[depth].bits.red[0]; i++)
+			device.bitnumber.red[i] = mode[depth].bits.red[i + 1];
+		for(i = mode[depth].bits.red[0]; i < 16; i++)
+			device.bitnumber.red[i] = -1;		/* Not used */
+		for(i = 0; i < mode[depth].bits.green[0]; i++)
+			device.bitnumber.green[i] = mode[depth].bits.green[i + 1];
+		for(i = mode[depth].bits.green[0]; i < 16; i++)
+			device.bitnumber.green[i] = -1;		/* Not used */
+		for(i = 0; i < mode[depth].bits.blue[0]; i++)
+			device.bitnumber.blue[i] = mode[depth].bits.blue[i + 1];
+		for(i = mode[depth].bits.blue[0]; i < 16; i++)
+			device.bitnumber.blue[i] = -1;		/* Not used */
+		for(i = 0; i < mode[depth].bits.alpha[0]; i++)
+			device.bitnumber.alpha[i] = mode[depth].bits.alpha[i + 1];
+		for(i = mode[depth].bits.alpha[0]; i < 16; i++)
+			device.bitnumber.alpha[i] = -1;		/* Not used */
+		for(i = 0; i < mode[depth].bits.genlock[0]; i++)
+			device.bitnumber.genlock[i] = mode[depth].bits.genlock[i + 1];
+		for(i = mode[depth].bits.genlock[0]; i < 16; i++)
+			device.bitnumber.genlock[i] = -1;	/* Not used */
+		for(i = 0; i < mode[depth].bits.unused[0]; i++)
+			device.bitnumber.unused[i] = mode[depth].bits.unused[i + 1];
+		for(i = mode[depth].bits.unused[0]; i < 32; i++)
+			device.bitnumber.unused[i] = -1;	/* Not used */
+		for(i = 0; i < 144; i++)
+			device.reserved[i] = 0;
+	} else
+	{
+		for(i = 0; i < sizeof(tos_colours); i++)
+			device.vdi2pix[i] = tos_colours[i];
+		if (mode[depth].bpp == 8) {
+			for(; i < 255; i++)
+				device.vdi2pix[i] = i;
+			device.vdi2pix[255] = 15;
+		} else
+		{
+			for(; i < 256; i++)
+				device.vdi2pix[i] = 0;
+		}
+	}
+#endif
 
 	PRINTF(("%dx%dx%d screen at $%08lx\n", wk->screen.mfdb.width, wk->screen.mfdb.height, wk->screen.mfdb.bitplanes,
 			(long) wk->screen.mfdb.address));
@@ -203,7 +256,7 @@ long setup(long type, long value)
  * Create new (or use old) Workstation and default Virtual.
  * Supplied is the default fVDI virtual workstation.
  */
-Virtual *CDECL opnwk(Virtual * vwk)
+Virtual *CDECL opnwk(Virtual *vwk)
 {
 	(void) vwk;
 	me->default_vwk->real_address->screen.mfdb.address = (void *) Physbase();
@@ -214,7 +267,7 @@ Virtual *CDECL opnwk(Virtual * vwk)
 /*
  * 'Deinitialize'
  */
-void CDECL clswk(Virtual * vwk)
+void CDECL clswk(Virtual *vwk)
 {
 	(void) vwk;
 }

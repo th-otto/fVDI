@@ -135,7 +135,7 @@ long startup(void)
 		return 0;
 	}
 
-	if ((super = fmalloc(sizeof(struct Super_data), 0x4033)) == 0)
+	if ((super = fmalloc(sizeof(struct Super_data), 0x4033)) == NULL)
 	{
 		error("Could not allocate space for supervisor accessible data.", 0);
 		return 0;
@@ -145,13 +145,13 @@ long startup(void)
 	super->fvdi_log.current = 0;
 	super->fvdi_log.end = 0;
 
-	if ((readable = fmalloc(sizeof(struct Readable_data), 0x4043)) == 0)
+	if ((readable = fmalloc(sizeof(struct Readable_data), 0x4043)) == NULL)
 	{
 		error("Could not allocate space for world-readable data.", NULL);
 		return 0;
 	}
 
-	if ((base_vwk = initialize_vdi()) == 0)
+	if ((base_vwk = initialize_vdi()) == NULL)
 	{									/* Setup initial real and virtual workstations */
 		error("Error while initializing VDI.", NULL);
 		return 0;
@@ -181,7 +181,7 @@ long startup(void)
 	if (nvdi_cookie)
 	{
 		readable->nvdi_cookie.version = nvdi_cookie;
-		readable->nvdi_cookie.date = 0x13052005l;
+		readable->nvdi_cookie.date = 0x13052005L;
 		readable->nvdi_cookie.flags = 0x0001;	/* GDOS support */
 	}
 	if (calamus_cookie)
@@ -191,7 +191,7 @@ long startup(void)
 
 	if (debug)
 	{									/* Set up log table if asked for */
-		if ((super->fvdi_log.start = malloc(log_size * sizeof(long))) != 0)
+		if ((super->fvdi_log.start = malloc(log_size * sizeof(long))) != NULL)
 		{
 			super->fvdi_log.active = 1;
 			super->fvdi_log.current = super->fvdi_log.start;
@@ -209,7 +209,7 @@ long startup(void)
 	{
 		PUTS("Removing previous XBRA.\n");
 	}
-	
+
 	if (nvdifix && nvdi_patch() && debug)
 	{
 		PUTS("Patching NVDI dispatcher\n");
@@ -293,7 +293,7 @@ long startup(void)
 	{
 		PUTS("Post install initialization of drivers\n");
 	}
-	
+
 	first_vwk = 0;
 	element = driver_list;
 	while (element)
@@ -324,7 +324,6 @@ long startup(void)
 	 * Open and initialize copies of previous workstations for fVDI,
 	 * unless this is a boot (in which case a fall-back is set up instead).
 	 */
-
 	if (!booted)
 	{
 		if (debug)
@@ -381,7 +380,7 @@ long startup(void)
 	{
 		PUTS("Replacing previous cookie\n");
 	}
-	
+
 	/*
 	 * Some trickery to make it possible for a TSR
 	 * to allocate and release memory under TOS.
@@ -397,7 +396,7 @@ long startup(void)
 	{
 		KEY_WAIT(10);
 	}
-	
+
 	initialized = 1;
 
 	return 1;
@@ -479,11 +478,11 @@ static long CDECL setup_fvdi(unsigned long type, long value)
 		switch ((int) type)
 		{
 		case Q_NEXT_DRIVER:
-			if ((driver = find_driver(-value)) != 0)
+			if ((driver = find_driver(-value)) != NULL)
 				ret = driver->module.id;
 			break;
 		case Q_FILE:
-			if ((driver = find_driver(value)) != 0)
+			if ((driver = find_driver(value)) != NULL)
 				ret = (long) driver->module.file_name;
 			break;
 		case S_DEBUG:

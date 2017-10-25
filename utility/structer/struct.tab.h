@@ -69,7 +69,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 22 "struct.y"
+#line 24 "struct.y"
 
    int        line;
    Numeral    num;

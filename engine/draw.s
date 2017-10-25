@@ -21,8 +21,8 @@ transparent	equ	1		; Fall through?
 	xref	lib_vqt_extent,lib_vrt_cpyfm
 	xref	allocate_block,free_block
 	xref	_pattern_ptrs
-	xref	_filled_poly,_filled_poly_m,_ellipsearc,_calc_bez
-	xref	_wide_line,_do_arrow
+	xref	_filled_poly,_filled_poly_m,_ellipsearc,_wide_line,_calc_bez
+	xref	_do_arrow
 	xref	_arc_split,_arc_min,_arc_max
 	xref	_lib_v_bez,_rounded_box
 	xref	_retry_line
@@ -255,10 +255,8 @@ c_v_pline:
 	moveq	#0,d6
 	move.w	vwk_mode(a0),d6
 
-	move.l	a0,-(a7)
 	jsr	(a1)
-	move.l	(a7)+,a0
-	
+
 	move.w	vwk_line_ends_beginning(a0),d5
 	or.w	vwk_line_ends_end(a0),d5
 	and.w	#1,d5

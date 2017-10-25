@@ -14,12 +14,10 @@ all: $(TARGET)
 
 top_srcdir = ../..
 
+CPU = 040
+OPTS   = -O2 -fomit-frame-pointer
 include $(top_srcdir)/CONFIGVARS
 
-OPTS   = -O2 -fomit-frame-pointer
-ifeq ($(DEBUG),yes)
-  OPTS += -DFVDI_DEBUG
-endif
 LDFLAGS = -s
 
 CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include

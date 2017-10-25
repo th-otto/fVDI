@@ -11,8 +11,6 @@
  * based on code from the Graphics Gems series of books.
  */
 
-#include "stdio.h"
-
 #include "fvdi.h"
 #include "function.h"
 #include "relocate.h"
@@ -21,7 +19,7 @@
 void CDECL retry_line(Virtual *vwk, DrvLine *pars);
 void CDECL vr_transfer_bits(Virtual *vwk, GCBITMAP *src_bm, GCBITMAP *dst_bm, RECT16 *src_rect, RECT16 *dst_rect, long mode);
 
-extern void call_draw_line(Virtual *vwk, DrvLine *line);
+void call_draw_line(Virtual *vwk, DrvLine *line);
 
 #if 0
 #define LEFT            1
@@ -283,7 +281,7 @@ static void polymline(short table[], int length, short index[], int moves, short
 	short movepnt;
 	short *ptr, *oldptr;
 	short draw_last;
-	short total, first,	 drawn;
+	short total, first, drawn;
 
 	ptr = points;
 	oldptr = points;
@@ -664,20 +662,10 @@ retry_set_pixel(Virtual *vwk, MFDB *mfdb, long x, long y, long colour, long patt
 
 void CDECL retry_line(Virtual *vwk, DrvLine *pars)
 {
-	short *table,
-	 length,
-	*index,
-	 moves;
-
+	short *table, length, *index, moves;
 	short n;
-
-	short init_x,
-	 init_y,
-	 x2,
-	 y2;
-
+	short init_x, init_y, x2, y2;
 	short movepnt;
-
 	DrvLine line;
 
 	table = index = 0;
@@ -878,8 +866,7 @@ void CDECL vr_transfer_bits(Virtual *vwk, GCBITMAP *src_bm, GCBITMAP *dst_bm, RE
 					break;
 				} else if (src_bm->px_format == 0x01020808)
 				{						/* PX_PREF8 */
-					int x,
-					 y;
+					int x, y;
 
 					for (y = src_rect->y1; y <= src_rect->y2; y++)
 					{
@@ -1042,7 +1029,7 @@ void CDECL vr_transfer_bits(Virtual *vwk, GCBITMAP *src_bm, GCBITMAP *dst_bm, RE
 					break;
 				}
 
-				if (!(block = (char *) allocate_block(0)))
+				if ((block = (char *) allocate_block(0)) == NULL)
 				{
 					PUTS("Could not allocate memory block\n");
 					error = 1;
@@ -1155,7 +1142,7 @@ void CDECL vr_transfer_bits(Virtual *vwk, GCBITMAP *src_bm, GCBITMAP *dst_bm, RE
 		}
 
 		PUTS("--------\n");
-	} else if ((mode != 0) && (mode != 32))
+	} else if (mode != 0 && mode != 32)
 	{
 		PRINTF(("\nvr_transform_bits mode %ld\n\n", mode));
 #endif
@@ -1190,5 +1177,3 @@ retry_fill(Virtual *vwk, long x, long y, long w, long h, short *pattern, long co
 	}
 }
 #endif
-
-

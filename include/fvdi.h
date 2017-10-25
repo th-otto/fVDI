@@ -634,17 +634,17 @@ typedef struct wk_ {
 	short frequency;
    } vblank;
    struct r_ {
-   	void  CDECL (*set_palette)(Virtual *vwk, DrvPalette *palette_pars);
-   	void *get_colour;
-   	void *set_pixel;
+   	void CDECL (*set_palette)(Virtual *vwk, DrvPalette *palette_pars);
+   	long CDECL (*get_colour)(Virtual *vwk, long colours);
+   	void CDECL (*set_pixel)(Virtual *vwk, MFDB *mfdb, long x, long y, long colour);
    	long CDECL (*get_pixel)(Virtual *vwk, MFDB *mfdb, long x, long y);
    	long CDECL (*line)(Virtual *vwk, DrvLine *pars);
-	void *expand;
-	void *fill;
-	void *fillpoly;
+	void CDECL (*expand)(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour);
+	void CDECL (*fill)(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style);
+	void CDECL (*fillpoly)(Virtual *vwk, short points[], long n, short index[], long moves, short *pattern, long colour, long mode, long interior_style);
 	long CDECL (*blit)(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation);
-	void *text;
-	void *mouse;
+	void CDECL (*text)(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets);
+	void CDECL (*mouse)(struct wk_ *wk, long x, long y, Mouse *mouse);
    } r;
    Function dummy;		/* Table really extends to -1 */
    Function function[256];

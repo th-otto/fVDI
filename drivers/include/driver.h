@@ -132,12 +132,12 @@ long CDECL clip_line(Virtual *vwk, long *x1, long *y1, long *x2, long *y2);
 /*
  * Necessary device driver functions
  */
-void  CDECL set_palette(Virtual *vwk, DrvPalette *palette_pars);
-void  CDECL c_set_palette(Virtual *vwk, DrvPalette *palette_pars);
-extern void *colour;
-extern void *c_colour;
-extern void *set_pixel;
-extern void *c_set_pixel;
+void CDECL set_palette(Virtual *vwk, DrvPalette *palette_pars);
+void CDECL c_set_palette(Virtual *vwk, DrvPalette *palette_pars);
+long CDECL colour(Virtual *vwk, long colours);
+long CDECL c_colour(Virtual *vwk, long colours);
+void CDECL set_pixel(Virtual *vwk, MFDB *mfdb, long x, long y, long colour);
+void CDECL c_set_pixel(Virtual *vwk, MFDB *mfdb, long x, long y, long colour);
 long CDECL get_pixel(Virtual *vwk, MFDB *mfdb, long x, long y);
 long CDECL c_get_pixel(Virtual *vwk, MFDB *mfdb, long x, long y);
 /*
@@ -145,17 +145,17 @@ long CDECL c_get_pixel(Virtual *vwk, MFDB *mfdb, long x, long y);
  */
 long CDECL line(Virtual *vwk, DrvLine *pars);
 long CDECL c_line(Virtual *vwk, DrvLine *pars);
-extern void *expand;
-extern void *c_expand;
-extern void *fill;
-extern void *c_fill;
-extern void *fillpoly;
-extern void *c_fillpoly;
-extern long CDECL blit(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation);
-extern long CDECL c_blit(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation);
-extern void *text;
-extern void *c_text;
-extern void *mouse;
-extern void *c_mouse;
+void CDECL expand(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour);
+void CDECL c_expand(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour);
+void CDECL fill(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style);
+void CDECL c_fill(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style);
+void CDECL fillpoly(Virtual *vwk, short points[], long n, short index[], long moves, short *pattern, long colour, long mode, long interior_style);
+void CDECL c_fillpoly(Virtual *vwk, short points[], long n, short index[], long moves, short *pattern, long colour, long mode, long interior_style);
+long CDECL blit(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation);
+long CDECL c_blit(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation);
+void CDECL text(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets);
+void CDECL c_text(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets);
+void CDECL mouse(Workstation *wk, long x, long y, Mouse *mouse);
+void CDECL c_mouse(Workstation *wk, long x, long y, Mouse *mouse);
 
 #endif

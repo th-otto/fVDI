@@ -71,10 +71,12 @@
 #include "misc.h"
 #include "expr.h"
 
+int yylex(void);
+
 List definitions;
 
 /* Line 371 of yacc.c  */
-#line 78 "struct.tab.c"
+#line 80 "struct.tab.c"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -133,7 +135,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 22 "struct.y"
+#line 24 "struct.y"
 
    int        line;
    Numeral    num;
@@ -144,7 +146,7 @@ typedef union YYSTYPE
 
 
 /* Line 387 of yacc.c  */
-#line 148 "struct.tab.c"
+#line 150 "struct.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -172,7 +174,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 176 "struct.tab.c"
+#line 178 "struct.tab.c"
 
 #ifdef short
 # undef short
@@ -483,12 +485,12 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    49,    49,    54,    55,    59,    61,    63,    65,    70,
-      71,    75,    77,    81,    83,    87,    89,    93,    95,    97,
-      99,   101,   103,   105,   107,   109,   111,   113,   115,   117,
-     119,   123,   124,   125,   128,   130,   132,   136,   138,   142,
-     143,   144,   147,   150,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   167,   168,   169
+       0,    51,    51,    56,    57,    61,    63,    65,    67,    72,
+      73,    77,    79,    83,    85,    89,    91,    95,    97,    99,
+     101,   103,   105,   107,   109,   111,   113,   115,   117,   119,
+     121,   125,   126,   127,   130,   132,   134,   138,   140,   144,
+     145,   146,   149,   152,   155,   156,   157,   158,   159,   160,
+     161,   162,   163,   164,   165,   166,   169,   170,   171
 };
 #endif
 
@@ -1445,211 +1447,211 @@ yyreduce:
     {
         case 2:
 /* Line 1792 of yacc.c  */
-#line 50 "struct.y"
+#line 52 "struct.y"
     { definitions = (yyvsp[(1) - (1)].list); }
     break;
 
   case 3:
 /* Line 1792 of yacc.c  */
-#line 54 "struct.y"
+#line 56 "struct.y"
     { (yyval.list) = empty(_Deflist); }
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 56 "struct.y"
+#line 58 "struct.y"
     { (yyval.list) = prepend((yyvsp[(1) - (2)].expr), (yyvsp[(2) - (2)].list)); }
     break;
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 60 "struct.y"
+#line 62 "struct.y"
     { (yyval.expr) = (yyvsp[(1) - (2)].expr); }
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 62 "struct.y"
+#line 64 "struct.y"
     { (yyval.expr) = (yyvsp[(1) - (2)].expr); }
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 64 "struct.y"
+#line 66 "struct.y"
     { (yyval.expr) = (yyvsp[(1) - (2)].expr); }
     break;
 
   case 8:
 /* Line 1792 of yacc.c  */
-#line 66 "struct.y"
+#line 68 "struct.y"
     { (yyval.expr) = mktypedef((yyvsp[(2) - (3)].expr)); }
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 70 "struct.y"
+#line 72 "struct.y"
     { (yyval.list) = empty(_Deflist); }
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 72 "struct.y"
+#line 74 "struct.y"
     { (yyval.list) = prepend((yyvsp[(1) - (2)].expr), (yyvsp[(2) - (2)].list)); }
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 76 "struct.y"
+#line 78 "struct.y"
     { (yyval.expr) = (yyvsp[(1) - (2)].expr); }
     break;
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 78 "struct.y"
+#line 80 "struct.y"
     { (yyval.expr) = mkvar(mktype(_Uniondef, 0, (yyvsp[(1) - (2)].expr)), mkid(0, -1)); }
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 82 "struct.y"
+#line 84 "struct.y"
     { (yyval.expr) = mkstruct((yyvsp[(2) - (5)].name), (yyvsp[(4) - (5)].list)); }
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 84 "struct.y"
+#line 86 "struct.y"
     { (yyval.expr) = mkstruct(0, (yyvsp[(3) - (4)].list)); }
     break;
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 88 "struct.y"
+#line 90 "struct.y"
     { (yyval.expr) = mkunion((yyvsp[(2) - (5)].name), (yyvsp[(4) - (5)].list)); }
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 90 "struct.y"
+#line 92 "struct.y"
     { (yyval.expr) = mkunion(0, (yyvsp[(3) - (4)].list)); }
     break;
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 94 "struct.y"
+#line 96 "struct.y"
     { (yyval.expr) = mktype(_Char, 0, 0); }
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 96 "struct.y"
+#line 98 "struct.y"
     { (yyval.expr) = mktype(_Short, 0, 0); }
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 98 "struct.y"
+#line 100 "struct.y"
     { (yyval.expr) = mktype(_Int, 0, 0); }
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 100 "struct.y"
+#line 102 "struct.y"
     { (yyval.expr) = mktype(_Long, 0, 0); }
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 102 "struct.y"
+#line 104 "struct.y"
     { (yyval.expr) = mktype(_Long, 0, 0); }
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 104 "struct.y"
+#line 106 "struct.y"
     { (yyval.expr) = mktype(_Short, 0, 0); }
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 106 "struct.y"
+#line 108 "struct.y"
     { (yyval.expr) = mktype(_Void, 0, 0); }
     break;
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 108 "struct.y"
+#line 110 "struct.y"
     { (yyval.expr) = mktype(_Structdef, 0, (yyvsp[(1) - (1)].expr)); }
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 110 "struct.y"
+#line 112 "struct.y"
     { (yyval.expr) = mktype(_Uniondef, 0, (yyvsp[(1) - (1)].expr)); }
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 112 "struct.y"
+#line 114 "struct.y"
     { (yyval.expr) = mktype(_Struct, (yyvsp[(2) - (2)].name), 0); }
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 114 "struct.y"
+#line 116 "struct.y"
     { (yyval.expr) = mktype(_Union, (yyvsp[(2) - (2)].name), 0); }
     break;
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 116 "struct.y"
+#line 118 "struct.y"
     { (yyval.expr) = mktype(_Typedef, (yyvsp[(1) - (1)].name), 0); }
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 118 "struct.y"
+#line 120 "struct.y"
     { (yyval.expr) = (yyvsp[(2) - (2)].expr); }
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 120 "struct.y"
+#line 122 "struct.y"
     { (yyval.expr) = mktype(_Pointer, 0, (yyvsp[(1) - (2)].expr)); }
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 129 "struct.y"
+#line 131 "struct.y"
     { (yyval.expr) = mkid((yyvsp[(1) - (4)].name), (yyvsp[(3) - (4)].num)); }
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 131 "struct.y"
+#line 133 "struct.y"
     { (yyval.expr) = mkid((yyvsp[(1) - (3)].name), 0); }
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 133 "struct.y"
+#line 135 "struct.y"
     { (yyval.expr) = mkid((yyvsp[(1) - (1)].name), -1); }
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 137 "struct.y"
+#line 139 "struct.y"
     { (yyval.expr) = mkvar((yyvsp[(1) - (2)].expr), (yyvsp[(2) - (2)].expr)); }
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 139 "struct.y"
+#line 141 "struct.y"
     { (yyval.expr) = mkvar(mktype(_Pointer, 0, (yyvsp[(1) - (8)].expr)), (yyvsp[(4) - (8)].expr)); }
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 1653 "struct.tab.c"
+#line 1655 "struct.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1881,7 +1883,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 172 "struct.y"
+#line 174 "struct.y"
 
 
 void yyerror(const char *str)

@@ -43,7 +43,7 @@ extern Device device;
 
 char driver_name[] = "uaegfx.card";
 
-struct {
+static struct {
 	short used; /* Whether the mode option was used or not. */
 	short width;
 	short height;
@@ -261,7 +261,7 @@ static int init_rtg_card(void)
 
 		KDEBUG(("%p LibResolution %dx%d %s\n", rez, rez->Width, rez->Height, rez->Name));
 
-		if ((long)rez->Width == resolution.width && (long)rez->Height == resolution.height) {
+		if (rez->Width == (UWORD)resolution.width && rez->Height == (UWORD)resolution.height) {
 			my_LibResolution = rez;
 			KDEBUG(("Requested video mode %dx%d found\n", resolution.width, resolution.height));
 			return 1;

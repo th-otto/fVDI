@@ -29,8 +29,6 @@
 **                                                                      **
 **************************************************************************/
 
-#include "stdio.h"
-
 #include "fvdi.h"
 #include "function.h"
 #include "relocate.h"

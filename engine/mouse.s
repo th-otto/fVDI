@@ -82,8 +82,8 @@ lib_vsc_form:
 
 	move.l	wk_r_mouse(a1),d0
 	lbeq	.done,2
-	move.l	d2,-(a7)
 	uses_d1
+	move.l	d2,-(a7)
 	move.l	d0,a2
 	move.l	a1,d2
 	add.l	#wk_mouse,d2			; Change

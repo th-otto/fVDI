@@ -126,7 +126,7 @@ static short find_free_handle(Virtual *** handle_entry)
 
 	link = &handle_link;
 	last = link;
-	while ((handle_table = *link) != 0)
+	while ((handle_table = *link) != NULL)
 	{
 		if (debug)
 		{
@@ -180,19 +180,19 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
 	short format;
 	short bit_order;
 	unsigned short c;
-	
+
 	pars->control->handle = 0;			/* Assume failure */
 	if ((hnd = find_free_handle(&handle_entry)) == 0)
 	{
-		PRINTF(("v_opnbm: no free handle\n"));
+		PRINTF(("v_opnvwk: no free handle\n"));
 		return;
 	}
-	
+
 	/* Check if really v_opnbm */
 	if ((pars->control->subfunction != 1) || (pars->control->l_intin < 20))
 	{
 		extra_size = 32;
-		if ((new_vwk = malloc(sizeof(Virtual) + extra_size)) == 0)
+		if ((new_vwk = malloc(sizeof(Virtual) + extra_size)) == NULL)
 		{
 			PRINTF(("v_opnbm[v_opnvwk]: out of memory\n"));
 			return;
@@ -264,12 +264,12 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
 			extra_size += size;
 
 		/* New vwk, but it should really not always be for this driver! */
-		if ((new_vwk = malloc(extra_size)) == 0)
+		if ((new_vwk = malloc(extra_size)) == NULL)
 		{
 			PRINTF(("v_opnbm: out of memory (%ld)\n", extra_size));
 			return;
 		}
-		
+
 		new_wk = (Workstation *) ((long) new_vwk + sizeof(Virtual) + 32);
 		copymem(wk, new_wk, sizeof(Workstation));
 
@@ -421,7 +421,7 @@ void CDECL v_opnwk(VDIpars *pars)
 		{								/* No pass-through without old GDOS */
 			if ((hnd = find_free_handle(&handle_entry)) != 0)
 			{
-				if ((vwk = malloc(6)) != 0)
+				if ((vwk = malloc(6)) != NULL)
 				{
 					if ((oldhnd = call_other(pars, 0)) != 0)
 					{					/* Dummy handle for call */
@@ -447,7 +447,7 @@ void CDECL v_opnwk(VDIpars *pars)
 		{
 			PUTS("no old GDOS\n");
 		}
-		
+
 		if (failed)
 		{
 			if (vwk)
@@ -473,7 +473,7 @@ void CDECL v_opnwk(VDIpars *pars)
 		if (driver->flags & 1)
 #endif
 		{
-			if ((vwk = driver->opnwk(default_virtual)) != 0)
+			if ((vwk = driver->opnwk(default_virtual)) != NULL)
 				;							/* Should probably do something */
 			else
 				vwk = driver->default_vwk;

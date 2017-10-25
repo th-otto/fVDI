@@ -10,7 +10,7 @@
 
 	xref	_screen_wk
 	xref	_bconout_char
-	
+
 	text
 
 * XBRA chain for Bconout()

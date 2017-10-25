@@ -15,6 +15,8 @@
 #include "misc.h"
 #include "expr.h"
 
+int yylex(void);
+
 List definitions;
 %}
 

@@ -91,7 +91,7 @@ static Expression locate_typedef(char *name, List all_defs)
 		{
 			if (!cur_expr->info.var.id)
 			{
-				printf("No id!\n");
+				fprintf(stderr, "No id!\n");
 				EXIT(1);
 			} else if (compare(name, cur_expr->info.var.id->info.id.name))
 			{
@@ -118,7 +118,7 @@ static int expr_to_equ(Expression cur_expr, int pos, List all_defs, int *size)
 	type_expr = cur_expr->info.var.type;
 	if (type_expr->type != _Typeexpr)
 	{
-		printf("Unsupported construction (B)!\n");
+		fprintf(stderr, "Unsupported construction (B)!\n");
 		EXIT(1);
 	}
 	if (cur_expr->info.var.id->info.id.name)
@@ -159,7 +159,7 @@ static int expr_to_equ(Expression cur_expr, int pos, List all_defs, int *size)
 		expr = type_expr->info.def.type;
 		if (expr->type != _Structexpr)
 		{
-			printf("Bad type (E)!\n");
+			fprintf(stderr, "Bad type (E)!\n");
 			EXIT(1);
 		}
 		pos = ALIGN(pos);
@@ -169,7 +169,7 @@ static int expr_to_equ(Expression cur_expr, int pos, List all_defs, int *size)
 		break;
 
 	case _Struct:
-		printf("Not yet supported (C)!\n");
+		fprintf(stderr, "Not yet supported (C)!\n");
 		EXIT(1);
 		break;
 
@@ -177,7 +177,7 @@ static int expr_to_equ(Expression cur_expr, int pos, List all_defs, int *size)
 		expr = type_expr->info.def.type;
 		if (expr->type != _Unionexpr)
 		{
-			printf("Bad type (E)!\n");
+			fprintf(stderr, "Bad type (E)!\n");
 			EXIT(1);
 		}
 		pos = ALIGN(pos);
@@ -188,7 +188,7 @@ static int expr_to_equ(Expression cur_expr, int pos, List all_defs, int *size)
 		break;
 
 	case _Union:
-		printf("Not yet supported (C)!\n");
+		fprintf(stderr, "Not yet supported (C)!\n");
 		EXIT(1);
 		break;
 
@@ -204,7 +204,7 @@ static int expr_to_equ(Expression cur_expr, int pos, List all_defs, int *size)
 			expr->info.var.id->info.id.name->string = typedef_name;
 		} else
 		{
-			printf("Unknown typedef!\n");
+			fprintf(stderr, "Unknown typedef!\n");
 			EXIT(1);
 		}
 		break;
@@ -216,7 +216,7 @@ static int expr_to_equ(Expression cur_expr, int pos, List all_defs, int *size)
 		break;
 
 	default:
-		printf("Bad type (%d)!\n", type_expr->info.def.sort);
+		fprintf(stderr, "Bad type (%d)!\n", type_expr->info.def.sort);
 		EXIT(1);
 		break;
 	}
@@ -248,7 +248,7 @@ static int list_to_equ(char *base, List defs, int pos, List all_defs, int *size)
 		cur_expr = EXPR(ptr);
 		if (cur_expr->type != _Varexpr)
 		{
-			printf("Unsupported construction (A)!\n");
+			fprintf(stderr, "Unsupported construction (A)!\n");
 			EXIT(1);
 		}
 		pos = expr_to_equ(cur_expr, pos, all_defs, &dummy);
@@ -278,7 +278,7 @@ static int ulist_to_equ(char *base, List defs, int pos, List all_defs, int *size
 		cur_expr = EXPR(ptr);
 		if (cur_expr->type != _Varexpr)
 		{
-			printf("Unsupported construction (A)!\n");
+			fprintf(stderr, "Unsupported construction (A)!\n");
 			EXIT(1);
 		}
 		pos = expr_to_equ(cur_expr, pos, all_defs, &dummy);
@@ -329,7 +329,7 @@ void convert(char *name, List defs)
 			} else
 			{
 #if 0
-				printf("Mismatch: %s, %s\n", name, expr->info.strct.name->string);
+				fprintf(stderr, "Mismatch: %s, %s\n", name, expr->info.strct.name->string);
 #endif
 			}
 			break;
@@ -342,7 +342,7 @@ void convert(char *name, List defs)
 			} else
 			{
 #if 0
-				printf("Mismatch: %s, %s\n", name, expr->info.unjon.name->string);
+				fprintf(stderr, "Mismatch: %s, %s\n", name, expr->info.unjon.name->string);
 #endif
 			}
 			break;
@@ -361,13 +361,13 @@ void convert(char *name, List defs)
 					found = 1;
 				} else
 				{
-					printf("Not a struct typedef (%d)!\n", expr->type);
+					fprintf(stderr, "Not a struct typedef (%d)!\n", expr->type);
 					exit(1);
 				}
 			} else
 			{
 #if 0
-				printf("Mismatch: %s, %s\n", name, expr->info.var.id->info.id.name->string);
+				fprintf(stderr, "Mismatch: %s, %s\n", name, expr->info.var.id->info.id.name->string);
 #endif
 			}
 			break;
@@ -383,19 +383,19 @@ void convert(char *name, List defs)
 					found = 1;
 				} else
 				{
-					printf("Not a struct variable (%d)!\n", expr->type);
+					fprintf(stderr, "Not a struct variable (%d)!\n", expr->type);
 					exit(1);
 				}
 			} else
 			{
 #if 0
-				printf("Mismatch: %s, %s\n", name, expr->info.var.id->info.id.name->string);
+				fprintf(stderr, "Mismatch: %s, %s\n", name, expr->info.var.id->info.id.name->string);
 #endif
 			}
 			break;
 
 		default:
-			printf("Expression type: %d\n", type);
+			fprintf(stderr, "Expression type: %d\n", type);
 			break;
 		}
 		NEXT(ptr);

@@ -14,9 +14,7 @@
 #include "utility.h"
 
 
-
-
-static void set_current_font(Virtual * vwk, Fontheader * font)
+static void set_current_font(Virtual *vwk, Fontheader *font)
 {
 	/* Adjust the font structure utilization counters */
 	if (vwk->text.current_font != font)
@@ -40,7 +38,7 @@ long lib_vst_effects(Virtual *vwk, long effects)
 }
 
 
-/* lib_vst_al ignment(halign, valign, &hresult, &vresult) */
+/* lib_vst_alignment(halign, valign, &hresult, &vresult) */
 void CDECL lib_vst_alignment(Virtual *vwk, unsigned long halign, unsigned long valign, short *hresult, short *vresult)
 {
 	if (halign > 2)						/* Not from wk struct? */
@@ -170,7 +168,7 @@ void CDECL lib_vqt_xfntinfo(Virtual *vwk, long flags, long id, long index, XFNT_
 	{
 		for (i = (int) index - 1; i >= 0; i--)
 		{
-			if ((font = font->next) == 0)
+			if ((font = font->next) == NULL)
 				break;
 		}
 		if (font)
@@ -459,7 +457,7 @@ void CDECL lib_vqt_extent(Virtual *vwk, long length, short *string, short *point
 }
 
 
-int lib_vst_point(Virtual * vwk, long height, short *charw, short *charh, short *cellw, short *cellh)
+int lib_vst_point(Virtual *vwk, long height, short *charw, short *charh, short *cellw, short *cellh)
 {
 	Fontheader *font;
 
@@ -520,7 +518,6 @@ int CDECL lib_vst_arbpt(Virtual *vwk, long height, short *charw, short *charh, s
 		}
 	} else
 	{
-
 		font = vwk->text.current_font->extra.first_size;
 
 		while (font->extra.next_size && (font->extra.next_size->size <= height))
@@ -541,7 +538,7 @@ int CDECL lib_vst_arbpt(Virtual *vwk, long height, short *charw, short *charh, s
 
 
 /* lib_vqt_attributes(settings) */
-void CDECL lib_vqt_attributes(Virtual * vwk, short *settings)
+void CDECL lib_vqt_attributes(Virtual *vwk, short *settings)
 {
 	settings[0] = vwk->text.font;
 	settings[1] = vwk->text.colour.foreground;

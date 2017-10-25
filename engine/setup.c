@@ -55,7 +55,7 @@ Virtual *initialize_vdi(void)
 	 *                Used for all unallocated entries in the handled table.
 	 */
 
-	if ((tmp = (char *) malloc(sizeof(Workstation *) + sizeof(short) + 257 * sizeof(Function))) == 0)
+	if ((tmp = (char *) malloc(sizeof(Workstation *) + sizeof(short) + 257 * sizeof(Function))) == NULL)
 		return 0;
 
 	func_tab_start = (long) &((Workstation *) tmp)->function - (long) tmp - sizeof(Function);
@@ -193,11 +193,11 @@ Virtual *initialize_vdi(void)
 	wk->r.set_pixel = 0;
 	wk->r.get_pixel = 0;
 	wk->r.line = default_line;
-	wk->r.expand = &default_expand;
-	wk->r.fill = &default_fill;
+	wk->r.expand = default_expand;
+	wk->r.fill = default_fill;
 	wk->r.fillpoly = 0;
 	wk->r.blit = default_blit;
-	wk->r.text = &default_text;
+	wk->r.text = default_text;
 	wk->r.mouse = 0;
 
 	copymem(default_functions - 1, (char *)((long)wk->function - sizeof(Function)), 257 * sizeof(Function));
@@ -292,7 +292,6 @@ static void setup_colours(Virtual *vwk)
 static void copy_setup(Virtual *def, int vwk_no, short intout[], short ptsout[])
 {
 	Virtual *vwk;
-
 	short tmp;
 
 	vwk = (Virtual *) malloc(sizeof(Virtual) + 32);	/* Extra for fill pattern */
@@ -410,6 +409,7 @@ void link_mouse_routines(void)
 {
 	/* vex_curv */
 	long *lp;
+
 	lp = (long *) &control[7];
 	*lp = (long) mouse_move;
 	if (booted && !fakeboot)
@@ -432,8 +432,9 @@ void link_mouse_routines(void)
 
 void unlink_mouse_routines(void)
 {
-	/* vex_curv */
 	long *lp;
+
+	/* vex_curv */
 	if (old_curv)
 	{
 		lp = (long *) &control[7];
@@ -525,7 +526,6 @@ void copy_workstations(Virtual *def, long really_copy)
 	 * Try opening a large amount of new virtual workstations.
 	 * The handles we don't get represent the already opened ones.
 	 */
-
 	n = 0;
 	do
 	{
@@ -564,8 +564,9 @@ void copy_workstations(Virtual *def, long really_copy)
 				continue;
 			}
 			if (really_copy)
+			{
 				copy_setup(def, i, intout, ptsout);
-			else
+			} else
 			{
 				handle[i] = (Virtual *) tmp;	/* If we're not copying, */
 				tmp += sizeof(Workstation *) + sizeof(short);	/*  set up dummies for pass-through. */
@@ -601,8 +602,7 @@ void shut_down(void)
  */
 void setup_fallback(void)
 {
-	short intout[45],
-	 ptsout[12];
+	short intout[45], ptsout[12];
 
 	sub_call = get_sub_call();
 #if 1

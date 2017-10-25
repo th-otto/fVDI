@@ -94,7 +94,8 @@ struct blit
 	UWORD x_cnt, y_cnt;
 	BYTE hop;
 	unsigned char op;
-	BYTE status, skew;
+	BYTE status;
+	BYTE skew;
 };
 
 

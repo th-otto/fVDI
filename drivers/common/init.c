@@ -41,10 +41,10 @@
  */
 
 long CDECL (*fallback_line)(Virtual *vwk, DrvLine *pars);
-void *fallback_text;
-void *fallback_fill;
-void *fallback_fillpoly;
-void *fallback_expand;
+void CDECL (*fallback_text)(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets);
+void CDECL (*fallback_fill)(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style);
+void CDECL (*fallback_fillpoly)(Virtual *vwk, short points[], long n, short index[], long moves, short *pattern, long colour, long mode, long interior_style);
+void CDECL (*fallback_expand)(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour);
 long CDECL (*fallback_blit)(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation);
 
 /*
@@ -345,13 +345,13 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 	else
 		wk->r.set_palette = c_set_palette;
 	if (accel_s & A_GET_COL)
-		wk->r.get_colour = &colour;
+		wk->r.get_colour = colour;
 	else
-		wk->r.get_colour = &c_colour;
+		wk->r.get_colour = c_colour;
 	if (accel_s & A_SET_PIX)
-		wk->r.set_pixel = &set_pixel;
+		wk->r.set_pixel = set_pixel;
 	else
-		wk->r.set_pixel = &c_set_pixel;
+		wk->r.set_pixel = c_set_pixel;
 	if (accel_s & A_GET_PIX)
 		wk->r.get_pixel = get_pixel;
 	else
@@ -369,9 +369,9 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 	{
 		fallback_expand = wk->r.expand;
 		if (accel_s & A_EXPAND)
-			wk->r.expand = &expand;
+			wk->r.expand = expand;
 		else if (accel_c & A_EXPAND)
-			wk->r.expand = &c_expand;
+			wk->r.expand = c_expand;
 	}
 	if (accelerate & A_FILL)
 	{
@@ -385,9 +385,9 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 	{
 		fallback_fillpoly = wk->r.fillpoly;
 		if (accel_s & A_FILLPOLY)
-			wk->r.fillpoly = &fillpoly;
+			wk->r.fillpoly = fillpoly;
 		else if (accel_c & A_FILLPOLY)
-			wk->r.fillpoly = &c_fillpoly;
+			wk->r.fillpoly = c_fillpoly;
 	}
 	if (accelerate & A_BLIT)
 	{
@@ -411,9 +411,9 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 		{
 			wk->mouse.type = 1;			/* Should this be here? */
 			if (accel_s & A_MOUSE)
-				wk->r.mouse = &mouse;
+				wk->r.mouse = mouse;
 			else if (accel_c & A_MOUSE)
-				wk->r.mouse = &c_mouse;
+				wk->r.mouse = c_mouse;
 		} else
 		{
 			if ((wk->mouse.extra_info = access->funcs.malloc((16 * 16 + 2) * sizeof(short), 3)) != 0)

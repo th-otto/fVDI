@@ -58,9 +58,9 @@ extern Function default_functions[];
 extern void *default_opcode5[];
 extern void *default_opcode11[];
 
-extern void *default_text;
-extern void *default_fill;
-extern void *default_expand;
+extern void CDECL default_text(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets);
+extern void CDECL default_fill(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style);
+extern void CDECL default_expand(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour);
 
 extern short *pattern_ptrs[];
 extern short solid[];

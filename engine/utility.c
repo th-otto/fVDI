@@ -8,11 +8,11 @@
  * Please, see LICENSE.TXT for further information.
  */
 
+#include "fvdi.h"
 #include "stdio.h"
 #include "stdarg.h"
 
 #include "os.h"
-#include "fvdi.h"
 #include "relocate.h"
 #include "stdlib.h"
 #include "utility.h"
@@ -27,7 +27,6 @@
  */
 
 Access real_access;
-
 Access *access = &real_access;
 
 typedef struct _Circle
@@ -275,7 +274,7 @@ long initialize_pool(long size, long n)
 	if ((size <= 0) || (n <= 0))
 		return 0;
 
-	if ((addr = malloc(size * n)) == 0)
+	if ((addr = malloc(size * n)) == NULL)
 		return 0;
 
 	block_size = size;
@@ -374,7 +373,7 @@ size_t strlen(const char *s)
 	while (*p++)
 		;
 
-	return (long) (p - s) - 1;
+	return (size_t) (p - s) - 1;
 }
 
 
@@ -390,6 +389,30 @@ long strcmp(const char *s1, const char *s2)
 			break;
 		}
 	} while (c1 == *s2++);
+
+	return (long) (c1 - s2[-1]);
+}
+
+
+long strncmp(const char *s1, const char *s2, size_t n)
+{
+	char c1;
+	long ns;						/* size_t can't be negative */
+
+	ns = n;
+	for (ns--; ns >= 0; ns--)
+	{
+		if ((c1 = *s1++) == 0)
+		{
+			s2++;
+			break;
+		}
+		if (c1 != *s2++)
+			break;
+	}
+
+	if (ns < 0)
+		return 0L;
 
 	return (long) (c1 - s2[-1]);
 }
@@ -423,30 +446,6 @@ char *strstr(const char *s, const char *wanted)
 		if (*scan++ == '\0')
 			return NULL;
 	return (char *) (scan);
-}
-
-
-long strncmp(const char *s1, const char *s2, size_t n)
-{
-	char c1;
-	long ns;							/* size_t can't be negative */
-
-	ns = n;
-	for (ns--; ns >= 0; ns--)
-	{
-		if ((c1 = *s1++) == 0)
-		{
-			s2++;
-			break;
-		}
-		if (c1 != *s2++)
-			break;
-	}
-
-	if (ns < 0)
-		return 0L;
-
-	return (long) (c1 - s2[-1]);
 }
 
 
@@ -510,7 +509,7 @@ char *strdup(const char *s)
 {
 	char *d;
 
-	if ((d = (char *) malloc(strlen(s) + 1)) != 0)
+	if ((d = (char *) malloc(strlen(s) + 1)) != NULL)
 		strcpy(d, s);
 
 	return d;
@@ -794,7 +793,7 @@ void *fmalloc(long size, long type)
 	Circle *new;
 	long bp;
 	long *ppid = pid;
-	
+
 	if (ppid)
 	{									/* Pretend to be fVDI if possible */
 		bp = *ppid;
@@ -937,7 +936,7 @@ static void memory_statistics(void)
 
 static void search_links(Circle *srch)
 {
-	int  n;
+	int n;
 	const int sizes = sizeof(block_space) / sizeof(block_space[0]);
 	Circle *link, *next, *first, *found = 0;
 	long dist, dist_min;
@@ -1144,6 +1143,7 @@ void *DRIVER_EXPORT malloc(size_t size)
 	const int sizes = sizeof(block_space) / sizeof(block_space[0]);
 	char *block;
 	Circle *link, *next;
+
 	size += ext_malloc;
 
 #ifdef FVDI_DEBUG
@@ -1347,14 +1347,14 @@ long free_size(void *addr)
 			if (block_used[size] == current)
 			{
 				block_used[size] = current->next;
-				if (current->next == current->prev)
-					block_used[size] = 0;
+				if (current->next == current)
+					block_used[size] = NULL;
 			}
 			if (current->prev == 0)
 			{
 				puts("BUG!! current->prev == 0");
 				puts("Please comment out nomemlink in fvdi.sys");
-				for(;;);
+				for (;;) ;
 			}
 			current->prev->next = current->next;
 			current->next->prev = current->prev;
@@ -1414,6 +1414,14 @@ void DRIVER_EXPORT free(void *addr)
 	{
 		size = current->size & 0xffff;
 #if 1
+		/*
+		 * FIXME:
+		 * memlink is forced here in free(). It is also forced in malloc().
+		 * But it is not forced in fmalloc(), so current->prev may be 0.
+		 * This can happen because real_access.funcs.malloc == fmalloc,
+		 * so drivers indirectly call fmalloc(), hence current->prev is set to 0
+		 * if nomemlink is used.
+		 */
 		if (1 || memlink)
 		{
 			if (block_used[size] == current)
@@ -1426,7 +1434,7 @@ void DRIVER_EXPORT free(void *addr)
 			{
 				puts("BUG!! current->prev == 0");
 				puts("Please comment out nomemlink in fvdi.sys");
-				for(;;);
+				for (;;) ;
 			}
 			current->prev->next = current->next;
 			current->next->prev = current->prev;

@@ -519,7 +519,6 @@ c_blit:
 *	d1	x1,y1 destination
 *---------
 _c_text:
-c_text:
 	movem.l		d0-d2/a0-a2,-(a7)	; Was d2
 
 	ext.l		d0
@@ -559,7 +558,6 @@ c_text:
 * Out:	d0	mouse op to try again (low), pointer delay (high)
 *---------
 _c_mouse:
-c_mouse:
 	move.l		d2,-(a7)
 	ext.l		d1
 	move.l		d1,-(a7)
@@ -628,7 +626,6 @@ new_api_set_palette:
 * Out:	d0	fore- and background colour
 *---------
 _c_colour:
-c_colour:
 	movem.l		d1-d2/a0-a2,-(a7)
 
 	move.l		d0,-(a7)

@@ -8,7 +8,7 @@ int vsprintf(char *str, const char *format, va_list args)
 	int field = 0;
 	int precision = 0;
 	int opts = 0;
-	
+
 	s = orig_s = str;
 
 #define OPTS_ZEROPAD   0x0001
@@ -232,7 +232,9 @@ int vsprintf(char *str, const char *format, va_list args)
 				{
 					opts |= OPTS_SIGNP;		/* Space in front of positive numbers */
 				} else
+				{
 					opts |= 0x4000;
+				}
 				break;
 
 			case '+':
@@ -240,7 +242,9 @@ int vsprintf(char *str, const char *format, va_list args)
 				{
 					opts |= OPTS_SIGN;		/* Sign in front of all numbers */
 				} else
+				{
 					opts |= 0x4000;
+				}
 				break;
 
 			case '-':
@@ -248,7 +252,9 @@ int vsprintf(char *str, const char *format, va_list args)
 				{
 					opts |= OPTS_JUSTLEFT;	/* Left justified field */
 				} else
+				{
 					opts |= 0x4000;
+				}
 				break;
 
 			case '#':
@@ -256,7 +262,9 @@ int vsprintf(char *str, const char *format, va_list args)
 				{
 					opts |= OPTS_HEXPREFIX;	/* 0x/0 in front of hexadecimal/octal numbers */
 				} else
+				{
 					opts |= 0x4000;
+				}
 				break;
 
 			case '.':
@@ -316,8 +324,8 @@ int vsprintf(char *str, const char *format, va_list args)
 int sprintf(char *str, const char *format, ...)
 {
 	va_list args;
-	long ret;
-	
+	int ret;
+
 	va_start(args, format);
 	ret = vsprintf(str, format, args);
 	va_end(args);

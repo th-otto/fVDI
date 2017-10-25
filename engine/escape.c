@@ -20,7 +20,7 @@
 #include "function.h"
 
 
-static Fgbg get_colour(Virtual * vwk, int reversed)
+static Fgbg get_colour(Virtual *vwk, int reversed)
 {
 	Fgbg colour;
 

@@ -71,7 +71,7 @@ short Isin(unsigned short angle)
 {
 	short index;
 	unsigned short remainder;
-	unsigned short  tmpsin;				/* Holder for sin. */
+	unsigned short tmpsin;				/* Holder for sin. */
 	short half;							/* 0-1 = 1st/2nd, 3rd/4th. */
 	short *table;
 

@@ -1,6 +1,7 @@
 SUBDIRS = \
 	aranym \
 	bitplane \
+	16_bit \
 	uaegfx \
 	saga \
 	$(empty)

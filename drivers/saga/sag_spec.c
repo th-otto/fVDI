@@ -40,7 +40,7 @@ extern Device device;
 
 char driver_name[] = "SAGA";
 
-struct {
+static struct {
 	short used; /* Whether the mode option was used or not. */
 	short width;
 	short height;
@@ -235,7 +235,7 @@ static struct ModeInfo *find_mode_info(void)
 
 	for (i = 0; i < modeline_vesa_entries; i++) {
 		struct ModeInfo *p = &modeline_vesa_entry[i];
-		if (p->Width == resolution.width && p->Height == resolution.height)
+		if (p->Width == (UWORD)resolution.width && p->Height == (UWORD)resolution.height)
 			return p;
 	}
 

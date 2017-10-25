@@ -30,11 +30,15 @@ endif
 DEBUG  = no
 
 # CPU to compile for
+ifeq ($(CPU),)
 CPU    = 040
+endif
 
 # General compilation and optimization options (CFLAGS)
 WARNINGS = -Wall -W -Wunused -Wundef -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Werror
+ifeq ($(OPTS),)
 OPTS   = -O2 -fomit-frame-pointer -fno-common -g
+endif
 # OPTS   +=  -mshort
 ifeq ($(DEBUG),yes)
   OPTS += -DFVDI_DEBUG

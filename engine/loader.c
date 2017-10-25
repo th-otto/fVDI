@@ -275,7 +275,7 @@ static int load_driver(const char *name, Driver *driver, Virtual *vwk, char *opt
 	unsigned char *addr;
 	Prgheader header;
 	int init_result;
-	
+
 	if ((file_size = get_size(name) - sizeof(header)) < 0)
 		return 0;
 
@@ -288,14 +288,14 @@ static int load_driver(const char *name, Driver *driver, Virtual *vwk, char *opt
 	reloc_size = file_size - program_size;
 	program_size += header.bsize;
 
-	if ((addr = (unsigned char *) malloc(MAX(file_size, program_size))) == 0)
+	if ((addr = (unsigned char *) malloc(MAX(file_size, program_size))) == NULL)
 	{
 		Fclose(file);
 		return 0;
 	}
-	
+
 	Fread(file, header.tsize + header.dsize, addr);
-	
+	/* skip symbol table */
 	if (header.ssize != 0)
 		Fseek(header.ssize, file, SEEK_CUR);
 	Fread(file, reloc_size, addr + header.tsize + header.dsize);
@@ -306,7 +306,7 @@ static int load_driver(const char *name, Driver *driver, Virtual *vwk, char *opt
 
 	/* Clear the BSS */
 	memset(addr + header.tsize + header.dsize, 0, header.bsize);
-	
+
 	/* This will cause trouble if ever called from supervisor mode! */
 	Supexec((long (*)(void)) cache_flush);
 
@@ -345,8 +345,8 @@ static Driver *init_module(Virtual *vwk, const char **ptr, List **list)
 	{
 		copy(opts, token);
 	}
-	
-	if ((tmp = (char *) malloc(sizeof(List) + sizeof(Driver) + length(name) + 1)) == 0)
+
+	if ((tmp = (char *) malloc(sizeof(List) + sizeof(Driver) + length(name) + 1)) == NULL)
 		return 0;
 
 	list_elem = (List *) tmp;
@@ -386,9 +386,9 @@ long use_module(Virtual *vwk, const char **ptr)
 {
 	Driver *driver;
 
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
-		access->funcs.error("Bad module specification", 0);
+		access->funcs.error("Bad module specification", NULL);
 		return -1;
 	}
 
@@ -410,9 +410,9 @@ long specify_cookie(Virtual *vwk, const char **ptr)
 	speedo_val = 0;
 	calamus_val = 0;
 
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
-		access->funcs.error("Bad cookie setting!", 0);
+		access->funcs.error("Bad cookie setting!", NULL);
 		return -1;
 	}
 	*ptr = get_token(*ptr, token, TOKEN_SIZE);
@@ -437,9 +437,9 @@ long specify_cookie(Virtual *vwk, const char **ptr)
 		*ptr = get_token(*ptr, token, TOKEN_SIZE);
 		if (equal(token, "="))
 		{
-			if ((*ptr = skip_space(*ptr)) == 0)
+			if ((*ptr = skip_space(*ptr)) == NULL)
 			{
-				access->funcs.error("Bad cookie setting!", 0);
+				access->funcs.error("Bad cookie setting!", NULL);
 				return -1;
 			}
 			*ptr = get_token(*ptr, token, TOKEN_SIZE);
@@ -470,9 +470,9 @@ long specify_vqgdos(Virtual *vwk, const char **ptr)
 	long value;
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
-		access->funcs.error("Bad vq_gdos setting!", 0);
+		access->funcs.error("Bad vq_gdos setting!", NULL);
 		return -1;
 	}
 	*ptr = get_token(*ptr, token, TOKEN_SIZE);
@@ -503,20 +503,20 @@ static long get_pathname(const char **ptr, char *dest)
 {
 	char token[TOKEN_SIZE];
 
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
-		access->funcs.error("Bad path setting!", 0);
+		access->funcs.error("Bad path setting!", NULL);
 		return -1;
 	}
 	*ptr = get_token(*ptr, token, TOKEN_SIZE);
 	if (!equal(token, "="))
 	{
-		access->funcs.error("Bad path setting!", 0);
+		access->funcs.error("Bad path setting!", NULL);
 		return -1;
 	}
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
-		access->funcs.error("Bad path setting!", 0);
+		access->funcs.error("Bad path setting!", NULL);
 		return -1;
 	}
 	*ptr = get_token(*ptr, token, TOKEN_SIZE);
@@ -548,7 +548,7 @@ static long wait_key(Virtual *vwk, const char **ptr)
 	long endtime;
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -556,7 +556,7 @@ static long wait_key(Virtual *vwk, const char **ptr)
 	endtime = atol(token);
 	if (endtime > 999)
 		endtime = 999;
-	endtime = endtime *200 + get_protected_l(0x4ba);
+	endtime = endtime * 200 + get_protected_l(0x4ba);
 	key = 0;
 	while (!key && (endtime > get_protected_l(0x4ba)))
 	{
@@ -575,7 +575,7 @@ static long exit_key(Virtual *vwk, const char **ptr)
 	char token[TOKEN_SIZE];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -607,7 +607,7 @@ static long go_to(Virtual *vwk, const char **ptr)
 	char label[TOKEN_SIZE + 1];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -631,7 +631,7 @@ static long case_key(Virtual *vwk, const char **ptr)
 	char token[TOKEN_SIZE];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -650,7 +650,7 @@ static long echo_text(Virtual *vwk, const char **ptr)
 	char token[TOKEN_SIZE];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -680,7 +680,7 @@ static long set_width(Virtual *vwk, const char **ptr)
 	if (!vwk)
 		return -1;
 
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -709,7 +709,7 @@ static long set_height(Virtual *vwk, const char **ptr)
 	if (!vwk)
 		return -1;
 
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -735,7 +735,7 @@ static long set_blocks(Virtual *vwk, const char **ptr)
 	char token[TOKEN_SIZE];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}	
@@ -753,7 +753,7 @@ static long set_block_size(Virtual *vwk, const char **ptr)
 	char token[TOKEN_SIZE];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -771,7 +771,7 @@ static long set_log_size(Virtual *vwk, const char **ptr)
 	char token[TOKEN_SIZE];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -789,7 +789,7 @@ static long set_arc_split(Virtual *vwk, const char **ptr)
 	char token[TOKEN_SIZE];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -810,7 +810,7 @@ static long set_arc_min(Virtual *vwk, const char **ptr)
 	char token[TOKEN_SIZE];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -828,7 +828,7 @@ static long set_arc_max(Virtual *vwk, const char **ptr)
 	char token[TOKEN_SIZE];
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -847,7 +847,7 @@ static long pre_allocate(Virtual *vwk, const char **ptr)
 	int amount;
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
@@ -866,13 +866,13 @@ static long file_cache(Virtual *vwk, const char **ptr)
 	long amount;
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
 		/* *********** Error, somehow */
 	}
 	*ptr = get_token(*ptr, token, TOKEN_SIZE);
 	amount = atol(token);
-	if ((amount > 0) && (amount <= 32767l))
+	if (amount > 0 && amount <= 32767L)
 		file_cache_size = (short) amount;
 
 	return 1;
@@ -887,9 +887,9 @@ static long load_palette(Virtual *vwk, const char **ptr)
 	int file;
 	void *palette;
 
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
-		access->funcs.error("No palette file name!", 0);
+		access->funcs.error("No palette file name!", NULL);
 		return -1;
 	}
 	*ptr = get_token(*ptr, token, TOKEN_SIZE);
@@ -901,14 +901,14 @@ static long load_palette(Virtual *vwk, const char **ptr)
 		cat(token, name);
 		if ((size = get_size(name)) < 0)
 		{
-			access->funcs.error("Can't find palette file!", 0);
+			access->funcs.error("Can't find palette file!", NULL);
 			return -1;
 		}
 	}
 
 	if (size % (3 * sizeof(short)))
 	{
-		access->funcs.error("Wrong palette file size!", 0);
+		access->funcs.error("Wrong palette file size!", NULL);
 		return -1;
 	}
 
@@ -921,19 +921,19 @@ static long load_palette(Virtual *vwk, const char **ptr)
 	case 256:
 		break;
 	default:
-		access->funcs.error("Wrong palette file size!", 0);
+		access->funcs.error("Wrong palette file size!", NULL);
 		return -1;
 	}
 
-	if ((palette = malloc(size)) == 0)
+	if ((palette = malloc(size)) == NULL)
 	{
-		access->funcs.error("Can't allocate memory for palette!", 0);
+		access->funcs.error("Can't allocate memory for palette!", NULL);
 		return -1;
 	}
 
 	if ((file = (int) Fopen(name, O_RDONLY)) < 0)
 	{
-		access->funcs.error("Can't open palette file!", 0);
+		access->funcs.error("Can't open palette file!", NULL);
 		free(palette);
 		return -1;
 	}
@@ -954,16 +954,16 @@ static long set_debug_file(Virtual *vwk, const char **ptr)
 	int file, bytes;
 
 	(void) vwk;
-	if ((*ptr = skip_space(*ptr)) == 0)
+	if ((*ptr = skip_space(*ptr)) == NULL)
 	{
-		access->funcs.error("No debug file name!", 0);
+		access->funcs.error("No debug file name!", NULL);
 		return -1;
 	}
 	*ptr = get_token(*ptr, token, TOKEN_SIZE);
 
 	if ((file = (int) Fcreate(token, 0)) < 0)
 	{
-		access->funcs.error("Can't create debug file!", 0);
+		access->funcs.error("Can't create debug file!", NULL);
 		return -1;
 	}
 
@@ -972,14 +972,14 @@ static long set_debug_file(Virtual *vwk, const char **ptr)
 
 	if (bytes != 19)
 	{
-		access->funcs.error("Can't write to debug file!", 0);
+		access->funcs.error("Can't write to debug file!", NULL);
 		return -1;
 	}
 
 	debug_file = malloc(strlen(token) + 1);
 	if (!debug_file)
 	{
-		access->funcs.error("Can't store debug file name!", 0);
+		access->funcs.error("Can't store debug file name!", NULL);
 		return -1;
 	}
 	strcpy(debug_file, token);
@@ -998,7 +998,7 @@ static long set_silent(Virtual *vwk, const char **ptr)
 	(void) vwk;
 	do
 	{
-		if ((*ptr = skip_space(*ptr)) == 0)
+		if ((*ptr = skip_space(*ptr)) == NULL)
 		{
 			/* *********** Error, somehow */
 		}
@@ -1039,7 +1039,7 @@ static long set_size(Virtual *vwk, const char **ptr)
 	(void) vwk;
 	do
 	{
-		if ((*ptr = skip_space(*ptr)) == 0)
+		if ((*ptr = skip_space(*ptr)) == NULL)
 		{
 			/* *********** Error, somehow */
 		}
@@ -1119,7 +1119,7 @@ static long check_token(Virtual *vwk, char *token, const char **ptr)
 				*(short *) options[i].varfunc += -1 + 2 * normal;
 				return 1;
 			case 3:					/* Single character */
-				if ((*ptr = skip_space(*ptr)) == 0)
+				if ((*ptr = skip_space(*ptr)) == NULL)
 				{
 					/* *********** Error, somehow */
 				}
@@ -1127,7 +1127,7 @@ static long check_token(Virtual *vwk, char *token, const char **ptr)
 				*(short *) options[i].varfunc = token[0];
 				return 1;
 			case 4:					/* Number */
-				if ((*ptr = skip_space(*ptr)) == 0)
+				if ((*ptr = skip_space(*ptr)) == NULL)
 				{
 					/* *********** Error, somehow */
 				}
@@ -1149,7 +1149,7 @@ long tokenize(const char *buffer)
 	long ret;
 	int count;
 
-	if ((ptr = skip_space(buffer)) == 0)
+	if ((ptr = skip_space(buffer)) == NULL)
 		return 0;
 
 	count = 0;
@@ -1168,7 +1168,7 @@ long tokenize(const char *buffer)
 	{
 		if (debug && !super->fvdi_log.start)
 		{								/* Set up log table if there isn't one */
-			if ((super->fvdi_log.start = malloc(log_size * sizeof(long))) != 0)
+			if ((super->fvdi_log.start = malloc(log_size * sizeof(long))) != NULL)
 			{
 				super->fvdi_log.active = 1;
 				super->fvdi_log.current = super->fvdi_log.start;
@@ -1221,7 +1221,7 @@ static long load_fonts(Virtual *vwk, const char **ptr)
 
 		PRINTF(("   Load font: %s\n", fonts));
 
-		if ((new_font = external_load_font(vwk, fonts)) != 0)
+		if ((new_font = external_load_font(vwk, fonts)) != NULL)
 		{
 			/* It's assumed that a device has been initialized (driver exists) */
 			if (insert_font(&vwk->real_address->writing.first_font, new_font))
@@ -1250,7 +1250,7 @@ int load_prefs(Virtual *vwk, char *sysname)
 	int driver_loaded, font_loaded, system_font;
 	Fontheader *new_font;
 	char *after_path;
-	Driver *driver = 0;
+	Driver *driver = NULL;
 	int ret;
 
 	copy(sysname, path);
@@ -1265,13 +1265,13 @@ int load_prefs(Virtual *vwk, char *sysname)
 			path[0] = 'a';
 			if ((file_size = get_size(path)) < 0)
 			{
-				access->funcs.error("Can't find FVDI.SYS!", 0);
+				access->funcs.error("Can't find FVDI.SYS!", NULL);
 				return 0;
 			}
 		}
 	}
 
-	if ((buffer = (char *) malloc(file_size + 1)) == 0)
+	if ((buffer = (char *) malloc(file_size + 1)) == NULL)
 		return 0;
 
 	if ((file = (int) Fopen(path, O_RDONLY)) < 0)
@@ -1292,9 +1292,9 @@ int load_prefs(Virtual *vwk, char *sysname)
 	copy("gemsys\\", after_path);
 
 
-	if ((ptr = skip_space(buffer)) == 0)
+	if ((ptr = skip_space(buffer)) == NULL)
 	{
-		access->funcs.error("Empty config file!", 0);
+		access->funcs.error("Empty config file!", NULL);
 		free(buffer);
 		return 0;
 	}
@@ -1318,7 +1318,7 @@ int load_prefs(Virtual *vwk, char *sysname)
 			device = (token[0] - '0') * 10 + token[1] - '0';
 			if (equal(&token[2], "r"))
 			{							/* Resident */
-				if ((ptr = skip_space(ptr)) == 0)
+				if ((ptr = skip_space(ptr)) == NULL)
 				{
 					access->funcs.error("Bad device driver specification: ", token);
 					break;
@@ -1347,9 +1347,9 @@ int load_prefs(Virtual *vwk, char *sysname)
 
 			if (equal(token, "s"))
 			{							/* An 's' before a font name means it's a system font */
-				if ((ptr = skip_space(ptr)) == 0)
+				if ((ptr = skip_space(ptr)) == NULL)
 				{
-					access->funcs.error("Bad system font specification!", 0);
+					access->funcs.error("Bad system font specification!", NULL);
 					break;
 				}
 				ptr = get_token(ptr, token, TOKEN_SIZE);
@@ -1358,7 +1358,7 @@ int load_prefs(Virtual *vwk, char *sysname)
 				system_font = 0;
 			copy(path, name);
 			cat(token, name);
-			if ((new_font = load_font(name)) == 0)
+			if ((new_font = load_font(name)) == NULL)
 			{
 				access->funcs.error("Failed to load font: ", name);
 			} else
@@ -1390,7 +1390,7 @@ int load_prefs(Virtual *vwk, char *sysname)
 			if (!wk->writing.first_font || (wk->writing.first_font->id != 1))
 			{							/* No system font? */
 				system_font = linea_fonts();	/*   Find one in the ROM */
-				if ((header = (Fontheader *) malloc(sizeof(Fontheader) * 3)) == 0)
+				if ((header = (Fontheader *) malloc(sizeof(Fontheader) * 3)) == NULL)
 					break;
 				copymem(system_font[0], &header[0], header_size);
 				copymem(system_font[1], &header[1], header_size);
