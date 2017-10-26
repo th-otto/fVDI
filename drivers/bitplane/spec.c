@@ -14,6 +14,7 @@
 #include "os.h"
 #include "driver.h"
 #include "bitplane.h"
+#include "string/memset.h"
 
 #if 0
 #define FAST							/* Write in FastRAM buffer */

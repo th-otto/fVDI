@@ -14,12 +14,9 @@ all: $(TARGET)
 
 top_srcdir = ../..
 
-include $(top_srcdir)/CONFIGVARS
-
 #CPU     = 000
-
 OPTS = -mshort -O2 -fomit-frame-pointer -g
-LDFLAGS = -s
+include $(top_srcdir)/CONFIGVARS
 
 CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 ASFLAGS = $(CPUSWITCH) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
@@ -39,8 +36,8 @@ SSRC = \
 	../common/lineachk.s
 
 CSRC = \
-	../common/init.c \
-	../common/colours.c \
+	init.c \
+	colours.c \
 	uaegfx.c \
 	uaelib.c \
 	uae_spec.c \

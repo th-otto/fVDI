@@ -19,8 +19,6 @@ OPTS    = -mshort -O2 -fomit-frame-pointer
 
 include $(top_srcdir)/CONFIGVARS
 
-LDFLAGS = -s
-
 CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include $(M68K_ATARI_MINT_CFLAGS) -Wall
 ASFLAGS = $(CPUSWITCH) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
@@ -39,19 +37,14 @@ SSRC = \
 	../common/lineachk.s
 
 CSRC = \
-	../common/init.c \
-	../common/colours.c \
+	init.c \
+	colours.c \
 	sag_spec.c \
 	saga.c \
 	modeline_vesa.c \
 	saga_pll.c \
-	../16_bit/16b_exp.c \
-	../16_bit/16b_blit.c \
-	../16_bit/16b_line.c \
-	../16_bit/16b_fill.c \
-	../16_bit/16b_scr.c \
-	../16_bit/16b_pal.c \
-	../uaegfx/uae_mous.c
+	16_bit.c \
+	sag_mous.c
 
 # handle DevPac -> gas conversions
 # defines SSRC_GNU and SINCSRC_GNU variables

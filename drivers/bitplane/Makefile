@@ -14,13 +14,8 @@ all: $(TARGET)
 
 top_srcdir = ../..
 
-include $(top_srcdir)/CONFIGVARS
-
 OPTS = -O2 -fomit-frame-pointer -mshort
-ifeq ($(DEBUG),yes)
-  OPTS += -DFVDI_DEBUG
-endif
-LDFLAGS = -s
+include $(top_srcdir)/CONFIGVARS
 
 CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 ASFLAGS = $(CPUSWITCH) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
@@ -40,9 +35,9 @@ SSRC = \
 	../common/lineachk.s
 
 CSRC = \
-	../common/init.c \
-	../common/printf.c \
-	../common/colours.c \
+	init.c \
+	printf.c \
+	colours.c \
 	spec.c \
 	palette.c \
 	fill.c \

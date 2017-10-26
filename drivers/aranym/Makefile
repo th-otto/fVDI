@@ -18,8 +18,6 @@ CPU = 040
 OPTS   = -O2 -fomit-frame-pointer
 include $(top_srcdir)/CONFIGVARS
 
-LDFLAGS = -s
-
 CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 ASFLAGS = $(CPUSWITCH) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
@@ -39,9 +37,9 @@ SSRC = \
 	irq.s
 
 CSRC = \
-	../common/init.c \
-	../common/colours.c \
-	../common/printf.c \
+	init.c \
+	colours.c \
+	printf.c \
 	spec.c \
 	8b_pal.c \
 	16b_pal.c \
@@ -61,7 +59,7 @@ OBJECTS = $(SSRC_GNU:.gnu=.gnu.o) $(CSRC:.c=.o)
 $(TARGET): depend $(OBJECTS) $(LIBFILES)
 	$(AM_V_LD)$(LD) -o $@ $(OBJECTS) $(LDFLAGS) $(LIBS)
 
-../common/printf.o: ../common/printf.c
+printf.o: printf.c
 	$(AM_V_CC)$(CC) $(CFLAGS) -DFVDI_DEBUG -c -o $@ $<
 
 depend: $(CSRC)

@@ -45,8 +45,6 @@ Mode mode[1] = { {16, CHUNKY | CHECK_PREVIOUS | TRUE_COLOUR, {r_16, g_16, b_16, 
 
 char driver_name[] = "Falcon TC 2001-03-24 (shadow)";
 
-static short colours[256][3];
-
 long CDECL (*write_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y, long colour) = c_write_pixel;
 long CDECL (*read_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y) = c_read_pixel;
 long CDECL (*line_draw_r)(Virtual *vwk, long x1, long y1, long x2, long y2, long pattern, long colour, long mode) = c_line_draw;
@@ -319,7 +317,7 @@ long CDECL initialize(Virtual * vwk)
 	 */
 
 	if (loaded_palette)
-		access->funcs.copymem(loaded_palette, colours, 256 * 3 * sizeof(short));
+		access->funcs.copymem(loaded_palette, default_vdi_colors, 256 * 3 * sizeof(short));
 	if ((old_palette_size = wk->screen.palette.size) != 256)
 	{									/* Started from different graphics mode? */
 		old_palette_colours = wk->screen.palette.colours;
@@ -334,9 +332,9 @@ long CDECL initialize(Virtual * vwk)
 	}
 	pp = (short *)c_set_colours;
 	if (*pp != 0x4e75)	/* Look for C... */
-		c_initialize_palette(vwk, 0, wk->screen.palette.size, colours, wk->screen.palette.colours);
+		c_initialize_palette(vwk, 0, wk->screen.palette.size, default_vdi_colors, wk->screen.palette.colours);
 	else
-		initialize_palette(vwk, 0, wk->screen.palette.size, colours, wk->screen.palette.colours);
+		initialize_palette(vwk, 0, wk->screen.palette.size, default_vdi_colors, wk->screen.palette.colours);
 
 #if 0
 	if ((old_palette_size = wk->screen.palette.size) != 256)
@@ -352,9 +350,9 @@ long CDECL initialize(Virtual * vwk)
 									  old_palette_size * sizeof(Colour));
 #else
 			if (*(short *) &c_set_colours != 0x4e75)	/* Look for C... */
-				c_initialize_palette(vwk, 0, 256, colours, wk->screen.palette.colours);
+				c_initialize_palette(vwk, 0, 256, default_vdi_colors, wk->screen.palette.colours);
 			else
-				initialize_palette(vwk, 0, 256, colours, wk->screen.palette.colours);
+				initialize_palette(vwk, 0, 256, default_vdi_colors, wk->screen.palette.colours);
 #endif
 			access->funcs.free(old_palette_colours);	/* Release old (small) palette (a workaround) */
 		}

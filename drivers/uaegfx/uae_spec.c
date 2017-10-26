@@ -61,8 +61,6 @@ extern Access *access;
 
 extern short *loaded_palette;
 
-static short colours[256][3];
-
 long CDECL (*write_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y, long colour) = c_write_pixel;
 long CDECL (*read_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y) = c_read_pixel;
 long CDECL (*line_draw_r)(Virtual *vwk, long x1, long y1, long x2, long y2, long pattern, long colour, long mode) = c_line_draw;
@@ -317,7 +315,7 @@ long CDECL initialize(Virtual *vwk)
 	 */
 
 	if (loaded_palette)
-		access->funcs.copymem(loaded_palette, colours, 256 * 3 * sizeof(short));
+		access->funcs.copymem(loaded_palette, default_vdi_colors, 256 * 3 * sizeof(short));
 	if ((old_palette_size = wk->screen.palette.size) != 256) {	/* Started from different graphics mode? */
 		old_palette_colours = wk->screen.palette.colours;
 		wk->screen.palette.colours = (Colour *)access->funcs.malloc(256L * sizeof(Colour), 3);	/* Assume malloc won't fail. */
@@ -328,7 +326,7 @@ long CDECL initialize(Virtual *vwk)
 		} else
 			wk->screen.palette.colours = old_palette_colours;
 	}
-	c_initialize_palette(vwk, 0, wk->screen.palette.size, colours, wk->screen.palette.colours);
+	c_initialize_palette(vwk, 0, wk->screen.palette.size, default_vdi_colors, wk->screen.palette.colours);
 
 	device.byte_width = wk->screen.wrap;
 	device.address = wk->screen.mfdb.address;

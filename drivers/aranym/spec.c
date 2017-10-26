@@ -2,6 +2,7 @@
 #include "relocate.h"
 #include "driver.h"
 #include "aranym.h"
+#include "string/memset.h"
 
 /* Should try to get rid of this! */
 #include "os.h"
@@ -448,7 +449,9 @@ static void initialize_wk(Virtual *vwk)
 			if (old_palette_colours)
 				access->funcs.free(old_palette_colours);	/* Release old (small) palette (a workaround) */
 		} else
+		{
 			wk->screen.palette.colours = old_palette_colours;
+		}
 	}
 
 	pixel.width = wk->screen.pixel.width;

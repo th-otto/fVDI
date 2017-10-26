@@ -50,6 +50,8 @@ else
 CPUSWITCH=-m68$(CPU)
 endif
 
+LDFLAGS = -s
+
 # If building for 68000 (no long multiply instruction),
 # this must be set to point to the gcc library.
 ifeq ($(CPU),000)

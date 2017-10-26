@@ -19,7 +19,6 @@
 
 void ultoa(char *buf, unsigned long un, unsigned long base);
 #include "stdlib/ultoa.h"
-#include "string/memset.h"
 
 void DRIVER_EXPORT copymem(const void *s, void *d, long n);
 void copymem_aligned(const void *s, void *d, long n);
