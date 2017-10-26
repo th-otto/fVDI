@@ -40,7 +40,6 @@ SUB1		equ	0		; Subtract 1 from text width? (NVDI apparently doesn't)
 
 	text
 
-	dc.b	0,"vqt_xxxxkern",0
 * vqt_pair/trackkern - Standard Trap function
 * Todo: Everything...
 * In:   a1      Parameter block
@@ -54,7 +53,6 @@ vqt_pairkern:
 	done_return
 
 
-	dc.b	0,"vst_kern",0
 * vqt_kern - Standard Trap function
 * Todo: Everything...
 * In:   a1      Parameter block
@@ -66,7 +64,6 @@ vst_kern:
 	done_return
 
 
-	dc.b	0,"v_getbitmap_info",0
 * v_getbitmap_info - Standard Trap function
 * Todo: Everything...
 * In:   a1      Parameter block
@@ -124,7 +121,6 @@ v_getbitmap_info:
 	done_return
 
 
-	dc.b	0,0,"vqt_advance",0
 * vqt_advance - Standard Trap function
 * Todo: Everything...
 * In:   a1      Parameter block
@@ -175,7 +171,6 @@ vqt_advance:
 	done_return
 
 
-	dc.b	0,"vst_skew",0
 * vqt_skew - Standard Trap function
 * Todo: Everything...
 * In:   a1      Parameter block
@@ -186,7 +181,6 @@ vst_skew:
 	done_return
 
 
-	dc.b	0,0,"vst_color",0
 * vst_color - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block
@@ -205,7 +199,6 @@ vst_color:
 	done_return
 
 
-	dc.b	0,0,"vst_effects",0
 * vst_effects - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block
@@ -301,7 +294,6 @@ lib_vst_effects:
   endc
 
 
-	dc.b	0,0,"vst_alignment",0
 * vst_alignment - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -324,7 +316,6 @@ vst_alignment:
 	move.l	d0,(a2)
 	done_return
 
-	dc.b	0,"vst_rotation",0
 * vst_rotation - Standard Trap function
 * Todo: Check if any angle is allowed.
 * In:   a1      Parameter block
@@ -377,7 +368,6 @@ lib_vst_rotation:
 	rts
 
 
-	dc.b	0,0,"vst_charmap",0
 * vst_charmap - Standard Trap function
 * In:   a1      Parameter block
 *       a0      VDI struct
@@ -387,7 +377,6 @@ vst_charmap:
 	done_return
 
 
-	dc.b	0,"vst_font",0
 * vst_font - Standard Trap function
 * Todo:	?
 * In:   a1      Parameter block
@@ -409,7 +398,6 @@ vst_font:
 	done_return
 
 
-	dc.b	0,"vqt_name",0
 * vqt_name - Standard Trap function
 * Todo:	?
 * In:   a1      Parameter block
@@ -562,7 +550,6 @@ lib_vqt_ext_name:
 	rts
 
 
-	dc.b	0,0,"vqt_font_info",0
 * vqt_font_info - Standard Trap function
 * Todo:	?
 * In:   a1      Parameter block
@@ -610,7 +597,6 @@ lib_vqt_font_info:
   endc
 
 
-	dc.b	0,"vqt_fontheader",0
 * vqt_fontheader - Standard Trap function
 * Todo:	?
 * In:   a1      Parameter block
@@ -629,7 +615,6 @@ vqt_fontheader:
 	done_return
 
 	
-	dc.b	0,"vqt_xfntinfo",0
 * vqt_xfntinfo - Standard Trap function
 * Todo:	?
 * In:   a1      Parameter block
@@ -796,7 +781,6 @@ lib_vqt_xfntinfo:
  endc
 
 
-	dc.b	0,"vqt_extent",0
 * vqt_extent - Standard Trap function
 * Todo:	The rest of the text modes
 * In:   a1      Parameter block
@@ -1022,7 +1006,6 @@ lib_vqt_extent:
   endc
 
 
-	dc.b	0,0,"vqt_width",0
 * vqt_width - Standard Trap function
 * Todo:	?
 * In:   a1      Parameter block
@@ -1148,7 +1131,6 @@ lib_vqt_width:
 	lbra	.end,2
 
 
-	dc.b	0,"vst_height",0
 * vst_height - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -1269,7 +1251,6 @@ lib_vst_height:
 	rts
 
 
-	dc.b	0,0,"vst_arbpt",0
 * vst_arbpt - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -1357,7 +1338,6 @@ vst_arbpt:
  endc
 
 
-	dc.b	0,0,"vst_point",0
 * vst_point - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -1485,7 +1465,6 @@ vst_point:
 	done_return
   endc
 
-	dc.b	0,"vqt_attributes",0
 * vqt_attributes - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -1524,7 +1503,6 @@ lib_vqt_attributes:
   endc
 
 
-	dc.b	0,"vst_load_fonts",0
 * vst_load_fonts - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -1541,7 +1519,6 @@ vst_load_fonts:
 
 
 
-	dc.b	0,"vst_unload_fonts",0
 * vst_unload_fonts - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block

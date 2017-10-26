@@ -41,7 +41,6 @@ lookup32	equ	0		; Palette lookup for 32 bit vr_trn_fm?
 
 	text
 
-	dc.b	0,0,"v_get_pixel",0
 * v_get_pixel - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block
@@ -102,7 +101,6 @@ lib_v_get_pixel:
 	bra	.end_lib_v_get_pixel
 
 
-	dc.b	0,0,"v_bar",0
 * v_bar - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block
@@ -195,7 +193,6 @@ lib_v_bar:
 	rts
 
 
-	dc.b	0,"vr_recfl",0
 * vr_recfl - Standard Trap function
 * Todo:
 * In:   a1      Parameter block
@@ -313,7 +310,6 @@ _fill_area:
 	rts
 
 
-	dc.b	0,"default_fill",0
 * _default_fill - Line by line (or pixel by pixel) fill routine
 * In:	a0	VDI struct (odd address marks table operation)
 *	d0	Colours
@@ -476,7 +472,6 @@ _default_fill:
 	bra	.end_pfill
 
 
-	dc.b	0,0,"vrt_cpyfm",0
 * vrt_cpyfm - Standard Trap function
 * Todo: Should jump via indirection table
 * In:   a1      Parameter block
@@ -596,7 +591,6 @@ nocheck:
 	rts
 
 
-	dc.b	0,"default_expand",0
 * _default_expand - Pixel by pixel mono-expand routine
 * In:	a0	VDI struct, destination MFDB, VDI struct, source MFDB
 *	d0	Colours
@@ -703,7 +697,6 @@ _default_expand:
 	bra	.dexp_end
 
 
-	dc.b	0,0,"vro_cpyfm",0
 * vro_cpyfm - Standard Trap function
 * Todo: Should jump via indirection table
 * In:   a1      Parameter block
@@ -794,7 +787,6 @@ lib_vro_cpyfm:
 	rts
 
 
-	dc.b	0,"default_blit",0
 * _default_blit - Pixel by pixel blit routine
 * In:	a0	VDI struct, destination MFDB, VDI struct, source MFDB
 *	d0	Mode
@@ -864,7 +856,6 @@ _default_blit:
 	rts
 
 
-	dc.b	0,"vr_transfer_bits",0
 * vr_transfer_bits - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -892,7 +883,6 @@ vr_transfer_bits:
 	done_return
 
 
-	dc.b	0,"colour entry",0
 * *color* - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -918,7 +908,6 @@ colour_entry:
 	done_return
 
 
-	dc.b	0,"set colour table",0
 * vs_*ctab* - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -943,7 +932,6 @@ set_colour_table:
 	done_return
 
 
-	dc.b	0,"colour table",0
 * *ctab* - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -969,7 +957,6 @@ colour_table:
 	done_return
 
 
-	dc.b	0,0,"inverse table",0
 * *itab - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -995,7 +982,6 @@ inverse_table:
 	done_return
 
 	
-	dc.b	0,0,"vr_trn_fm",0
 * vr_trn_fm - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -1687,7 +1673,6 @@ end_vr_trn_fm:
 	rts
 
 
-	dc.b	0,"rotate_mem",0
 * rotate_mem - Support function
 *              Rotates a memory area in a reasonably smart way
 * Todo: Use stack buffer for small amounts

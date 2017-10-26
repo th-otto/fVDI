@@ -508,7 +508,6 @@ subroutine_call:
 	rts
 
 
-	dc.b	0,0,"opcode5",0
 * opcode5 - Subfunction Trap dispatcher
 * Todo: Dangers?
 * In:	a0	VDI struct
@@ -530,7 +529,6 @@ opcode5:
 	jmp	(a2)
 
 
-	dc.b	0,"opcode11",0
 * opcode11 - Subfunction Trap dispatcher
 * Todo: Dangers?
 * In:	a0	VDI struct

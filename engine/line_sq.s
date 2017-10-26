@@ -17,7 +17,6 @@ transparent	equ	1		; Fall through?
 
 	text
 
-	dc.b	0,0,"vsl_color",0
 * vsl_color - Standard Trap function
 * Todo: Get foreground colour?
 * In:   a1      Parameter block
@@ -35,7 +34,6 @@ vsl_color:
 	move.w	d0,(a2)
 	done_return
 
-	dc.b	0,0,"vsl_width",0
 * vsl_width - Standard Trap function
 * Todo: Get allowed widths.
 * In:   a1      Parameter block
@@ -75,7 +73,6 @@ vsl_width:
 
 
 
-	dc.b	0,"vsl_type",0
 * vsl_type - Standard Trap function
 * Todo: Get allowed line types.
 * In:   a1      Parameter block
@@ -95,7 +92,6 @@ vsl_type:
 	move.w	d0,(a2)
 	done_return
 
-	dc.b	0,0,"vsl_udsty",0
 * vsl_udsty - Standard Trap function
 * Todo: Get foreground colour?
 * In:   a1      Parameter block
@@ -107,7 +103,6 @@ vsl_udsty:
 
 
 
-	dc.b	0,"vsl_ends",0
 * vsl_ends - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block
@@ -134,7 +129,6 @@ vsl_ends:
 
 
 
-	dc.b	0,"vql_attributes",0
 * vql_attributes - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block
@@ -154,7 +148,6 @@ vql_attributes:
 
 
 
-	dc.b	0,0,"v_bez_con",0
 * v_bez_con - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block

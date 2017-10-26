@@ -20,7 +20,6 @@ transparent	equ	1		; Fall through?
 
 	text
 
-	dc.b	0,0,"vsf_color",0
 * vsf_color - Standard Trap function
 * Todo: Get foreground colour?
 * In:   a1      Parameter block
@@ -40,7 +39,6 @@ vsf_color:
 
 
 
-	dc.b	0,"vsf_interior",0
 * vsf_interior - Standard Trap function
 * Todo: Get allowed types.
 * In:   a1      Parameter block
@@ -58,7 +56,6 @@ vsf_interior:
 	done_return
 
 
-	dc.b	0,0,"vsf_style",0
 * vsf_style - Standard Trap function
 * Todo: Get allowed styles.
 * In:   a1      Parameter block
@@ -79,7 +76,6 @@ vsf_style:
 
 
 
-	dc.b	0,0,"vsf_perimeter",0
 * vsf_perimeter - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block
@@ -98,7 +94,6 @@ vsf_perimeter:
 
 
 
-	dc.b	0,0,"vsf_udpat",0
 * vsf_udpat - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block
@@ -164,7 +159,6 @@ lib_vsf_udpat:
 	bra	.single_plane
 
 
-	dc.b	0,"vqf_attributes",0
 * vqf_attributes - Standard Trap function
 * Todo: -
 * In:   a1      Parameter block

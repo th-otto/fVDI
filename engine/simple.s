@@ -34,7 +34,6 @@ transparent	equ	1		; Fall through?
 
 	text
 
-	dc.b	0,0,"v_opnwk",0
 * v_opnwk - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -53,7 +52,6 @@ v_opnwk:
 	real_return
 
 
-	dc.b	0,"v_opnvwk",0
 * v_opnvwk - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -73,7 +71,6 @@ v_opnvwk:
 	real_return
 
 
-	dc.b	0,"v_clsvwk",0
 * v_clsvwk - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -93,7 +90,6 @@ v_clsvwk:
 	done_return
 
 
-	dc.b	0,0,"v_clswk",0
 * v_clswk - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -113,7 +109,6 @@ v_clswk:
 	done_return
 
 
-	dc.b	0,"vq_devinfo",0
 * vq_devinfo - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -132,7 +127,6 @@ vq_devinfo:
 	done_return
 
 
-	dc.b	0,0,"vs_clip",0
 * vs_clip - Standard Trap function
 * Todo: Should allow for min_x/y coordinates as well
 * In:   a1      Parameter block
@@ -206,7 +200,6 @@ vs_clip:
 * Various
 *
 
-	dc.b	0,0,"vswr_mode",0
 * vswr_mode - Standard Trap function
 * Todo: Double colour mode?
 * In:   a1      Parameter block
@@ -228,7 +221,6 @@ vswr_mode:
 	done_return
 
 
-	dc.b	0,"vq_extnd",0
 * vq_extnd - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -265,7 +257,6 @@ vq_extnd:
 	done_return
 	
 
-	dc.b	0,"vq_chcells",0
 * vq_chcells - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -284,7 +275,6 @@ vq_chcells:
 	done_return
 
 
-	dc.b	0,"v_exit_cur",0
 * v_exit_cur - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -300,7 +290,6 @@ v_exit_cur:
 	done_return
 
 
-	dc.b	0,0,"v_enter_cur",0
 * v_enter_cur - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -316,7 +305,6 @@ v_enter_cur:
 	done_return
 
 
-	dc.b	0,0,"v_curup",0
 * v_curup - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -332,7 +320,6 @@ v_curup:
 	done_return
 
 
-	dc.b	0,0,"v_curdown",0
 * v_curdown - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -348,7 +335,6 @@ v_curdown:
 	done_return
 
 
-	dc.b	0,"v_curright",0
 * v_curright - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -364,7 +350,6 @@ v_curright:
 	done_return
 
 
-	dc.b	0,0,"v_curleft",0
 * v_curleft - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -380,7 +365,6 @@ v_curleft:
 	done_return
 
 
-	dc.b	0,0,"v_curhome",0
 * v_curhome - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -396,7 +380,6 @@ v_curhome:
 	done_return
 
 
-	dc.b	0,"v_eeos",0
 * v_eeos - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -412,7 +395,6 @@ v_eeos:
 	done_return
 
 
-	dc.b	0,"v_eeol",0
 * v_eeol - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -428,7 +410,6 @@ v_eeol:
 	done_return
 
 
-	dc.b	0,0,"vs_curaddress",0
 * vs_curaddress - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -451,7 +432,6 @@ vs_curaddress:
 	done_return
 
 
-	dc.b	0,0,"v_curtext",0
 * v_curtext - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -473,7 +453,6 @@ v_curtext:
 	done_return
 
 
-	dc.b	0,"v_rvon",0
 * v_rvon - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -489,7 +468,6 @@ v_rvon:
 	done_return
 
 
-	dc.b	0,0,"v_rvoff",0
 * v_rvoff - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -505,7 +483,6 @@ v_rvoff:
 	done_return
 
 
-	dc.b	0,0,"vq_curaddress",0
 * vq_curaddress - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block
@@ -523,7 +500,6 @@ vq_curaddress:
 	used_d1
 	done_return
 
-	dc.b	0,"v_dspcur",0
 * v_dspcur - Standard Trap function
 * Todo: ?
 * In:   a1      Parameter block

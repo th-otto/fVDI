@@ -38,7 +38,6 @@
 
 	text
 
-	dc.b		"set_pixel",0
 *---------
 * Set a coloured pixel
 * c_write_pixel(Virtual *vwk, MFDB *mfdb, long x, long y, long colour)
@@ -84,7 +83,6 @@ _c_set_pixel:
 	rts
 
 
-	dc.b		"get_pixel",0
 *---------
 * Get a coloured pixel
 * c_read_pixel(Virtual *vwk, MFDB *mfdb, long x, long y)
@@ -109,7 +107,6 @@ _c_get_pixel:
 	rts
 
 
-	dc.b		"line"
 *---------
 * Draw a colored line between 2 points
 * c_draw_line(Virtual *vwk, long x1, long y1, long x2, long y2, long pattern, long colour, long mode)
@@ -262,7 +259,6 @@ new_api_line:
 	rts
 
 
-	dc.b		"expand"
 *---------
 * Expand a monochrome area to multiple bitplanes
 * c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour)
@@ -273,7 +269,6 @@ new_api_line:
 *	d7	logic operation
 *---------
 _c_expand:
-c_expand:
 	movem.l		d0-d2/a0-a2,-(a7)
 
 	ext.l		d1
@@ -318,7 +313,6 @@ c_expand:
 	rts
 
 
-	dc.b		"fill"
 *---------
 * Fill a multiple bitplane area using a monochrome pattern
 * c_fill_area(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style)
@@ -332,7 +326,6 @@ c_expand:
 *	d7	interior/style
 *---------
 _c_fill:
-c_fill:
 	movem.l		d0-d2/a0-a2,-(a7)
 
 ;	ext.l		d1			; Perhaps these really should be extended when a0 even
@@ -401,7 +394,6 @@ c_fill:
 	rts
 
 
-	dc.b		"fillpoly"
 *---------
 * Fill a multiple bitplane polygon using a monochrome pattern
 * c_fill_polygon(Virtual *vwk, short points[], long n, short index[], long moves, short *pattern, long colour, long mode, long interior_style)
@@ -416,7 +408,6 @@ c_fill:
 *	d7	interior/style
 *---------
 _c_fillpoly:
-c_fillpoly:
 	movem.l		d0-d2/a0-a2,-(a7)
 
 	move.l		d7,-(a7)
@@ -454,7 +445,6 @@ c_fillpoly:
 	rts
 
 
-	dc.b		"blit"
 *---------
 * Blit an area
 * c_blit_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation)
@@ -464,7 +454,6 @@ c_fillpoly:
 *	d3-d6	x1,y1 x2,y2 destination
 *---------
 _c_blit:
-c_blit:
 	movem.l		d0-d2/a0-a2,-(a7)
 
 	ext.l		d1
@@ -508,7 +497,6 @@ c_blit:
 	rts
 
 
-	dc.b		"text"
 *---------
 * Draw some text
 * c_text_area(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets)
@@ -547,7 +535,6 @@ _c_text:
 	rts
 
 
-	dc.b		"mouse",0
 *---------
 * Draw the mouse
 * c_mouse_draw(Workstation *wk, long x, long y, Mouse *mouse)
@@ -570,7 +557,6 @@ _c_mouse:
 	rts
 
 
-	dc.b		"set_palette",0
 *---------
 * Set palette colours
 * c_set_colours(Virtual *vwk, long start, long entries, short requested[3][], Colour palette[])
@@ -617,7 +603,6 @@ new_api_set_palette:
 	rts
 
 
-	dc.b		"colour"
 *---------
 * Get colour
 * c_get_colour(Virtual *vwk, long colours)
@@ -639,7 +624,6 @@ _c_colour:
 
 
   ifne	1
-	dc.b		"initialize_palette"
 *---------
 * Set palette colours
 * initialize_palette(Virtual *vwk, long start, long entries, short requested[][3], Colour palette[])
