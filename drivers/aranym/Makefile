@@ -74,7 +74,12 @@ depend: $(CSRC)
 	$(AM_V_at)sed "s#^.*: *\$$##"      < depend2 > depend
 	$(AM_V_at)$(RM) depend2
 
-clean: clean_gnu
+clean:: clean_gnu
 	$(RM) $(OBJECTS) $(TARGET) depend
+
+install::
+	mkdir -p "$(DESTDIR)/gemsys"
+	cp -a $(TARGET) "$(DESTDIR)/gemsys/$(TARGET)"
+	cp -a fvdi.sys "$(DESTDIR)/fvdiara.sys"
 
 -include depend

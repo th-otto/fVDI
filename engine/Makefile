@@ -208,11 +208,11 @@ depend: $(CSRC)
 	$(AM_V_at)sed "s#^.*: *\$$##"      < depend2 > depend
 	$(AM_V_at)$(RM) depend2
 
-clean: clean_gnu
-	$(RM) $(OBJECTS) fvdi.map depend
+clean:: clean_gnu
+	$(RM) $(OBJECTS) $(TARGET) fvdi.map depend
 
-mrproper:
-	$(MAKE) clean
-	$(MAKE) -C $(top_srcdir)/modules/ft2 clean
+install::
+	mkdir -p $(DESTDIR)/auto
+	cp -a $(TARGET) $(DESTDIR)/auto/fvdi.prg
 
 -include depend

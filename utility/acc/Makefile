@@ -47,7 +47,10 @@ depend: $(CSRC)
 	$(AM_V_at)sed "s#^.*: *\$$##"      < depend2 > depend
 	$(AM_V_at)$(RM) depend2
 
-clean:
+clean::
 	$(RM) $(OBJECTS) depend $(TARGET)
+
+install::
+	cp -a $(TARGET) "$(DESTDIR)/fvdi.acc"
 
 -include depend

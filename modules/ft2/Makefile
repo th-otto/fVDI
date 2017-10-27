@@ -222,5 +222,8 @@ OBJS = $(BASEOBJ) $(AHINTOBJ) $(PSOBJ) $(RASTEROBJ) sfnt.o ftcache.o $(FONTDOBJ)
 $(TARGET): $(OBJS) 
 	$(AM_V_AR)$(AR) cr $@ $(OBJS); $(RANLIB) $@
 
-clean:
+clean::
 	$(RM) $(OBJS) $(TARGET)
+
+install::
+	@:

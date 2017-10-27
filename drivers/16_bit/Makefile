@@ -8,7 +8,7 @@
 # gcc >= 2.95.3 (sparemint) version
 #
 
-TARGET = 16_bit.sys
+TARGET = 16bit.sys
 
 all: $(TARGET)
 
@@ -73,7 +73,11 @@ depend: $(CSRC)
 strip:
 	$(STRIP) --strip-all $(TARGET)
 
-clean: clean_gnu
+clean:: clean_gnu
 	$(RM) $(OBJECTS) depend $(TARGET)
+
+install::
+	mkdir -p $(DESTDIR)/gemsys
+	cp -a $(TARGET) $(DESTDIR)/gemsys/$(TARGET)
 
 -include depend

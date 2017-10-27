@@ -36,9 +36,11 @@ $(TARGET):		$(OBJECTS)
 depend:		$(CSOURCES) $(CHEADERS)
 	$(AM_V_CC)$(CC) -MM $(CSOURCES) > depend
 
-clean:
+clean::
 	$(RM) $(OBJECTS) $(FLEXOUT) $(BISONOUT) $(TARGET) depend
 
+install::
+	@:
 
 $(BISONOUT):	struct.y
 	bison -d $(BISONFLAGS) struct.y

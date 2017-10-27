@@ -6,6 +6,6 @@ SUBDIRS = \
 	saga \
 	$(empty)
 
-all clean:
+all clean install::
 	for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done
 

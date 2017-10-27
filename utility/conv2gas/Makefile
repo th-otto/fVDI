@@ -15,3 +15,6 @@ $(CONV2GAS): conv2gas.c
 
 clean::
 	$(RM) $(CONV2GAS)
+
+install::
+	@:
