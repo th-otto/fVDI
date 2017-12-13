@@ -77,7 +77,7 @@ void check_memory(void);
 #include "relocate.h"
 extern Access *access;
 #define PUTS(x) access->funcs.puts(x)
-#define PRINTF(x) printf x
+#define PRINTF(x) access->funcs.printf x
 #define KEY_WAIT(x) key_wait(x)
 #else
 #define PUTS(x)
@@ -87,6 +87,9 @@ extern Access *access;
 
 long DRIVER_EXPORT puts(const char *text);
 void DRIVER_EXPORT error(const char *text1, const char *text2);
+long DRIVER_EXPORT printf(const char *format, ...) __attribute__((format(printf, 1, 2)));
+long DRIVER_EXPORT sprintf(char *buf, const char *format, ...) __attribute__((format(printf, 2, 3)));
+long DRIVER_EXPORT vsprintf(char *buf, const char *format, va_list args) __attribute__((format(printf, 2, 0)));
 
 /*
  * Token handling

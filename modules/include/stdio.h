@@ -4,9 +4,9 @@
 #define sprintf	 ksprintf_old
 #define snprintf ksprintf
 #endif
-int sprintf(char *str, const char *format, ...);
-int vsprintf(char *str, const char *format, va_list args);
-int printf(const char *format, ...);
+long sprintf(char *str, const char *format, ...) __attribute__((format(printf, 2, 3)));
+long vsprintf(char *str, const char *format, va_list args) __attribute__((format(printf, 2, 0)));
+long printf(const char *format, ...) __attribute__((format(printf, 1, 2)));
 
 /* The possibilities for the third argument to `fseek'.
    These values should not be changed.  */

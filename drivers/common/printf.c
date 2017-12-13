@@ -8,7 +8,6 @@
  */
 
 #include <stdarg.h>
-#include "stdio.h"
 
 #include "os.h"
 #include "fvdi.h"
@@ -26,7 +25,5 @@ void copymem_aligned(const void *s, void *d, long n);
 #include "string/memmove.h"
 
 #define strlen(s) access->funcs.length(s)
-
-#include "stdio/printf.h"
 
 #endif

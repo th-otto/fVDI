@@ -1826,6 +1826,9 @@ long init_utility(void)
 	real_access.funcs.cache_flush = cache_flush;
 	real_access.funcs.misc = misc;
 	real_access.funcs.event = event;
+	real_access.funcs.printf = printf;
+	real_access.funcs.sprintf = sprintf;
+	real_access.funcs.vsprintf = vsprintf;
 
 	check_cookies();
 

@@ -1,5 +1,8 @@
 #ifndef DRIVER_H
 #define DRIVER_H
+
+#include <stdarg.h>
+
 /* 
  * fVDI driver declarations, by Johan Klockars.
  *
@@ -59,12 +62,8 @@ typedef struct _Mode {
 
 #ifdef FVDI_DEBUG
 #define PUTS(x) access->funcs.puts(x)
-#define PRINTF(x) printf x
+#define PRINTF(x) access->funcs.printf x
 #define KEY_WAIT(x) key_wait(x)
-#include <stdarg.h>
-int sprintf(char *str, const char *format, ...);
-int vsprintf(char *str, const char *format, va_list args);
-int printf(const char *format, ...);
 #else
 #define PUTS(x)
 #define PRINTF(x)

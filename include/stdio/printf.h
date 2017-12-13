@@ -1,5 +1,5 @@
 /* Mostly complete, but only simple things tested */
-int vsprintf(char *str, const char *format, va_list args)
+long DRIVER_EXPORT vsprintf(char *str, const char *format, va_list args)
 {
 	int mode = 0;
 	char *s, *text, *orig_s, ch;
@@ -321,10 +321,10 @@ int vsprintf(char *str, const char *format, va_list args)
 }
 
 
-int sprintf(char *str, const char *format, ...)
+long DRIVER_EXPORT sprintf(char *str, const char *format, ...)
 {
 	va_list args;
-	int ret;
+	long ret;
 
 	va_start(args, format);
 	ret = vsprintf(str, format, args);
@@ -333,7 +333,7 @@ int sprintf(char *str, const char *format, ...)
 }
 
 
-int printf(const char *format, ...)
+long DRIVER_EXPORT printf(const char *format, ...)
 {
 	va_list args;
 	char buf[512];
