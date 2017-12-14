@@ -22,7 +22,7 @@ void vbl_handler(void);
 
 void bad_or_non_fvdi_handle(void);
 
-int load_prefs(Virtual *vwk, char *sysname);
+int load_prefs(Virtual *vwk, const char *sysname);
 Virtual *initialize_vdi(void);
 void copy_workstations(Virtual *def, long really_copy);
 void setup_fallback(void);

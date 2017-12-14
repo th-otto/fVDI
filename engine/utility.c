@@ -1710,7 +1710,7 @@ long DRIVER_EXPORT get_size(const char *name)
 
 	old = Fgetdta();
 	Fsetdta((void *) &info);
-	error = Fsfirst(name, 1);
+	error = Fsfirst(name, FA_RDONLY|FA_HIDDEN|FA_SYSTEM);
 	Fsetdta(old);
 	
 	if (!error)

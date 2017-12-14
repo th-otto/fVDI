@@ -22,7 +22,7 @@
 #define MAGIC     "InitMagic"
 
 #define TOKEN_SIZE  160					/* Also used for driver option lines */
-#define PATH_SIZE   80
+#define PATH_SIZE   256
 #define NAME_SIZE   100
 
 
@@ -1184,12 +1184,60 @@ long tokenize(const char *buffer)
 
 /* This should really be handled somewhat differently. */
 /* Probably ought to be in another file. */
-static long load_fonts(Virtual *vwk, const char **ptr)
+
+static void load_font_dir(Virtual *vwk, char *fonts)
 {
 	_DTA info;
-	char fonts[PATH_SIZE];
+	_DTA *olddta;
 	char *pathtail;
 	int error;
+	long len;
+	
+	/* Point past the last char */
+	len = length(fonts);
+	if ((len + 12) > (PATH_SIZE - 2))
+		return;
+	pathtail = &fonts[len];
+
+	copy("*.*", pathtail);
+
+	olddta = Fgetdta();
+	Fsetdta((void *) &info);
+	error = Fsfirst(fonts, FA_RDONLY|FA_HIDDEN|FA_SYSTEM|FA_SUBDIR);
+	while (error == 0)
+	{
+		Fontheader *new_font;
+
+		info.dta_name[12] = 0;
+		copy(info.dta_name, pathtail);
+
+		if (info.dta_attribute & FA_SUBDIR)
+		{
+			if (!equal(info.dta_name, ".") && !equal(info.dta_name, ".."))
+			{
+				copy("\\", &fonts[length(fonts)]);
+				load_font_dir(vwk, fonts);
+			}
+		} else
+		{
+			PRINTF(("   Load font: %s\n", fonts));
+	
+			if ((new_font = external_load_font(vwk, fonts)) != NULL)
+			{
+				/* It's assumed that a device has been initialized (driver exists) */
+				if (insert_font(&vwk->real_address->writing.first_font, new_font))
+					vwk->real_address->writing.fonts++;
+			}
+		}	
+		error = Fsnext();
+	}
+
+	Fsetdta(olddta);
+}
+
+static long load_fonts(Virtual *vwk, const char **ptr)
+{
+	char fonts[PATH_SIZE];
 
 	if (!external_init)
 	{
@@ -1200,37 +1248,13 @@ static long load_fonts(Virtual *vwk, const char **ptr)
 	if (get_pathname(ptr, fonts) != 1)
 		return -1;
 
-	/* Point past the last char */
-	pathtail = &fonts[length(fonts)];
-
-	copy("*.*", pathtail);
-
 	PRINTF(("Fonts:: %s\n", fonts));
 
 	/* Initialize FreeType2 module */
 	external_init();
 
-	Fsetdta((void *) &info);
-	error = Fsfirst(fonts, 7);
-	while (error == 0)
-	{
-		Fontheader *new_font;
-
-		info.dta_name[12] = 0;
-		copy(info.dta_name, pathtail);
-
-		PRINTF(("   Load font: %s\n", fonts));
-
-		if ((new_font = external_load_font(vwk, fonts)) != NULL)
-		{
-			/* It's assumed that a device has been initialized (driver exists) */
-			if (insert_font(&vwk->real_address->writing.first_font, new_font))
-				vwk->real_address->writing.fonts++;
-		}
-
-		error = Fsnext();
-	}
-
+	load_font_dir(vwk, fonts);
+	
 	PRINTF(("   Load fonts done: %d\n", vwk->real_address->writing.fonts));
 
 	return 1;
@@ -1240,7 +1264,7 @@ static long load_fonts(Virtual *vwk, const char **ptr)
 /*
  * Load and parse FVDI.SYS
  */
-int load_prefs(Virtual *vwk, char *sysname)
+int load_prefs(Virtual *vwk, const char *sysname)
 {
 	long file_size;
 	char *buffer, token[TOKEN_SIZE], name[NAME_SIZE];
@@ -1355,7 +1379,9 @@ int load_prefs(Virtual *vwk, char *sysname)
 				ptr = get_token(ptr, token, TOKEN_SIZE);
 				system_font = 1;
 			} else
+			{
 				system_font = 0;
+			}
 			copy(path, name);
 			cat(token, name);
 			if ((new_font = load_font(name)) == NULL)
