@@ -30,24 +30,22 @@ extern short key_pressed;
 extern List *driver_list;
 extern long *pid;
 
-extern long trap2_address;
-extern long vdi_address;
-extern long trap14_address;
-extern long lineA_address;
-extern long bconout_address;
+extern void (*trap2_address)(void);
+extern void (*vdi_address)(void);
+extern void (*trap14_address)(void);
+extern void (*lineA_address)(void);
 
-extern void *trap2_temp;
-extern void *trap14;
-extern void *lineA;
-extern void *bconout_stub;
-extern void *vdi_dispatch;
-extern void *eddi_dispatch;
-extern void *init;
-extern void *data_start;
-extern void *bss_start;
+extern void trap2_temp(void);
+extern void trap14(void);
+extern void lineA(void);
+extern void vdi_dispatch(void);
+extern void eddi_dispatch(void);
+extern void init(void);
+extern void data_start(void);
+extern void bss_start(void);
 
 extern long bconout_address;
-extern void *bconout_stub;
+extern void bconout_stub(void);
 
 extern long mint;
 extern long magic;

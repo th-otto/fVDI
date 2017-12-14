@@ -113,7 +113,7 @@ long stack_address;
 static long bconout_hook(void)
 {
 	bconout_address = *(long *) 0x586;
-	*(long *) 0x586 = (long) &bconout_stub;
+	*(long *) 0x586 = (long) bconout_stub;
 
 	return 0;
 }
@@ -215,39 +215,20 @@ long startup(void)
 		PUTS("Patching NVDI dispatcher\n");
 	}
 
-#ifdef __PUREC__
 	if (booted && !fakeboot && !singlebend)
 	{
-		trap2_address = (long) Setexc(34, (void (*)()) &trap2_temp);	/* Install a temporary trap handler if real boot (really necessary?) */
+		trap2_address = (void (*)(void)) Setexc(34, trap2_temp);	/* Install a temporary trap handler if real boot (really necessary?) */
 	} else
 	{
-		vdi_address = (long) Setexc(34, (void (*)()) &vdi_dispatch);	/*   otherwise the dispatcher directly */
+		vdi_address = (void (*)(void)) Setexc(34, vdi_dispatch);	/*   otherwise the dispatcher directly */
 	}
 
 #if 0
 	if (xbiosfix)
 #endif
-		trap14_address = (long) Setexc(46, (void (*)()) &trap14);	/* Install an XBIOS handler */
-#else
-	if (booted && !fakeboot && !singlebend)
-	{
-		trap2_address = (long) Setexc(34, (void *) &trap2_temp);	/* Install a temporary trap handler if real boot (really necessary?) */
-	} else
-	{
-		vdi_address = (long) Setexc(34, (void *) &vdi_dispatch);	/*   otherwise the dispatcher directly */
-	}
+		trap14_address = (void (*)(void)) Setexc(46, trap14);		/* Install an XBIOS handler */
 
-#if 0
-	if (xbiosfix)
-#endif
-		trap14_address = (long) Setexc(46, (void *) &trap14);	/* Install an XBIOS handler */
-#endif
-
-#ifdef __PUREC__
-	lineA_address = (long) Setexc(10, (void (*)()) &lineA);	/* Install a LineA handler */
-#else
-	lineA_address = (long) Setexc(10, (void *) &lineA);	/* Install a LineA handler */
-#endif
+	lineA_address = (void (*)(void)) Setexc(10, lineA);	/* Install a LineA handler */
 
 	if (bconout)
 	{
@@ -276,7 +257,7 @@ long startup(void)
 
 	if (debug)
 	{
-		PRINTF(("fVDI engine Text: $%08lx   Data: $%08lx   Bss: $%08lx\n", (long) &init, (long) &data_start, (long) &bss_start));
+		PRINTF(("fVDI engine Text: $%08lx   Data: $%08lx   Bss: $%08lx\n", (long) init, (long) data_start, (long) bss_start));
 		if (super->fvdi_log.active)
 		{
 			PRINTF(("Logging at $%08lx\n", (long) &super->fvdi_log));
@@ -349,7 +330,7 @@ long startup(void)
 
 	if (!disabled)
 	{
-		*(short *) ((long) &vdi_dispatch + 2) = 0x0073;	/* Finally make fVDI take normal VDI calls */
+		*(short *) ((long) vdi_dispatch + 2) = 0x0073;	/* Finally make fVDI take normal VDI calls */
 		readable->cookie.flags |= ACTIVE;
 	}
 
@@ -359,7 +340,7 @@ long startup(void)
 	 */
 
 	old_eddi = get_cookie("EdDI", 0);
-	set_cookie("EdDI", (long) &eddi_dispatch);
+	set_cookie("EdDI", (long) eddi_dispatch);
 
 	old_fsmc = get_cookie("FSMC", 0);	/* Experimental */
 	set_cookie("FSMC", (long) &readable->fsmc_cookie);
