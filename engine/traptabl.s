@@ -141,18 +141,66 @@ default_functions:
 	dc.l	vqt_attributes
 	dc.w	0,2
 	dc.l	vst_alignment
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing	; 40-99
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
+	dc.l	0,nothing ; 40
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing ; 50
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing ; 60
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing ; 70
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing ; 80
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing ; 90
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
 	dc.w	6,45
 	dc.l	v_opnvwk		; also v_opnbm
 	dc.w	0,0
@@ -220,23 +268,72 @@ default_functions:
 	dc.l	0,nothing	; vqt_justified?
 	dc.l	0,nothing
 	dc.l	0,vex_wheelv
-	dc.l	0,nothing,0,nothing	; 135-199
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing
-	dc.w	0,0
-	dc.l	vr_transfer_bits
+	dc.l	0,nothing ; 135
 	dc.l	0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.w	0,0
+	dc.l	vr_transfer_bits ; 170
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing ; 180
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing ; 190
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
 	dc.w	0,1
 	dc.l	vs_fg_color		; 200
 	dc.w	0,1
@@ -257,11 +354,25 @@ default_functions:
 	dc.l	inverse_table
 	dc.w	0,0
 	dc.l	vq_x_color
-	dc.l	0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing,0,nothing,0,nothing,0,nothing
-	dc.l	0,nothing,0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
+	dc.l	0,nothing
 	dc.w	0,3
 	dc.l	vqt_xfntinfo
 	dc.w	0,0
