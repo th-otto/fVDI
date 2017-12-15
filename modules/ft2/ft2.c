@@ -801,9 +801,9 @@ void ft2_xfntinfo(Virtual * vwk, Fontheader * font, long flags, XFNT_INFO * info
 	/* 0x100 is without enlargement, 0x200 with */
 	if (flags & (XFNT_INFO_SIZES|XFNT_INFO_SIZES2))
 	{
-		info->pt_cnt = size_count;
-		for (i = 0; i < size_count; i++)
+		for (i = 0; i < size_count && sizes[i] != 0xffff; i++)
 			info->pt_sizes[i] = sizes[i];
+		info->pt_cnt = i;
 	}
 }
 

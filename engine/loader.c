@@ -98,7 +98,7 @@ char silent[32] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 char silentx[1] = { 0 };
 
 char vq_gdos_value[] = "fVDI";
-unsigned short sizes[16] = { 8, 9, 10, 11, 12, 14, 18, 24, 36, 48, 0xffff };
+unsigned short sizes[64] = { 8, 9, 10, 11, 12, 14, 18, 24, 36, 48, 0xffff };
 
 short size_count = 11;
 short size_user = 0;
@@ -1045,7 +1045,7 @@ static long set_size(Virtual *vwk, const char **ptr)
 		}
 		*ptr = get_token(*ptr, token, TOKEN_SIZE);
 		size = atol(token);
-		if (size > 0 && size <= 100 && (size_count < (short)(sizeof(sizes) / sizeof(sizes[0]))))
+		if (size > 0 && size <= 300 && (size_count < (short)(sizeof(sizes) / sizeof(sizes[0]))))
 		{
 			if (!size_user)
 			{
