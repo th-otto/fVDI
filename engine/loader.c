@@ -1045,7 +1045,7 @@ static long set_size(Virtual *vwk, const char **ptr)
 		}
 		*ptr = get_token(*ptr, token, TOKEN_SIZE);
 		size = atol(token);
-		if ((size > 0) && (size <= 100) && (size_count < (short)(sizeof(sizes) / sizeof(sizes[0]))))
+		if (size > 0 && size <= 100 && (size_count < (short)(sizeof(sizes) / sizeof(sizes[0]))))
 		{
 			if (!size_user)
 			{
@@ -1393,7 +1393,7 @@ int load_prefs(Virtual *vwk, const char *sysname)
 				if (system_font)
 				{
 					new_font->id = 1;
-					new_font->flags |= 0x01;
+					new_font->flags |= FONTF_SYSTEM;
 				}
 				if (insert_font(&driver->default_vwk->real_address->writing.first_font, new_font))
 					driver->default_vwk->real_address->writing.fonts++;	/* It's assumed that a device has been initialized (driver exists) */

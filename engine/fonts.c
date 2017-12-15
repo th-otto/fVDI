@@ -27,10 +27,10 @@ long DRIVER_EXPORT unpack_font(Fontheader * header, long format)
 	height = header->height;
 	width = header->widest.cell;
 
-	if (!(header->flags & 0x08))		/* Only allow mono-spaced for now */
+	if (!(header->flags & FONTF_MONOSPACED))		/* Only allow mono-spaced for now */
 		return 0;
 
-	if (header->flags & 0x02)			/* Don't allow horizontal offset for now */
+	if (header->flags & FONTF_HORTABLE)			/* Don't allow horizontal offset for now */
 		return 0;
 
 	if ((width != 8) && (width != 6))	/* Only allow 6 and 8 pixel wide for now */
@@ -97,7 +97,7 @@ long DRIVER_EXPORT fixup_font(Fontheader * header, char *buffer, long flip)
 		flip_words(&header->width, (&header->height - &header->width) + 1);
 
 		flip_words(buffer + (long) header->table.character - header_size, header->code.high - header->code.low + 1 + 1);
-		if ((header->flags & 0x02) && header->table.horizontal && (header->table.horizontal != header->table.character))
+		if ((header->flags & FONTF_HORTABLE) && header->table.horizontal && (header->table.horizontal != header->table.character))
 			flip_words(buffer + (long) header->table.horizontal - header_size,
 					   header->code.high - header->code.low + 1);
 	}
