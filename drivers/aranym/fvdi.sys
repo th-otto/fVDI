@@ -12,6 +12,10 @@ exitkey q
 
 # ----- Standard setup -----
 
+antialias
+filecache 1024
+preallocate 1024
+
 casekey b no_fsm_fonts
 cookie nvdi=$0501
 cookie speedo
@@ -181,6 +185,12 @@ silent 23 24 25 104 114
 #casekey m monochrome
 
 
+casekey b no_vector_fonts
+FONTS = C:\gemsys\ttf\
+:no_vector_fonts
+
+size 6 8 9 10 11 12 14 16 18 24 36 40 44 48 64 72
+
 # ----- Driver configuration -----
 
 # Common driver initialization options (any driver can add to these):
@@ -273,6 +283,14 @@ silent 23 24 25 104 114
 #     Test a few things.
 
 
+# fVDI should be able to deal with any standard fonts.
+# Just list what you want to use below the driver definition.
+# You specify a system font by adding an 's' before the font
+# filename. If you do not specify a system font, fVDI will use the
+# default one (from the ROM).
+# It is a very good idea to have a system font in the same sizes as
+# the normal GEM one, but it is not necessary.
+
 #01r 1dummy.sys
 #01r 1plane.sys
 #01r 4plane.sys
@@ -361,24 +379,8 @@ goto font_specification
 01r aranym.sys mode 1280x1024x16@72 accelerate xxxxxxx
 goto font_specification
 
-# fVDI should be able to deal with any standard fonts.
-# Just list what you want to use below the driver definition.
-# You specify a system font by adding an 's' before the font
-# filename. If you do not specify a system font, fVDI will use the
-# default one (from the ROM).
-# It is a very good idea to have a system font in the same sizes as
-# the normal GEM one, but it is not necessary.
-
 :font_specification
 swapkey
-FONTS = c:\GEMSYS\TTF\
-filecache 1024
-antialias
-
-size 8 10 12 16 36
-size 36 48 24
-size 64
-size 6
 
 #s MONACO08.FNT
 #s MONACO09.FNT
