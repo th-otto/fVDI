@@ -238,7 +238,7 @@ short const Atari2Bics[256] = {
 	294,
 	293,
 	110,
-	100,
+	100, /* !!! maps to per-mille sign in speedo fonts, which is not available in most truetype fonts; should map to 0x2227 */
 	303,
 /* 0xe0 */
 	319,

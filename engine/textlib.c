@@ -209,8 +209,8 @@ long CDECL lib_vqt_name(Virtual *vwk, long number, short *name)
 
 
 
-/* lib_vqt_font_info(&minchar, &maxchar, distance, &maxwidth, effects) */
-void CDECL lib_vqt_font_info(Virtual *vwk, short *minchar, short *maxchar, short *distance, short *maxwidth, short *effects)
+/* lib_vqt_fontinfo(&minchar, &maxchar, distance, &maxwidth, effects) */
+void CDECL lib_vqt_fontinfo(Virtual *vwk, short *minchar, short *maxchar, short *distance, short *maxwidth, short *effects)
 {
 	*minchar = vwk->text.current_font->code.low;
 	*maxchar = vwk->text.current_font->code.high;
