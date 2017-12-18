@@ -1,5 +1,7 @@
 /* see javadoc at the bottom */
-short Atari2Bics[] = {
+#include "fvdi.h"
+#include "modules/ft2.h"
+short const Atari2Bics[256] = {
 /* 0x00 */
 	  0,
 	348,
@@ -177,8 +179,8 @@ short Atari2Bics[] = {
 	209,
 	195,
 	196,
-	65535,
-	65535,
+	538,
+	544,
 	127,
 	310,
 	309,

@@ -102,6 +102,8 @@ void CDECL lib_vqt_xfntinfo(Virtual *vwk, long flags, long id, long index, XFNT_
 void CDECL lib_vqt_fontheader(Virtual *vwk, VQT_FHDR *fhdr);
 int CDECL lib_vst_arbpt(Virtual *vwk, long height, short *charw, short *charh, short *cellw, short *cellh);
 void CDECL lib_vqt_attributes(Virtual * vwk, short *settings);
+unsigned short CDECL lib_vqt_char_index(Virtual *vwk, short *intin);
+short CDECL lib_vst_charmap(Virtual *vwk, long mode);
 
 void CDECL lib_vs_color(Virtual *vwk, long pen, RGB *values);
 int CDECL lib_vq_color(Virtual *vwk, long pen, long flag, RGB *colour);
@@ -127,6 +129,7 @@ extern void*       (*external_char_advance)(Virtual *vwk, Fontheader *font, long
 
 extern void        (*external_xfntinfo)(Virtual *vwk, Fontheader *font, long flags, XFNT_INFO *info);
 extern void        (*external_fontheader)(Virtual *vwk, Fontheader *font, VQT_FHDR *fhdr);
+extern unsigned short (*external_char_index) (Virtual *vwk, Fontheader *font, short *intin);
 #endif
 
 #ifdef FVDI_DEBUG

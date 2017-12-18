@@ -1,3 +1,8 @@
+extern short const Atari2Unicode[256];
+extern short const Atari2Bics[256];
+#define BICS_COUNT 564
+extern unsigned short const Bics2Unicode[BICS_COUNT];
+
 /* Headers to ft2_* functions ... */
 int ft2_init(void);
 void ft2_term(void);
@@ -11,3 +16,4 @@ void *ft2_char_bitmap(Virtual * vwk, Fontheader * font, long ch, short *bitmap_i
 void *ft2_char_advance(Virtual * vwk, Fontheader * font, long ch, short *advance_info);
 void ft2_xfntinfo(Virtual * vwk, Fontheader * font, long flags, XFNT_INFO * info);
 void ft2_fontheader(Virtual * vwk, Fontheader * font, VQT_FHDR * fhdr);
+unsigned short ft2_char_index(Virtual *vwk, Fontheader *font, short *intin);
