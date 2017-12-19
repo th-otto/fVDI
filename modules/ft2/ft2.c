@@ -822,7 +822,7 @@ static FT_Error ft2_load_glyph(Virtual * vwk, Fontheader * font, short ch, c_gly
 	if (!cached->index)
 	{
 		/* vwk->text.charmap  ~  vst_charmap (vst_map_mode()) mapping settings */
-		if (vwk->text.charmap == 1 /* ASCII */  && ch >= 0 && ch < 256)
+		if (vwk->text.charmap == MAP_ATARI /* ASCII */  && ch >= 0 && ch < 256)
 		{
 			unsigned short cc = 0xffff;
 
@@ -877,11 +877,11 @@ static FT_Error ft2_load_glyph(Virtual * vwk, Fontheader * font, short ch, c_gly
 #if 0
 			cached->index = FT_Get_Char_Index(face, Atari2Unicode[ch]);
 #endif
-		} else if (vwk->text.charmap == 2 /* UNICODE */ )
+		} else if (vwk->text.charmap == MAP_UNICODE)
 		{
 			/* app use: used at least by the 'Highwire web browser' */
 			cached->index = FT_Get_Char_Index(face, ch);
-		} else if (vwk->text.charmap == 0)
+		} else if (vwk->text.charmap == MAP_BITSTREAM)
 		{
 			/* BICS */ /* no char -> index translation, BICS char index is expected */
 
@@ -2302,7 +2302,7 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
 	/*
 	 * same logic here as in ft2_load_glyph
 	 */
-	if (src_mode == 1 && ch < 256)
+	if (src_mode == MAP_ATARI && ch < 256)
 	{
 		unsigned short cc = 0xffff;
 
@@ -2350,11 +2350,11 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
 			index = FT_Get_Char_Index(face, cc == 0xffff ? (FT_ULong)-1 : cc);
 		}
 		ch = cc;
-	} else if (src_mode == 2 /* UNICODE */ )
+	} else if (src_mode == MAP_UNICODE)
 	{
 		/* app use: used at least by the 'Highwire web browser' */
 		index = FT_Get_Char_Index(face, ch);
-	} else if (src_mode == 0)
+	} else if (src_mode == MAP_BITSTREAM)
 	{
 		/* BICS */ /* no char -> index translation, BICS char index is expected */
 
@@ -2372,10 +2372,10 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
 	if (index == 0)
 		return 0xffff;
 
-	if (dst_mode == 2)
+	if (dst_mode == MAP_UNICODE)
 	{
 		return ch;
-	} else if (dst_mode == 1)
+	} else if (dst_mode == MAP_ATARI)
 	{
 		const short *table;
 		int i;
@@ -2399,7 +2399,7 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
 					return i;
 			}
 		}
-	} else if (dst_mode == 0)
+	} else if (dst_mode == MAP_BITSTREAM)
 	{
 		const unsigned short *table = Bics2Unicode;
 		int i;

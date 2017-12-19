@@ -97,7 +97,7 @@ void CDECL lib_vqt_extent(Virtual *vwk, long length, short *string, short *point
 long CDECL lib_vst_effects(Virtual *vwk, long effects);
 void CDECL lib_vst_alignment(Virtual *vwk, unsigned long halign, unsigned long valign, short *hresult, short *vresult);
 long CDECL lib_vqt_name(Virtual * vwk, long number, short *name);
-void CDECL lib_vqt_fontinfo(Virtual *vwk, short *minchar, short *maxchar, short *distance, short *maxwidth, short *effects);
+void CDECL lib_vqt_fontinfo(Virtual *vwk, short *intout, short *ptsout);
 void CDECL lib_vqt_xfntinfo(Virtual *vwk, long flags, long id, long index, XFNT_INFO *info);
 void CDECL lib_vqt_fontheader(Virtual *vwk, VQT_FHDR *fhdr);
 int CDECL lib_vst_arbpt(Virtual *vwk, long height, short *charw, short *charh, short *cellw, short *cellh);

@@ -67,7 +67,7 @@ unsigned short CDECL lib_vqt_char_index(Virtual *vwk, short *intin)
 		/*
 		 * only ASCII mapping supported for bitmap fonts
 		 */
-		if (src_mode != 1 || scr_index >= 256)
+		if (src_mode != MAP_ATARI || scr_index >= 256)
 		{
 			scr_index = 0xffff;
 		} else
@@ -75,10 +75,10 @@ unsigned short CDECL lib_vqt_char_index(Virtual *vwk, short *intin)
 			scr_index = Bics2Unicode[Atari2Bics[scr_index]];
 			if (scr_index != 0xffff)
 			{
-				if (dst_mode == 2)
+				if (dst_mode == MAP_UNICODE)
 				{
 					/* nothing to do */
-				} else if (dst_mode == 1)
+				} else if (dst_mode == MAP_ATARI)
 				{
 					const short *table = Atari2Bics;
 					int i;
@@ -87,7 +87,7 @@ unsigned short CDECL lib_vqt_char_index(Virtual *vwk, short *intin)
 						if (table[i] >= 0 && Bics2Unicode[table[i]] == scr_index)
 							return i;
 					scr_index = 0xffff;
-				} else if (dst_mode == 0)
+				} else if (dst_mode == MAP_BITSTREAM)
 				{
 					const unsigned short *table = Bics2Unicode;
 					int i;
@@ -113,8 +113,8 @@ short CDECL lib_vst_charmap(Virtual *vwk, long mode)
 {
 	Fontheader *font = vwk->text.current_font;
 
-	if (mode != 1 && !(font->flags & FONTF_EXTERNAL))
-		mode = 1;
+	if (mode != MAP_ATARI && !(font->flags & FONTF_EXTERNAL))
+		mode = MAP_ATARI;
 	vwk->text.charmap = mode;
 	return mode;
 }
@@ -210,19 +210,50 @@ long CDECL lib_vqt_name(Virtual *vwk, long number, short *name)
 
 
 /* lib_vqt_fontinfo(&minchar, &maxchar, distance, &maxwidth, effects) */
-void CDECL lib_vqt_fontinfo(Virtual *vwk, short *minchar, short *maxchar, short *distance, short *maxwidth, short *effects)
+void CDECL lib_vqt_fontinfo(Virtual *vwk, short *intout, short *ptsout)
 {
-	*minchar = vwk->text.current_font->code.low;
-	*maxchar = vwk->text.current_font->code.high;
-	distance[0] = vwk->text.current_font->distance.bottom;
-	distance[1] = vwk->text.current_font->distance.descent;
-	distance[2] = vwk->text.current_font->distance.half;
-	distance[3] = vwk->text.current_font->distance.ascent;
-	distance[4] = vwk->text.current_font->distance.top;
-	*maxwidth = vwk->text.current_font->widest.cell;
-	effects[0] = 0;						/* Temporary current spec. eff. change of width! */
-	effects[1] = 0;						/* Temporary current spec. eff. change to left! */
-	effects[2] = 0;						/* Temporary current spec. eff. change to right! */
+	Fontheader *font = vwk->text.current_font;
+	short minchar, maxchar;
+	
+	if (font->flags & FONTF_EXTERNAL)
+	{
+		switch (vwk->text.charmap)
+		{
+		case MAP_BITSTREAM:
+			minchar = 0;
+			maxchar = BICS_COUNT;
+			break;
+		default:
+		case MAP_ATARI:
+			minchar = 0;
+			maxchar = 255;
+			break;
+		case MAP_UNICODE:
+			/*
+			 * lowest/highest values from Bics2Unicode table;
+			 * keep this in sync
+			 */
+			minchar = 0x20;
+			maxchar = 0xfb04;
+			break;
+		}
+	} else
+	{
+		minchar = font->code.low;
+		maxchar = font->code.high;
+	}
+	intout[0] = minchar;
+	intout[1] = maxchar;
+	ptsout[0] = font->widest.cell;
+	ptsout[1] = font->distance.bottom;
+	ptsout[3] = font->distance.descent;
+	ptsout[5] = font->distance.half;
+	ptsout[7] = font->distance.ascent;
+	ptsout[9] = font->distance.top;
+	ptsout[2] = 0;						/* Temporary current spec. eff. change of width! */
+	ptsout[4] = 0;						/* Temporary current spec. eff. change to left! */
+	ptsout[6] = 0;						/* Temporary current spec. eff. change to right! */
+	ptsout[8] = 0;
 }
 
 

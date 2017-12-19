@@ -217,7 +217,7 @@ Virtual *initialize_vdi(void)
 	vwk->text.alignment.horizontal = 0;
 	vwk->text.alignment.vertical = 0;
 	vwk->text.rotation = 0;
-	vwk->text.charmap = 1;				/* ASCII words mapping */
+	vwk->text.charmap = MAP_ATARI;			/* ASCII words mapping */
 	vwk->text.font = 0;
 	vwk->text.current_font = 0;			/* Address will be set on first call to vst_font */
 	vwk->line.colour.background = WHITE;
