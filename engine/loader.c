@@ -1206,7 +1206,7 @@ static void load_font_dir(Virtual *vwk, char *fonts)
 
 	olddta = Fgetdta();
 	Fsetdta((void *) &info);
-	error = Fsfirst(fonts, FA_RDONLY|FA_HIDDEN|FA_SYSTEM|FA_SUBDIR);
+	error = Fsfirst(fonts, FA_RDONLY|FA_HIDDEN|FA_SYSTEM|FA_DIR);
 	while (error == 0)
 	{
 		Fontheader *new_font;
@@ -1214,7 +1214,7 @@ static void load_font_dir(Virtual *vwk, char *fonts)
 		info.dta_name[12] = 0;
 		copy(info.dta_name, pathtail);
 
-		if (info.dta_attribute & FA_SUBDIR)
+		if (info.dta_attribute & FA_DIR)
 		{
 			if (!equal(info.dta_name, ".") && !equal(info.dta_name, ".."))
 			{
