@@ -183,7 +183,7 @@ static void ft2_close_face(Fontheader * font)
 	if (debug > 1)
 	{
 		PRINTF(("FT2 close_face: %s\n", font->extra.filename));
-		PRINTF(("%s, size: %ld\n", ((FT_Face) font->extra.unpacked.data)->family_name, (long)font->size));
+		PRINTF(("%s, size: %d\n", ((FT_Face) font->extra.unpacked.data)->family_name, font->size));
 	}
 #endif
 
@@ -201,7 +201,7 @@ static Fontheader *ft2_load_metrics(Virtual * vwk, Fontheader * font, FT_Face fa
 		FT_Fixed scale;
 
 		/* Set the character size and use default DPI (72) */
-#if 1
+#if 0
 		if (!ptsize)
 		{
 			access->funcs.puts("Attempt to load metrics with bad point size!\n");
@@ -240,7 +240,7 @@ static Fontheader *ft2_load_metrics(Virtual * vwk, Fontheader * font, FT_Face fa
 		/* Find the required font size in the bitmap face (if present) */
 		if (debug > 1)
 		{
-			PRINTF(("FT2 face_sizes(%ld) ", (long) face->num_fixed_sizes));
+			PRINTF(("FT2 face_sizes(%d) ", face->num_fixed_sizes));
 		}
 
 		for (s = 0; s < face->num_fixed_sizes; s++)
@@ -628,7 +628,7 @@ static Fontheader *ft2_dup_font(Virtual * vwk, Fontheader * src, short ptsize)
 #ifdef DEBUG_FONTS
 		if (debug > 1)
 		{
-			PRINTF(("FT2  dup_font: %s, size: %ld\n", font->name, (long) font->size));
+			PRINTF(("FT2  dup_font: %s, size: %d\n", font->name, ptsize));
 		}
 #endif
 
@@ -1420,7 +1420,7 @@ void *ft2_char_bitmap(Virtual * vwk, Fontheader * font, long ch, short *bitmap_i
 
 		if (debug > 1)
 		{
-			PRINTF(("FT2 bitmap_info: w=%ld h=%ld ad=%ld yo=%ldßn", (long) g->maxx, (long) font->height, (long) g->advance, (long) g->yoffset));
+			PRINTF(("FT2 bitmap_info: w=%ld h=%ld ad=%ld yo=%ld\n", (long) g->maxx, (long) font->height, (long) g->advance, (long) g->yoffset));
 		}
 
 		return g->bitmap.buffer;
@@ -2056,7 +2056,8 @@ static Fontheader *ft2_find_fontsize(Virtual * vwk, Fontheader * font, short pts
 			}
 	
 			if (i->font->id == font->id &&
-				i->font->size == ptsize && i->font->extra.effects == (vwk->text.effects & FT2_EFFECTS_MASK))
+				i->font->size == ptsize &&
+				i->font->extra.effects == (vwk->text.effects & FT2_EFFECTS_MASK))
 			{
 				listRemove((LINKABLE *) i);
 				listInsert(fonts.head.next, (LINKABLE *) i);
