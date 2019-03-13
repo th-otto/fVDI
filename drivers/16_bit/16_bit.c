@@ -1,4 +1,4 @@
-#if 1
+#if 0
 #define FAST		/* Write in FastRAM buffer */
 #define BOTH		/* Write in both FastRAM and on screen */
 #else
@@ -12,3 +12,4 @@
 #include "../16_bit/16b_fill.c"
 #include "../16_bit/16b_scr.c"
 #include "../16_bit/16b_pal.c"
+#include "../16_bit/16b_spec.c"

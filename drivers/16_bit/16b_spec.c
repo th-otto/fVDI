@@ -19,14 +19,6 @@
 #include "../bitplane/bitplane.h"
 #include "string/memset.h"
 
-#if 1
-#define FAST							/* Write in FastRAM buffer */
-#define BOTH							/* Write in both FastRAM and on screen */
-#else
-#undef FAST
-#undef BOTH
-#endif
-
 char r_16[] = { 5, 11, 12, 13, 14, 15 };
 char g_16[] = { 6, 5, 6, 7, 8, 9, 10 };
 char b_16[] = { 5, 0, 1, 2, 3, 4 };
@@ -282,10 +274,8 @@ void check_token(char *token, const char **ptr)
 long CDECL initialize(Virtual * vwk)
 {
 	Workstation *wk;
-	char *buf;
 	int old_palette_size;
 	Colour *old_palette_colours;
-	int fast_w_bytes;
 	short *pp;
 	
 #if 0
@@ -376,6 +366,9 @@ long CDECL initialize(Virtual * vwk)
 #ifdef FAST
 	if (shadow)
 	{
+		int fast_w_bytes;
+		char *buf;
+
 #if 0									/* It's not clear that this is a good idea */
 		fast_w_bytes = (wk->screen.wrap + 15) & 0xfffffff0;
 #else

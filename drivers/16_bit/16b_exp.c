@@ -11,14 +11,6 @@
  * of license.
  */
 
-#if 1
-#define FAST		/* Write in FastRAM buffer */
-#define BOTH		/* Write in both FastRAM and on screen */
-#else
-#undef FAST
-#undef BOTH
-#endif
-
 #include "fvdi.h"
 #include "../bitplane/bitplane.h"
 
@@ -429,6 +421,9 @@ long CDECL c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *
 			break;
 		}
 	}
+#else
+	(void) to_screen;
+	(void) dst_addr_fast;
 #endif
 	return 1;		/* Return as completed */
 }

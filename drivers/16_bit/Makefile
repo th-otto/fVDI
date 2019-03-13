@@ -37,13 +37,7 @@ SSRC = \
 CSRC = \
 	init.c \
 	colours.c \
-	16b_spec.c \
-	16b_exp.c \
-	16b_blit.c \
-	16b_line.c \
-	16b_fill.c \
-	16b_scr.c \
-	16b_pal.c
+	16_bit.c
 
 # handle DevPac -> gas conversions
 # defines SSRC_GNU and SINCSRC_GNU variables

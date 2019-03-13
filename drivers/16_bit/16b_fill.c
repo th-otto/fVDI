@@ -13,14 +13,6 @@
  * of license.
  */
 
-#if 1
-#define FAST		/* Write in FastRAM buffer */
-#define BOTH		/* Write in both FastRAM and on screen */
-#else
-#undef FAST
-#undef BOTH
-#endif
-
 #include "fvdi.h"
 #include "../bitplane/bitplane.h"
 
