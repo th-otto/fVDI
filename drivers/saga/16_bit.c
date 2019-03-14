@@ -1,4 +1,4 @@
-#if 1
+#if 0
 #define FAST		/* Write in FastRAM buffer */
 #define BOTH		/* Write in both FastRAM and on screen */
 #else
