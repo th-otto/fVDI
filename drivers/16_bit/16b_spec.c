@@ -20,8 +20,8 @@
 #include "string/memset.h"
 
 char r_16[] = { 5, 11, 12, 13, 14, 15 };
-char g_16[] = { 6, 5, 6, 7, 8, 9, 10 };
-char b_16[] = { 5, 0, 1, 2, 3, 4 };
+char g_16[] = { 6,  5,  6,  7,  8,  9, 10 };
+char b_16[] = { 5,  0,  1,  2,  3,  4 };
 char none[] = { 0 };
 
 #if 0
@@ -62,9 +62,10 @@ short shadow = 0;
 
 #if 0
 short cache_img = 0;
-
 short cache_from_screen = 0;
+
 long mode_no = 0;
+
 extern short max_mode;
 
 extern Modes mode_tab[];
@@ -79,7 +80,10 @@ char *preset[] = {
 	"1152x864x16@70  ",
 	"1280x1024x16@70 ",
 	"800x600x32@70   ",
-	"1024x768x32@70  "
+	"1024x768x32@70  ",
+	"1280x720x16@60  ",
+	"1920x1080x16@60 ",
+    "2560x1440x16@60 "
 };
 
 long set_mode(const char **ptr);
@@ -230,7 +234,7 @@ long check_token(char *token, const char **ptr)
 		{
 			switch (options[i].type)
 			{
-			case -1:					/* Function call */
+			case -1:				/* Function call */
 				return ((long (*)(const char **)) options[i].varfunc) (ptr);
 			case 0:					/* Default 1, set to 0 */
 				*(short *) options[i].varfunc = 1 - normal;
@@ -244,7 +248,7 @@ long check_token(char *token, const char **ptr)
 			case 3:
 				if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
 				{
-					;					/* *********** Error, somehow */
+					;				/* *********** Error, somehow */
 				}
 				*ptr = access->funcs.get_token(*ptr, token, 80);
 				*(short *) options[i].varfunc = token[0];
@@ -271,16 +275,12 @@ void check_token(char *token, const char **ptr)
  * and which couldn't be done directly while loading.
  * Supplied is the default fVDI virtual workstation.
  */
-long CDECL initialize(Virtual * vwk)
+long CDECL initialize(Virtual *vwk)
 {
 	Workstation *wk;
 	int old_palette_size;
 	Colour *old_palette_colours;
 	short *pp;
-	
-#if 0
-	int i;
-#endif
 
 #if 0
 	debug = access->funcs.misc(0, 1, 0);
@@ -301,7 +301,7 @@ long CDECL initialize(Virtual * vwk)
 		wk->screen.pixel.height = 25400 / -wk->screen.pixel.height;
 
 
-	/*  
+	/*
 	 * This code needs more work.
 	 * Especially if there was no VDI started since before.
 	 */
@@ -337,7 +337,7 @@ long CDECL initialize(Virtual * vwk)
 #if 0
 			for (i = 0; i < 256; i += old_palette_size)	/* Fill out entire palette with the old colours */
 				access->funcs.copymem(old_palette_colours, &wk->screen.palette.colours[i],
-									  old_palette_size * sizeof(Colour));
+					old_palette_size * sizeof(Colour));
 #else
 			if (*(short *) &c_set_colours != 0x4e75)	/* Look for C... */
 				c_initialize_palette(vwk, 0, 256, default_vdi_colors, wk->screen.palette.colours);

@@ -120,7 +120,7 @@ static void s_xor(short *src_addr, int src_line_add, PIXEL *dst_addr, PIXEL *dst
 				v = ~*dst_addr;
 #endif
 #ifdef BOTH
-				*dst_addr++ = v;
+				*dst_addr_fast++ = v;
 #endif
 				*dst_addr++ = v;
 			} else {
@@ -282,7 +282,7 @@ static void xor(short *src_addr, int src_line_add, PIXEL *dst_addr, PIXEL *dst_a
 				v = ~*dst_addr;
 #endif
 #ifdef BOTH
-				*dst_addr++ = v;
+				*dst_addr_fast++ = v;
 #endif
 				*dst_addr++ = v;
 			} else {
@@ -361,7 +361,7 @@ long CDECL c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *
 	colours = c_get_colour(vwk, colour);
 	foreground = colours;
 	background = colours >> 16;
-	
+
 	src_wrap = (long)src->wdwidth * 2;		/* Always monochrome */
 	src_addr = src->address;
 	src_pos = (short)src_y * (long)src_wrap + (src_x >> 4) * 2;

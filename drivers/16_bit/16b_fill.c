@@ -505,7 +505,7 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 	colours = c_get_colour(vwk, colour);
 	foreground = colours;
 	background = colours >> 16;
-	
+
 	wk = vwk->real_address;
 
 	pos = (short)y * (long)wk->screen.wrap + x * 2;
@@ -516,9 +516,7 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 	if ((addr_fast = wk->screen.shadow.address) != 0) {
 
 		addr += pos >> 1;
-#ifdef BOTH
 		addr_fast += pos >> 1;
-#endif
 		switch (mode) {
 		case 1:				/* Replace */
 			s_fill_replace(addr, addr_fast, line_add, pattern, x, y, w, h, foreground, background);
@@ -533,8 +531,9 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 			s_fill_revtransp(addr, addr_fast, line_add, pattern, x, y, w, h, foreground, background);
 			break;
 		}
-	} else {
+	} else
 #endif
+	{
 		addr += pos >> 1;
 		switch (mode) {
 		case 1:				/* Replace */
@@ -550,8 +549,6 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 			fill_revtransp(addr, addr_fast, line_add, pattern, x, y, w, h, foreground, background);
 			break;
 		}
-#ifdef BOTH
 	}
-#endif
 	return 1;		/* Return as completed */
 }

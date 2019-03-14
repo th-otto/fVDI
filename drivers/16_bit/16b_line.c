@@ -13,9 +13,8 @@
 
 #include "fvdi.h"
 #include "../bitplane/bitplane.h"
+#include "driver.h"
 
-
-extern long CDECL clip_line(Virtual *vwk, long *x1, long *y1, long *x2, long *y2);
 
 /*
  * Make it as easy as possible for the C compiler.
@@ -722,7 +721,7 @@ long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
 	colours = c_get_colour(vwk, colour);
 	foreground = colours;
 	background = colours >> 16;
-	
+
 	wk = vwk->real_address;
 
 	pos = (short)y1 * (long)wk->screen.wrap + x1 * 2;
@@ -763,9 +762,7 @@ long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
 	if ((addr_fast = wk->screen.shadow.address) != 0) {
 
 		addr += pos >> 1;
-#ifdef BOTH
 		addr_fast += pos >> 1;
-#endif
 		if ((pattern & 0xffff) == 0xffff) {
 			switch (mode) {
 			case 1:				/* Replace */
@@ -797,8 +794,9 @@ long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
 				break;
 			}
 		}
-	} else {
+	} else
 #endif
+	{
 		addr += pos >> 1;
 		if ((pattern & 0xffff) == 0xffff) {
 			switch (mode) {
@@ -831,8 +829,6 @@ long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
 				break;
 			}
 		}
-#ifdef BOTH
 	}
-#endif
 	return 1;		/* Return as completed */
 }

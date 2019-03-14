@@ -31,7 +31,7 @@ long CDECL c_get_colour(Virtual *vwk, long colour)
 	Colour *fore_pal, *back_pal;
 	unsigned short foreground, background;
 	unsigned short *realp;
-	
+
 	local_palette = vwk->palette;
 	if (local_palette && !((long)local_palette & 1))	/* Complete local palette? */
 		fore_pal = back_pal = local_palette;
@@ -56,15 +56,14 @@ long CDECL c_get_colour(Virtual *vwk, long colour)
 }
 
 
-void CDECL
-c_set_colours(Virtual *vwk, long start, long entries, unsigned short *requested, Colour palette[])
+void CDECL c_set_colours(Virtual *vwk, long start, long entries, unsigned short *requested, Colour palette[])
 {
 	unsigned short colour;
 	unsigned short component;
 	unsigned long tc_word;
 	int i;
 	short *realp;
-	
+
 	(void) vwk;
 	if ((long)requested & 1) {			/* New entries? */
 		requested = (unsigned short *)((long)requested & 0xfffffffeL);
@@ -119,4 +118,3 @@ c_set_colours(Virtual *vwk, long start, long entries, unsigned short *requested,
 		}
 	}
 }
-
