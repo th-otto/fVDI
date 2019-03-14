@@ -70,7 +70,7 @@ extern short max_mode;
 
 extern Modes mode_tab[];
 
-char *preset[] = {
+static const char *const preset[] = {
 	"640x480x8@60    ",
 	"800x600x8@70    ",
 	"1024x768x8@70   ",
@@ -89,7 +89,7 @@ char *preset[] = {
 long set_mode(const char **ptr);
 #endif
 
-Option options[] = {
+static Option const options[] = {
 #if 0
 	{"mode", set_mode, -1},				/* mode key/<n>/WIDTHxHEIGHTxDEPTH@FREQ */
 	{"aesbuf", set_aesbuf, -1},			/* aesbuf address, set AES background buffer address */
@@ -103,7 +103,7 @@ Option options[] = {
 
 
 #if 0
-char *get_num(char *token, short *num)
+static const char *get_num(const char *token, short *num)
 {
 	char buf[10], c;
 	int i;
@@ -126,7 +126,7 @@ char *get_num(char *token, short *num)
 }
 
 
-int search_mode(char *token)
+static int search_mode(const char *token)
 {
 	short width, height, bpp, freq;
 	int b, w, f;
@@ -150,10 +150,10 @@ int search_mode(char *token)
 }
 
 
-long set_mode(const char **ptr)
+static long set_mode(const char **ptr)
 {
 	char token[80];
-	char *tokenptr;
+	const char *tokenptr;
 
 	if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
 	{
@@ -178,7 +178,7 @@ long set_mode(const char **ptr)
 	return 1;
 }
 
-long set_aesbuf(const char **ptr)
+static long set_aesbuf(const char **ptr)
 {
 	char token[80];
 
@@ -190,7 +190,7 @@ long set_aesbuf(const char **ptr)
 	return 1;
 }
 
-long set_screen(const char **ptr)
+static long set_screen(const char **ptr)
 {
 	char token[80];
 

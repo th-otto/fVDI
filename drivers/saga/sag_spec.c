@@ -155,7 +155,7 @@ static long set_mode(const char **ptr)
 	return 1;
 }
 
-Option options[] = {
+static Option const options[] = {
 	{"debug",      &debug,             2},  /* debug, turn on debugging aids */
 	{"mode",       set_mode,          -1},  /* mode WIDTHxHEIGHTxDEPTH@FREQ */
 };
