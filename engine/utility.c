@@ -1432,8 +1432,8 @@ void DRIVER_EXPORT free(void *addr)
 			}
 			if (current->prev == 0)
 			{
-				puts("BUG!! current->prev == 0");
-				puts("Please comment out nomemlink in fvdi.sys");
+				puts("BUG!! current->prev == 0\n");
+				puts("Please comment out nomemlink in fvdi.sys\n");
 				for (;;) ;
 			}
 			current->prev->next = current->next;

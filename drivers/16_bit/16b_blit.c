@@ -106,17 +106,16 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
 	PIXEL_32 *dst_addr32;
 #ifdef BOTH
 	PIXEL_32 *dst_addr_fast32;
+	PIXEL v;
+	PIXEL_32 v32;
 #endif
 
 	(void) dst_addr_fast;
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for (i = h - 1; i >= 0; i--)
-	{
+
 #ifdef BOTH
-		PIXEL v;
-		PIXEL_32 v32;
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
 			" move.w (%2)+,%3\n" \
@@ -141,6 +140,10 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32; \
 		dst_addr_fast = (PIXEL *)dst_addr_fast32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add; \
+		dst_addr_fast += dst_line_add
 #else
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -160,78 +163,223 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
 #define SET_PIXEL_ADDR \
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add
 #endif
 
-		j = w;
-
-		if (j >= 8)
+	switch (w & 7)
+	{
+	case 0:
+		for (i = h - 1; i >= 0; i--)
 		{
-			SET_PIXEL32_ADDR;
-			while ((j -= 8) >= 0)
+			j = w;
+	
+			if (j >= 8)
 			{
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
 			}
-			SET_PIXEL_ADDR;
+			NEXTLINE;
 		}
-		switch (j & 7)
+		break;
+
+	case 1:
+		for (i = h - 1; i >= 0; i--)
 		{
-		case 1:
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
 			COPY_PIXEL;
-			break;
-		case 2:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 3:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 4:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 5:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 6:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 7:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
+			NEXTLINE;
 		}
-		src_addr += src_line_add;
-		dst_addr += dst_line_add;
-#ifdef BOTH
-		dst_addr_fast += dst_line_add;
-#endif
+		break;
+
+	case 2:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+	
+	case 3:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+	
+	case 4:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 5:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 6:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 7:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
 	}
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
 #undef SET_PIXEL32_ADDR
 #undef SET_PIXEL_ADDR
+#undef NEXTLINE
 }
 
 
@@ -242,6 +390,8 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
 	short int i, j;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
+	PIXEL v;
+	PIXEL_32 v32;
 #ifdef BOTH
 	PIXEL_32 *dst_addr_fast32;
 #endif
@@ -250,9 +400,7 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for(i = h - 1; i >= 0; i--) {
-		PIXEL v;
-		PIXEL_32 v32;
+
 #ifdef BOTH
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -280,6 +428,10 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32; \
 		dst_addr_fast = (PIXEL *)dst_addr_fast32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add; \
+		dst_addr_fast += dst_line_add
 #else
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -301,78 +453,223 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
 #define SET_PIXEL_ADDR \
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add
 #endif
 
-		j = w;
-
-		if (j >= 8)
+	switch (w & 7)
+	{
+	case 0:
+		for (i = h - 1; i >= 0; i--)
 		{
-			SET_PIXEL32_ADDR;
-			while ((j -= 8) >= 0)
+			j = w;
+	
+			if (j >= 8)
 			{
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
 			}
-			SET_PIXEL_ADDR;
+			NEXTLINE;
 		}
-		switch (j & 7)
+		break;
+	
+	case 1:
+		for (i = h - 1; i >= 0; i--)
 		{
-		case 1:
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
 			COPY_PIXEL;
-			break;
-		case 2:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 3:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 4:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 5:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 6:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 7:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
+			NEXTLINE;
 		}
-		src_addr += src_line_add;
-		dst_addr += dst_line_add;
-#ifdef BOTH
-		dst_addr_fast += dst_line_add;
-#endif
+		break;
+	
+	case 2:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+	
+	case 3:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			NEXTLINE;
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+		}
+		break;
+	
+	case 4:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+	
+	case 5:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+	
+	case 6:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+	
+	case 7:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+	}
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
 #undef SET_PIXEL32_ADDR
 #undef SET_PIXEL_ADDR
-	}
+#undef NEXTLINE
 }
 
 
@@ -448,6 +745,8 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 	PIXEL_32 *dst_addr32;
 #ifdef BOTH
 	PIXEL_32 *dst_addr_fast32;
+	PIXEL v;
+	PIXEL_32 v32;
 #endif
 
 	(void) dst_addr_fast;
@@ -455,10 +754,7 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 	if (w <= 0 || h <= 0)
 		unreachable();
 
-	for(i = h - 1; i >= 0; i--) {
 #ifdef BOTH
-		PIXEL v;
-		PIXEL_32 v32;
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
 			" move.w -(%2),%3\n" \
@@ -483,6 +779,10 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32; \
 		dst_addr_fast = (PIXEL *)dst_addr_fast32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add; \
+		dst_addr_fast += dst_line_add
 #else
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -502,78 +802,223 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 #define SET_PIXEL_ADDR \
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add
 #endif
 
-		j = w;
-
-		if (j >= 8)
+	switch (w & 7)
+	{
+	case 0:
+		for (i = h - 1; i >= 0; i--)
 		{
-			SET_PIXEL32_ADDR;
-			while ((j -= 8) >= 0)
+			j = w;
+	
+			if (j >= 8)
 			{
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
 			}
-			SET_PIXEL_ADDR;
+			NEXTLINE;
 		}
-		switch (j & 7)
+		break;
+
+	case 1:
+		for (i = h - 1; i >= 0; i--)
 		{
-		case 1:
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
 			COPY_PIXEL;
-			break;
-		case 2:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 3:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 4:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 5:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 6:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 7:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
+			NEXTLINE;
 		}
-		src_addr += src_line_add;
-		dst_addr += dst_line_add;
-#ifdef BOTH
-		dst_addr_fast += dst_line_add;
-#endif
+		break;
+
+	case 2:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 3:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 4:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 5:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 6:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 7:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
 	}
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
 #undef SET_PIXEL32_ADDR
 #undef SET_PIXEL_ADDR
+#undef NEXTLINE
 }
 
 
@@ -585,6 +1030,8 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
 	short int i, j;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
+	PIXEL v;
+	PIXEL_32 v32;
 #ifdef BOTH
 	PIXEL_32 *dst_addr_fast32;
 #endif
@@ -593,9 +1040,7 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for(i = h - 1; i >= 0; i--) {
-		PIXEL v;
-		PIXEL_32 v32;
+
 #ifdef BOTH
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -623,6 +1068,10 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32; \
 		dst_addr_fast = (PIXEL *)dst_addr_fast32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add; \
+		dst_addr_fast += dst_line_add
 #else
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -644,78 +1093,223 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
 #define SET_PIXEL_ADDR \
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add
 #endif
 
-		j = w;
-
-		if (j >= 8)
+	switch (w & 7)
+	{
+	case 0:
+		for (i = h - 1; i >= 0; i--)
 		{
-			SET_PIXEL32_ADDR;
-			while ((j -= 8) >= 0)
+			j = w;
+	
+			if (j >= 8)
 			{
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
 			}
-			SET_PIXEL_ADDR;
+			NEXTLINE;
 		}
-		switch (j & 7)
+		break;
+
+	case 1:
+		for (i = h - 1; i >= 0; i--)
 		{
-		case 1:
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
 			COPY_PIXEL;
-			break;
-		case 2:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 3:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 4:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 5:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 6:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 7:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
+			NEXTLINE;
 		}
-		src_addr += src_line_add;
-		dst_addr += dst_line_add;
-#ifdef BOTH
-		dst_addr_fast += dst_line_add;
-#endif
+		break;
+
+	case 2:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 3:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 4:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 5:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 6:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 7:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
 	}
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
 #undef SET_PIXEL32_ADDR
 #undef SET_PIXEL_ADDR
+#undef NEXTLINE
 }
 
 
@@ -737,7 +1331,8 @@ s_pan_backwards(PIXEL *src_addr, int src_line_add,
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for(i = h - 1; i >= 0; i--) {
+	for (i = h - 1; i >= 0; i--)
+	{
 		if (w & 1)
 		{
 			vs = *--src_addr;
@@ -757,7 +1352,8 @@ s_pan_backwards(PIXEL *src_addr, int src_line_add,
 #ifdef BOTH
 		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast;
 #endif
-		for(j = (w >> 1) - 1; j >= 0; j--) {
+		for (j = (w >> 1) - 1; j >= 0; j--)
+		{
 			v32s = *--src_addr;
 #ifdef BOTH
 			v32d = *--dst_addr_fast32;
@@ -800,17 +1396,16 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
 	PIXEL_32 *dst_addr32;
 #ifdef BOTH
 	PIXEL_32 *dst_addr_fast32;
+	PIXEL v;
+	PIXEL_32 v32;
 #endif
 
 	(void) dst_addr_fast;
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for (i = h - 1; i >= 0; i--)
-	{
+
 #ifdef BOTH
-		PIXEL v;
-		PIXEL_32 v32;
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
 			" move.w (%2)+,%3\n" \
@@ -835,6 +1430,10 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32; \
 		dst_addr_fast = (PIXEL *)dst_addr_fast32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add; \
+		dst_addr_fast += dst_line_add
 #else
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -854,78 +1453,223 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
 #define SET_PIXEL_ADDR \
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add
 #endif
 
-		j = w;
-
-		if (j >= 8)
+	switch (w & 7)
+	{
+	case 0:
+		for (i = h - 1; i >= 0; i--)
 		{
-			SET_PIXEL32_ADDR;
-			while ((j -= 8) >= 0)
+			j = w;
+	
+			if (j >= 8)
 			{
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
 			}
-			SET_PIXEL_ADDR;
+			NEXTLINE;
 		}
-		switch (j & 7)
+		break;
+
+	case 1:
+		for (i = h - 1; i >= 0; i--)
 		{
-		case 1:
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
 			COPY_PIXEL;
-			break;
-		case 2:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 3:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 4:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 5:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 6:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 7:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
+			NEXTLINE;
 		}
-		src_addr += src_line_add;
-		dst_addr += dst_line_add;
-#ifdef BOTH
-		dst_addr_fast += dst_line_add;
-#endif
+		break;
+
+	case 2:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+	
+	case 3:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+	
+	case 4:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 5:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 6:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 7:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
 	}
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
 #undef SET_PIXEL32_ADDR
 #undef SET_PIXEL_ADDR
+#undef NEXTLINE
 }
 
 
@@ -936,6 +1680,8 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
 	short int i, j;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
+	PIXEL v;
+	PIXEL_32 v32;
 #ifdef BOTH
 	PIXEL_32 *dst_addr_fast32;
 #endif
@@ -944,9 +1690,7 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for(i = h - 1; i >= 0; i--) {
-		PIXEL v;
-		PIXEL_32 v32;
+
 #ifdef BOTH
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -974,6 +1718,10 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32; \
 		dst_addr_fast = (PIXEL *)dst_addr_fast32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add; \
+		dst_addr_fast += dst_line_add
 #else
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -995,78 +1743,223 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
 #define SET_PIXEL_ADDR \
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add
 #endif
 
-		j = w;
-
-		if (j >= 8)
+	switch (w & 7)
+	{
+	case 0:
+		for (i = h - 1; i >= 0; i--)
 		{
-			SET_PIXEL32_ADDR;
-			while ((j -= 8) >= 0)
+			j = w;
+	
+			if (j >= 8)
 			{
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
 			}
-			SET_PIXEL_ADDR;
+			NEXTLINE;
 		}
-		switch (j & 7)
+		break;
+	
+	case 1:
+		for (i = h - 1; i >= 0; i--)
 		{
-		case 1:
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
 			COPY_PIXEL;
-			break;
-		case 2:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 3:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 4:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 5:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 6:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 7:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
+			NEXTLINE;
 		}
-		src_addr += src_line_add;
-		dst_addr += dst_line_add;
-#ifdef BOTH
-		dst_addr_fast += dst_line_add;
-#endif
+		break;
+	
+	case 2:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+	
+	case 3:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			NEXTLINE;
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+		}
+		break;
+	
+	case 4:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+	
+	case 5:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+	
+	case 6:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+	
+	case 7:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+	}
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
 #undef SET_PIXEL32_ADDR
 #undef SET_PIXEL_ADDR
-	}
+#undef NEXTLINE
 }
 
 
@@ -1142,6 +2035,8 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 	PIXEL_32 *dst_addr32;
 #ifdef BOTH
 	PIXEL_32 *dst_addr_fast32;
+	PIXEL v;
+	PIXEL_32 v32;
 #endif
 
 	(void) dst_addr_fast;
@@ -1149,10 +2044,7 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 	if (w <= 0 || h <= 0)
 		unreachable();
 
-	for(i = h - 1; i >= 0; i--) {
 #ifdef BOTH
-		PIXEL v;
-		PIXEL_32 v32;
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
 			" move.w -(%2),%3\n" \
@@ -1177,6 +2069,10 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32; \
 		dst_addr_fast = (PIXEL *)dst_addr_fast32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add; \
+		dst_addr_fast += dst_line_add
 #else
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -1196,78 +2092,223 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 #define SET_PIXEL_ADDR \
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add
 #endif
 
-		j = w;
-
-		if (j >= 8)
+	switch (w & 7)
+	{
+	case 0:
+		for (i = h - 1; i >= 0; i--)
 		{
-			SET_PIXEL32_ADDR;
-			while ((j -= 8) >= 0)
+			j = w;
+	
+			if (j >= 8)
 			{
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
 			}
-			SET_PIXEL_ADDR;
+			NEXTLINE;
 		}
-		switch (j & 7)
+		break;
+
+	case 1:
+		for (i = h - 1; i >= 0; i--)
 		{
-		case 1:
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
 			COPY_PIXEL;
-			break;
-		case 2:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 3:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 4:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 5:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 6:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 7:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
+			NEXTLINE;
 		}
-		src_addr += src_line_add;
-		dst_addr += dst_line_add;
-#ifdef BOTH
-		dst_addr_fast += dst_line_add;
-#endif
+		break;
+
+	case 2:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 3:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 4:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 5:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 6:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 7:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
 	}
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
 #undef SET_PIXEL32_ADDR
 #undef SET_PIXEL_ADDR
+#undef NEXTLINE
 }
 
 
@@ -1279,6 +2320,8 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
 	short int i, j;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
+	PIXEL v;
+	PIXEL_32 v32;
 #ifdef BOTH
 	PIXEL_32 *dst_addr_fast32;
 #endif
@@ -1287,9 +2330,7 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for(i = h - 1; i >= 0; i--) {
-		PIXEL v;
-		PIXEL_32 v32;
+
 #ifdef BOTH
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -1317,6 +2358,10 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32; \
 		dst_addr_fast = (PIXEL *)dst_addr_fast32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add; \
+		dst_addr_fast += dst_line_add
 #else
 #define COPY_PIXEL \
 		__asm__ __volatile__( \
@@ -1338,78 +2383,223 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
 #define SET_PIXEL_ADDR \
 		src_addr = (PIXEL *)src_addr32; \
 		dst_addr = (PIXEL *)dst_addr32
+#define NEXTLINE \
+		src_addr += src_line_add; \
+		dst_addr += dst_line_add
 #endif
 
-		j = w;
-
-		if (j >= 8)
+	switch (w & 7)
+	{
+	case 0:
+		for (i = h - 1; i >= 0; i--)
 		{
-			SET_PIXEL32_ADDR;
-			while ((j -= 8) >= 0)
+			j = w;
+	
+			if (j >= 8)
 			{
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
-				COPY_2PIXEL;
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
 			}
-			SET_PIXEL_ADDR;
+			NEXTLINE;
 		}
-		switch (j & 7)
+		break;
+
+	case 1:
+		for (i = h - 1; i >= 0; i--)
 		{
-		case 1:
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
 			COPY_PIXEL;
-			break;
-		case 2:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 3:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 4:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 5:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
-		case 6:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			break;
-		case 7:
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			break;
+			NEXTLINE;
 		}
-		src_addr += src_line_add;
-		dst_addr += dst_line_add;
-#ifdef BOTH
-		dst_addr_fast += dst_line_add;
-#endif
+		break;
+
+	case 2:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 3:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 4:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 5:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
+
+	case 6:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			NEXTLINE;
+		}
+		break;
+
+	case 7:
+		for (i = h - 1; i >= 0; i--)
+		{
+			j = w;
+	
+			if (j >= 8)
+			{
+				short t = j >> 3;
+				SET_PIXEL32_ADDR;
+				while (t--)
+				{
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+					COPY_2PIXEL;
+				}
+				SET_PIXEL_ADDR;
+			}
+			SET_PIXEL32_ADDR;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
+			SET_PIXEL_ADDR;
+			COPY_PIXEL;
+			NEXTLINE;
+		}
+		break;
 	}
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
 #undef SET_PIXEL32_ADDR
 #undef SET_PIXEL_ADDR
+#undef NEXTLINE
 }
 
 
@@ -1431,7 +2621,8 @@ pan_backwards(PIXEL *src_addr, int src_line_add,
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for(i = h - 1; i >= 0; i--) {
+	for (i = h - 1; i >= 0; i--)
+	{
 		if (w & 1)
 		{
 			vs = *--src_addr;
@@ -1451,7 +2642,8 @@ pan_backwards(PIXEL *src_addr, int src_line_add,
 #ifdef BOTH
 		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast;
 #endif
-		for(j = (w >> 1) - 1; j >= 0; j--) {
+		for (j = (w >> 1) - 1; j >= 0; j--)
+		{
 			v32s = *--src_addr;
 #ifdef BOTH
 			v32d = *--dst_addr_fast32;

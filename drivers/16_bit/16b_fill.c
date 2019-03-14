@@ -36,6 +36,9 @@ static void s_fill_replace(short *addr, short *addr_fast, int line_add, short *p
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
 
+	/* Tell gcc that this cannot happen (already checked in c_fill_area() below) */
+	if (w <= 0 || h <= 0)
+		unreachable();
 	for(; i < h; i++) {
 		pattern_word = pattern[i & 0x000f];
 		switch (pattern_word) {
@@ -89,6 +92,9 @@ static void s_fill_transparent(short *addr, short *addr_fast, int line_add, shor
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
 
+	/* Tell gcc that this cannot happen (already checked in c_fill_area() below) */
+	if (w <= 0 || h <= 0)
+		unreachable();
 	for(; i < h; i++) {
 		pattern_word = pattern[i & 0x000f];
 		switch (pattern_word) {
@@ -141,6 +147,9 @@ static void s_fill_xor(short *addr, short *addr_fast, int line_add, short *patte
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
 
+	/* Tell gcc that this cannot happen (already checked in c_fill_area() below) */
+	if (w <= 0 || h <= 0)
+		unreachable();
 	for(; i < h; i++) {
 		pattern_word = pattern[i & 0x000f];
 		switch (pattern_word) {
@@ -202,6 +211,9 @@ static void s_fill_revtransp(short *addr, short *addr_fast, int line_add, short 
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
 
+	/* Tell gcc that this cannot happen (already checked in c_fill_area() below) */
+	if (w <= 0 || h <= 0)
+		unreachable();
 	for(; i < h; i++) {
 		pattern_word = pattern[i & 0x000f];
 		switch (pattern_word) {
@@ -264,6 +276,9 @@ static void fill_replace(short *addr, short *addr_fast, int line_add, short *pat
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
 
+	/* Tell gcc that this cannot happen (already checked in c_fill_area() below) */
+	if (w <= 0 || h <= 0)
+		unreachable();
 	for(; i < h; i++) {
 		pattern_word = pattern[i & 0x000f];
 		switch (pattern_word) {
@@ -318,6 +333,9 @@ static void fill_transparent(short *addr, short *addr_fast, int line_add, short 
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
 
+	/* Tell gcc that this cannot happen (already checked in c_fill_area() below) */
+	if (w <= 0 || h <= 0)
+		unreachable();
 	for(; i < h; i++) {
 		pattern_word = pattern[i & 0x000f];
 		switch (pattern_word) {
@@ -371,6 +389,9 @@ static void fill_xor(short *addr, short *addr_fast, int line_add, short *pattern
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
 
+	/* Tell gcc that this cannot happen (already checked in c_fill_area() below) */
+	if (w <= 0 || h <= 0)
+		unreachable();
 	for(; i < h; i++) {
 		pattern_word = pattern[i & 0x000f];
 		switch (pattern_word) {
@@ -433,6 +454,9 @@ static void fill_revtransp(short *addr, short *addr_fast, int line_add, short *p
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
 
+	/* Tell gcc that this cannot happen (already checked in c_fill_area() below) */
+	if (w <= 0 || h <= 0)
+		unreachable();
 	for(; i < h; i++) {
 		pattern_word = pattern[i & 0x000f];
 		switch (pattern_word) {
@@ -489,6 +513,9 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
   	int line_add;
 	long pos;
 	short *table;
+
+	if (w <= 0 || h <= 0)
+		return 1;
 
 	(void) interior_style;
 	table = 0;
