@@ -101,7 +101,7 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
 	PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
 	short int w, short int h)
 {
-	short int i, j;
+	short int x, y, x4, xR;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
 #ifdef BOTH
@@ -111,9 +111,6 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
 #endif
 
 	(void) dst_addr_fast;
-	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
-	if (w <= 0 || h <= 0)
-		unreachable();
 
 #ifdef BOTH
 #define COPY_PIXEL \
@@ -168,212 +165,25 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
 		dst_addr += dst_line_add
 #endif
 
-	switch (w & 7)
+	x = w;
+	y = h;
+	while (y--)
 	{
-	case 0:
-		for (i = h - 1; i >= 0; i--)
+		x4 = x >> 2;
+		SET_PIXEL32_ADDR;
+		while (x4--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
 		}
-		break;
-
-	case 1:
-		for (i = h - 1; i >= 0; i--)
+		SET_PIXEL_ADDR;
+		xR = x & 3;
+		while (xR--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
 			COPY_PIXEL;
-			NEXTLINE;
 		}
-		break;
-
-	case 2:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-	
-	case 3:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	
-	case 4:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 5:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 6:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 7:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	}
+		NEXTLINE;
+    }
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
@@ -387,7 +197,7 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
         PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
         short int w, short int h)
 {
-	short int i, j;
+	short int x, y, x4, xR;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
 	PIXEL v;
@@ -397,9 +207,6 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
 #endif
 
 	(void) dst_addr_fast;
-	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
-	if (w <= 0 || h <= 0)
-		unreachable();
 
 #ifdef BOTH
 #define COPY_PIXEL \
@@ -458,212 +265,25 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
 		dst_addr += dst_line_add
 #endif
 
-	switch (w & 7)
+	x = w;
+	y = h;
+	while (y--)
 	{
-	case 0:
-		for (i = h - 1; i >= 0; i--)
+		x4 = x >> 2;
+		SET_PIXEL32_ADDR;
+		while (x4--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
-		}
-		break;
-	
-	case 1:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	
-	case 2:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
 			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-	
-	case 3:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
-			SET_PIXEL32_ADDR;
 			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
+		}
+		SET_PIXEL_ADDR;
+		xR = x & 3;
+		while (xR--)
+		{
 			COPY_PIXEL;
 		}
-		break;
-	
-	case 4:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-	
-	case 5:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	
-	case 6:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-	
-	case 7:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	}
+		NEXTLINE;
+    }
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
@@ -690,7 +310,8 @@ static void s_blit(PIXEL *src_addr, int src_line_add,
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for(i = h - 1; i >= 0; i--) {
+	for (i = h - 1; i >= 0; i--)
+	{
 		if (w & 1)
 		{
 			vs = *src_addr++;
@@ -740,7 +361,7 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
                      PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
                      short int w, short int h)
 {
-	short int i, j;
+	short int x, y, x4, xR;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
 #ifdef BOTH
@@ -750,9 +371,6 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 #endif
 
 	(void) dst_addr_fast;
-	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
-	if (w <= 0 || h <= 0)
-		unreachable();
 
 #ifdef BOTH
 #define COPY_PIXEL \
@@ -807,212 +425,25 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 		dst_addr += dst_line_add
 #endif
 
-	switch (w & 7)
+	x = w;
+	y = h;
+	while (y--)
 	{
-	case 0:
-		for (i = h - 1; i >= 0; i--)
+		x4 = x >> 2;
+		SET_PIXEL32_ADDR;
+		while (x4--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
 		}
-		break;
-
-	case 1:
-		for (i = h - 1; i >= 0; i--)
+		SET_PIXEL_ADDR;
+		xR = x & 3;
+		while (xR--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
 			COPY_PIXEL;
-			NEXTLINE;
 		}
-		break;
-
-	case 2:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 3:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 4:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 5:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 6:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 7:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	}
+		NEXTLINE;
+    }
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
@@ -1027,7 +458,7 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
                    PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
                    short int w, short int h)
 {
-	short int i, j;
+	short int x, y, x4, xR;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
 	PIXEL v;
@@ -1037,9 +468,6 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
 #endif
 
 	(void) dst_addr_fast;
-	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
-	if (w <= 0 || h <= 0)
-		unreachable();
 
 #ifdef BOTH
 #define COPY_PIXEL \
@@ -1098,212 +526,25 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
 		dst_addr += dst_line_add
 #endif
 
-	switch (w & 7)
+	x = w;
+	y = h;
+	while (y--)
 	{
-	case 0:
-		for (i = h - 1; i >= 0; i--)
+		x4 = x >> 2;
+		SET_PIXEL32_ADDR;
+		while (x4--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
 		}
-		break;
-
-	case 1:
-		for (i = h - 1; i >= 0; i--)
+		SET_PIXEL_ADDR;
+		xR = x & 3;
+		while (xR--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
 			COPY_PIXEL;
-			NEXTLINE;
 		}
-		break;
-
-	case 2:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 3:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 4:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 5:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 6:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 7:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	}
+		NEXTLINE;
+    }
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
@@ -1391,7 +632,7 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
 	PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
 	short int w, short int h)
 {
-	short int i, j;
+	short int x, y, x4, xR;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
 #ifdef BOTH
@@ -1401,9 +642,6 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
 #endif
 
 	(void) dst_addr_fast;
-	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
-	if (w <= 0 || h <= 0)
-		unreachable();
 
 #ifdef BOTH
 #define COPY_PIXEL \
@@ -1458,212 +696,25 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
 		dst_addr += dst_line_add
 #endif
 
-	switch (w & 7)
+	x = w;
+	y = h;
+	while (y--)
 	{
-	case 0:
-		for (i = h - 1; i >= 0; i--)
+		x4 = x >> 2;
+		SET_PIXEL32_ADDR;
+		while (x4--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
 		}
-		break;
-
-	case 1:
-		for (i = h - 1; i >= 0; i--)
+		SET_PIXEL_ADDR;
+		xR = x & 3;
+		while (xR--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
 			COPY_PIXEL;
-			NEXTLINE;
 		}
-		break;
-
-	case 2:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-	
-	case 3:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	
-	case 4:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 5:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 6:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 7:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	}
+		NEXTLINE;
+    }
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
@@ -1677,7 +728,7 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
         PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
         short int w, short int h)
 {
-	short int i, j;
+	short int x, y, x4, xR;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
 	PIXEL v;
@@ -1687,9 +738,6 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
 #endif
 
 	(void) dst_addr_fast;
-	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
-	if (w <= 0 || h <= 0)
-		unreachable();
 
 #ifdef BOTH
 #define COPY_PIXEL \
@@ -1748,212 +796,25 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
 		dst_addr += dst_line_add
 #endif
 
-	switch (w & 7)
+	x = w;
+	y = h;
+	while (y--)
 	{
-	case 0:
-		for (i = h - 1; i >= 0; i--)
+		x4 = x >> 2;
+		SET_PIXEL32_ADDR;
+		while (x4--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
-		}
-		break;
-	
-	case 1:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	
-	case 2:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
 			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-	
-	case 3:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
-			SET_PIXEL32_ADDR;
 			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
+		}
+		SET_PIXEL_ADDR;
+		xR = x & 3;
+		while (xR--)
+		{
 			COPY_PIXEL;
 		}
-		break;
-	
-	case 4:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-	
-	case 5:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	
-	case 6:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-	
-	case 7:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	}
+		NEXTLINE;
+    }
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
@@ -1980,7 +841,8 @@ static void blit_16b(PIXEL *src_addr, int src_line_add,
 	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
 	if (w <= 0 || h <= 0)
 		unreachable();
-	for(i = h - 1; i >= 0; i--) {
+	for (i = h - 1; i >= 0; i--)
+	{
 		if (w & 1)
 		{
 			vs = *src_addr++;
@@ -2030,7 +892,7 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
                    PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
                    short int w, short int h)
 {
-	short int i, j;
+	short int x, y, x4, xR;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
 #ifdef BOTH
@@ -2040,9 +902,6 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 #endif
 
 	(void) dst_addr_fast;
-	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
-	if (w <= 0 || h <= 0)
-		unreachable();
 
 #ifdef BOTH
 #define COPY_PIXEL \
@@ -2097,212 +956,25 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 		dst_addr += dst_line_add
 #endif
 
-	switch (w & 7)
+	x = w;
+	y = h;
+	while (y--)
 	{
-	case 0:
-		for (i = h - 1; i >= 0; i--)
+		x4 = x >> 2;
+		SET_PIXEL32_ADDR;
+		while (x4--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
 		}
-		break;
-
-	case 1:
-		for (i = h - 1; i >= 0; i--)
+		SET_PIXEL_ADDR;
+		xR = x & 3;
+		while (xR--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
 			COPY_PIXEL;
-			NEXTLINE;
 		}
-		break;
-
-	case 2:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 3:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 4:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 5:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 6:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 7:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	}
+		NEXTLINE;
+    }
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
@@ -2317,7 +989,7 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
                  PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
                  short int w, short int h)
 {
-	short int i, j;
+	short int x, y, x4, xR;
 	PIXEL_32 *src_addr32;
 	PIXEL_32 *dst_addr32;
 	PIXEL v;
@@ -2327,9 +999,6 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
 #endif
 
 	(void) dst_addr_fast;
-	/* Tell gcc that this cannot happen (already checked in c_blit_area() below) */
-	if (w <= 0 || h <= 0)
-		unreachable();
 
 #ifdef BOTH
 #define COPY_PIXEL \
@@ -2388,212 +1057,25 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
 		dst_addr += dst_line_add
 #endif
 
-	switch (w & 7)
+	x = w;
+	y = h;
+	while (y--)
 	{
-	case 0:
-		for (i = h - 1; i >= 0; i--)
+		x4 = x >> 2;
+		SET_PIXEL32_ADDR;
+		while (x4--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			NEXTLINE;
+			COPY_2PIXEL;
+			COPY_2PIXEL;
 		}
-		break;
-
-	case 1:
-		for (i = h - 1; i >= 0; i--)
+		SET_PIXEL_ADDR;
+		xR = x & 3;
+		while (xR--)
 		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
 			COPY_PIXEL;
-			NEXTLINE;
 		}
-		break;
-
-	case 2:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 3:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 4:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 5:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-
-	case 6:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			NEXTLINE;
-		}
-		break;
-
-	case 7:
-		for (i = h - 1; i >= 0; i--)
-		{
-			j = w;
-	
-			if (j >= 8)
-			{
-				short t = j >> 3;
-				SET_PIXEL32_ADDR;
-				while (t--)
-				{
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-					COPY_2PIXEL;
-				}
-				SET_PIXEL_ADDR;
-			}
-			SET_PIXEL32_ADDR;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-			SET_PIXEL_ADDR;
-			COPY_PIXEL;
-			NEXTLINE;
-		}
-		break;
-	}
+		NEXTLINE;
+    }
 
 #undef COPY_PIXEL
 #undef COPY_2PIXEL
