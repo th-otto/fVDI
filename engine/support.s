@@ -20,9 +20,9 @@ transparent	equ	1		; Fall through?
 
 	xdef	_flip_words,_flip_longs
 	xdef	redirect,redirect_d0
-	xdef	call_other,_call_other
+	xdef	_call_other
 	xdef	_initialize_palette
-	xdef	allocate_block,free_block
+	xdef	asm_allocate_block,asm_free_block
 	xdef	_cache_flush
 
 
@@ -75,12 +75,12 @@ redirect:
 .call:
 	tst.w	_stand_alone
 	bne	.no_redirect
-	bsr	call_other
+	bsr	asm_call_other
 .no_redirect:
 	real_return
 
 redirect_d0:
-	bsr	call_other
+	bsr	asm_call_other
 	real_return
 
 
@@ -92,7 +92,7 @@ redirect_d0:
 _call_other:
 	move.l	4(a7),a1
 	move.l	8(a7),d0
-call_other:
+asm_call_other:
 	move.l	a1,d1			; That's where the VDI wants it
 ;	move.l	a0,-(a7)		; Remember workstation struct
 	move.l	control(a1),a0
@@ -146,7 +146,7 @@ _initialize_palette:
 
 * long allocate_block(long size)
 * Allocate a block from the internal memory pool
-allocate_block:
+asm_allocate_block:
 	movem.l	d1-d2/a0-a2,-(a7)
 	move.l	4+5*4(a7),-(a7)
 	bsr	_allocate_block
@@ -157,7 +157,7 @@ allocate_block:
 
 * free_block(void *addr)
 * Free a block and return it to the internal memory pool
-free_block:
+asm_free_block:
 	movem.l	d0-d2/a0-a2,-(a7)
 	move.l	4+6*4(a7),-(a7)
 	bsr	_free_block

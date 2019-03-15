@@ -19,7 +19,7 @@ transparent	equ	1		; Fall through?
 	xref	setup_plot,tos_colour
 	xref	_line_types
 	xref	lib_vqt_extent,lib_vrt_cpyfm
-	xref	allocate_block,free_block
+	xref	asm_allocate_block,asm_free_block
 	xref	_pattern_ptrs
 	xref	_filled_poly,_filled_poly_m,_ellipsearc,_wide_line,_calc_bez
 	xref	_do_arrow
@@ -263,7 +263,7 @@ c_v_pline:
 	
 	move.l	d0,d1
 	clr.l	-(a7)
-	bsr	allocate_block
+	bsr	asm_allocate_block
 	addq.l	#4,a7
 	tst.l	d0
 	beq	no_arrow
@@ -277,7 +277,7 @@ c_v_pline:
 	move.l	a0,-(a7)	; vwk
 	jsr	_do_arrow
 	add.w	#16,a7
-	bsr	free_block
+	bsr	asm_free_block
 	addq.l	#8,a7
 	
 no_arrow:
@@ -317,7 +317,7 @@ no_arrow:
 .wide_line:
 	move.l	d0,d1
 	clr.l	-(a7)
-	bsr	allocate_block
+	bsr	asm_allocate_block
 	addq.l	#4,a7
 	tst.l	d0
 	beq	.no_wide
@@ -340,7 +340,7 @@ no_arrow:
 	jsr	_wide_line
 	add.w	#24,a7
 
-	bsr	free_block	; Block address is already on the stack
+	bsr	asm_free_block	; Block address is already on the stack
 	addq.l	#4,a7
 
 	move.l	(a7)+,d2
@@ -1019,7 +1019,7 @@ lib_v_bez_fill:
 
 .no_accel_poly:
 	move.l	#0,-(a7)	; Get a memory block of any size (hopefully large)
-	bsr	allocate_block
+	bsr	asm_allocate_block
 	addq.l	#4,a7
 	tst.l	d0
 	beq	.no_poly
@@ -1055,7 +1055,7 @@ lib_v_bez_fill:
 	jsr	_filled_poly_m
 	add.w	#40,a7
 
-	bsr	free_block	; Block address is already on the stack
+	bsr	asm_free_block	; Block address is already on the stack
 	addq.l	#4,a7
 .no_poly:		; .end
 
@@ -1110,7 +1110,7 @@ lib_v_bez_fill:
 	move.l	2(a7),d0
 	beq	.no_free_f
 	move.l	d0,-(a7)
-	bsr	free_block
+	bsr	asm_free_block
 	addq.l	#4,a7
 .no_free_f:
 	add.w	#10,a7
@@ -1141,7 +1141,7 @@ lib_v_bez_fill:
 	jsr	_filled_poly
 	add.w	#32,a7
 
-	bsr	free_block	; Block address is already on the stack
+	bsr	asm_free_block	; Block address is already on the stack
 	addq.l	#4,a7
 	bra	.no_poly
 		
@@ -1161,7 +1161,7 @@ lib_v_bez_fill:
 .wide_bez_f:
 	move.l	d0,d1
 	clr.l	-(a7)
-	bsr	allocate_block
+	bsr	asm_allocate_block
 	addq.l	#4,a7
 	tst.l	d0
 	beq	.no_wide_bez_f
@@ -1181,7 +1181,7 @@ lib_v_bez_fill:
 	jsr	_wide_line
 	add.w	#24,a7
 
-	bsr	free_block	; Block address is already on the stack
+	bsr	asm_free_block	; Block address is already on the stack
 	addq.l	#4,a7
 
 	bra	.end_bez_draw_f
@@ -1217,7 +1217,7 @@ lib_v_fillarea:
 
  label .no_accel_poly,1
 	move.l	#0,-(a7)	; Get a memory block of any size (hopefully large)
-	bsr	allocate_block
+	bsr	asm_allocate_block
 	addq.l	#4,a7
 	tst.l	d0
 	beq	.end_lib_v_fillarea
@@ -1245,7 +1245,7 @@ lib_v_fillarea:
 	jsr	_filled_poly
 	add.w	#32,a7
 
-	bsr	free_block	; Block address is already on the stack
+	bsr	asm_free_block	; Block address is already on the stack
 	addq.l	#4,a7
 
 .end_lib_v_fillarea:		; .end
