@@ -102,93 +102,84 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
 	short int w, short int h)
 {
 	short int x, y, x4, xR;
-	PIXEL_32 *src_addr32;
-	PIXEL_32 *dst_addr32;
 #ifdef BOTH
-	PIXEL_32 *dst_addr_fast32;
-	PIXEL v;
 	PIXEL_32 v32;
-#endif
 
-	(void) dst_addr_fast;
-
-#ifdef BOTH
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w (%2)+,%3\n" \
-			" move.w %3,(%0)+\n" \
-			" move.w %3,(%1)+\n" \
-			: "=a"(dst_addr), "=a"(dst_addr_fast), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(dst_addr_fast), "2"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" move.l %[v32],(%[dst_addr])+\n" \
+			" move.l %[v32],(%[dst_addr_fast])+\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" move.l %[v32],(%[dst_addr])+\n" \
+			" move.l %[v32],(%[dst_addr_fast])+\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w (%[src_addr])+,%[v32]\n" \
+			" move.w %[v32],(%[dst_addr])+\n" \
+			" move.w %[v32],(%[dst_addr_fast])+\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [dst_addr_fast]"+a"(dst_addr_fast), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l (%2)+,%3\n" \
-			" move.l %3,(%0)+\n" \
-			" move.l %3,(%1)+\n" \
-			: "=a"(dst_addr32), "=a"(dst_addr_fast32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(dst_addr_fast32), "2"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr; \
-		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32; \
-		dst_addr_fast = (PIXEL *)dst_addr_fast32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add; \
 		dst_addr_fast += dst_line_add
 #else
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w (%1)+,(%0)+\n" \
-			: "=a"(dst_addr), "=a"(src_addr) \
-			: "0"(dst_addr), "1"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l (%[src_addr])+,(%[dst_addr])+\n" \
+			" move.l (%[src_addr])+,(%[dst_addr])+\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w (%[src_addr])+,(%[dst_addr])+\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l (%1)+,(%0)+\n" \
-			: "=a"(dst_addr32), "=a"(src_addr32) \
-			: "0"(dst_addr32), "1"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add
 #endif
 
+	(void) dst_addr_fast;
+
 	x = w;
 	y = h;
 	while (y--)
 	{
-		x4 = x >> 2;
-		SET_PIXEL32_ADDR;
-		while (x4--)
-		{
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-		}
-		SET_PIXEL_ADDR;
-		xR = x & 3;
-		while (xR--)
-		{
-			COPY_PIXEL;
-		}
+		COPY_LOOP;
 		NEXTLINE;
     }
 
-#undef COPY_PIXEL
-#undef COPY_2PIXEL
-#undef SET_PIXEL32_ADDR
-#undef SET_PIXEL_ADDR
+#undef COPY_LOOP
 #undef NEXTLINE
 }
 
@@ -198,97 +189,88 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
         short int w, short int h)
 {
 	short int x, y, x4, xR;
-	PIXEL_32 *src_addr32;
-	PIXEL_32 *dst_addr32;
-	PIXEL v;
 	PIXEL_32 v32;
-#ifdef BOTH
-	PIXEL_32 *dst_addr_fast32;
-#endif
-
-	(void) dst_addr_fast;
 
 #ifdef BOTH
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w (%2)+,%3\n" \
-			" or.w (%1),%3\n" \
-			" move.w %3,(%0)+\n" \
-			" move.w %3,(%1)+\n" \
-			: "=a"(dst_addr), "=a"(dst_addr_fast), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(dst_addr_fast), "2"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" or.l %[v32],(%[dst_addr])+\n" \
+			" or.l %[v32],(%[dst_addr_fast])+\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" or.l %[v32],(%[dst_addr])+\n" \
+			" or.l %[v32],(%[dst_addr_fast])+\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w (%[src_addr])+,%[v32]\n" \
+			" or.w %[v32],(%[dst_addr])+\n" \
+			" or.w %[v32],(%[dst_addr_fast])+\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [dst_addr_fast]"+a"(dst_addr_fast), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l (%2)+,%3\n" \
-			" or.l (%1),%3\n" \
-			" move.l %3,(%0)+\n" \
-			" move.l %3,(%1)+\n" \
-			: "=a"(dst_addr32), "=a"(dst_addr_fast32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(dst_addr_fast32), "2"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr; \
-		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32; \
-		dst_addr_fast = (PIXEL *)dst_addr_fast32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add; \
 		dst_addr_fast += dst_line_add
 #else
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w (%1)+,%2\n" \
-			" or.w %2,(%0)+\n" \
-			: "=a"(dst_addr), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" or.l %[v32],(%[dst_addr])+\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" or.l %[v32],(%[dst_addr])+\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w (%[src_addr])+,%[v32]\n" \
+			" or.w %[v32],(%[dst_addr])+\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l (%1)+,%2\n" \
-			" or.l %2,(%0)+\n" \
-			: "=a"(dst_addr32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add
 #endif
 
+	(void) dst_addr_fast;
+
 	x = w;
 	y = h;
 	while (y--)
 	{
-		x4 = x >> 2;
-		SET_PIXEL32_ADDR;
-		while (x4--)
-		{
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-		}
-		SET_PIXEL_ADDR;
-		xR = x & 3;
-		while (xR--)
-		{
-			COPY_PIXEL;
-		}
+		COPY_LOOP;
 		NEXTLINE;
     }
 
-#undef COPY_PIXEL
-#undef COPY_2PIXEL
-#undef SET_PIXEL32_ADDR
-#undef SET_PIXEL_ADDR
+#undef COPY_LOOP
 #undef NEXTLINE
 }
 
@@ -362,93 +344,84 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
                      short int w, short int h)
 {
 	short int x, y, x4, xR;
-	PIXEL_32 *src_addr32;
-	PIXEL_32 *dst_addr32;
 #ifdef BOTH
-	PIXEL_32 *dst_addr_fast32;
-	PIXEL v;
 	PIXEL_32 v32;
-#endif
 
-	(void) dst_addr_fast;
-
-#ifdef BOTH
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w -(%2),%3\n" \
-			" move.w %3,-(%0)\n" \
-			" move.w %3,-(%1)\n" \
-			: "=a"(dst_addr), "=a"(dst_addr_fast), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(dst_addr_fast), "2"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" move.l %[v32],-(%[dst_addr])\n" \
+			" move.l %[v32],-(%[dst_addr_fast])\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" move.l %[v32],-(%[dst_addr])\n" \
+			" move.l %[v32],-(%[dst_addr_fast])\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w -(%[src_addr]),%[v32]\n" \
+			" move.w %[v32],-(%[dst_addr])\n" \
+			" move.w %[v32],-(%[dst_addr_fast])\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [dst_addr_fast]"+a"(dst_addr_fast), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l -(%2),%3\n" \
-			" move.l %3,-(%0)\n" \
-			" move.l %3,-(%1)\n" \
-			: "=a"(dst_addr32), "=a"(dst_addr_fast32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(dst_addr_fast32), "2"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr; \
-		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32; \
-		dst_addr_fast = (PIXEL *)dst_addr_fast32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add; \
 		dst_addr_fast += dst_line_add
 #else
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w -(%1),-(%0)\n" \
-			: "=a"(dst_addr), "=a"(src_addr) \
-			: "0"(dst_addr), "1"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l -(%[src_addr]),-(%[dst_addr])\n" \
+			" move.l -(%[src_addr]),-(%[dst_addr])\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w -(%[src_addr]),-(%[dst_addr])\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l -(%1),-(%0)\n" \
-			: "=a"(dst_addr32), "=a"(src_addr32) \
-			: "0"(dst_addr32), "1"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add
 #endif
 
+	(void) dst_addr_fast;
+
 	x = w;
 	y = h;
 	while (y--)
 	{
-		x4 = x >> 2;
-		SET_PIXEL32_ADDR;
-		while (x4--)
-		{
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-		}
-		SET_PIXEL_ADDR;
-		xR = x & 3;
-		while (xR--)
-		{
-			COPY_PIXEL;
-		}
+		COPY_LOOP;
 		NEXTLINE;
     }
 
-#undef COPY_PIXEL
-#undef COPY_2PIXEL
-#undef SET_PIXEL32_ADDR
-#undef SET_PIXEL_ADDR
+#undef COPY_LOOP
 #undef NEXTLINE
 }
 
@@ -459,97 +432,88 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
                    short int w, short int h)
 {
 	short int x, y, x4, xR;
-	PIXEL_32 *src_addr32;
-	PIXEL_32 *dst_addr32;
-	PIXEL v;
 	PIXEL_32 v32;
-#ifdef BOTH
-	PIXEL_32 *dst_addr_fast32;
-#endif
-
-	(void) dst_addr_fast;
 
 #ifdef BOTH
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w -(%2),%3\n" \
-			" or.w -(%1),%3\n" \
-			" move.w %3,(%1)\n" \
-			" move.w %3,-(%0)\n" \
-			: "=a"(dst_addr), "=a"(dst_addr_fast), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(dst_addr_fast), "2"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" or.l %[v32],-(%[dst_addr])\n" \
+			" or.l %[v32],-(%[dst_addr_fast])\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" or.l %[v32],-(%[dst_addr])\n" \
+			" or.l %[v32],-(%[dst_addr_fast])\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w -(%[src_addr]),%[v32]\n" \
+			" or.w %[v32],-(%[dst_addr])\n" \
+			" or.w %[v32],-(%[dst_addr_fast])\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [dst_addr_fast]"+a"(dst_addr_fast), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l -(%2),%3\n" \
-			" or.l -(%1),%3\n" \
-			" move.l %3,-(%1)\n" \
-			" move.l %3,-(%0)\n" \
-			: "=a"(dst_addr32), "=a"(dst_addr_fast32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(dst_addr_fast32), "2"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr; \
-		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32; \
-		dst_addr_fast = (PIXEL *)dst_addr_fast32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add; \
 		dst_addr_fast += dst_line_add
 #else
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w -(%1),%2\n" \
-			" or.w %2,-(%0)\n" \
-			: "=a"(dst_addr), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" or.l %[v32],-(%[dst_addr])\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" or.l %[v32],-(%[dst_addr])\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w -(%[src_addr]),%[v32]\n" \
+			" or.w %[v32],-(%[dst_addr])\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l -(%1),%2\n" \
-			" or.l %2,-(%0)\n" \
-			: "=a"(dst_addr32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add
 #endif
 
+	(void) dst_addr_fast;
+
 	x = w;
 	y = h;
 	while (y--)
 	{
-		x4 = x >> 2;
-		SET_PIXEL32_ADDR;
-		while (x4--)
-		{
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-		}
-		SET_PIXEL_ADDR;
-		xR = x & 3;
-		while (xR--)
-		{
-			COPY_PIXEL;
-		}
+		COPY_LOOP;
 		NEXTLINE;
     }
 
-#undef COPY_PIXEL
-#undef COPY_2PIXEL
-#undef SET_PIXEL32_ADDR
-#undef SET_PIXEL_ADDR
+#undef COPY_LOOP
 #undef NEXTLINE
 }
 
@@ -633,93 +597,84 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
 	short int w, short int h)
 {
 	short int x, y, x4, xR;
-	PIXEL_32 *src_addr32;
-	PIXEL_32 *dst_addr32;
 #ifdef BOTH
-	PIXEL_32 *dst_addr_fast32;
-	PIXEL v;
 	PIXEL_32 v32;
-#endif
 
-	(void) dst_addr_fast;
-
-#ifdef BOTH
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w (%2)+,%3\n" \
-			" move.w %3,(%0)+\n" \
-			" move.w %3,(%1)+\n" \
-			: "=a"(dst_addr), "=a"(dst_addr_fast), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(dst_addr_fast), "2"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" move.l %[v32],(%[dst_addr])+\n" \
+			" move.l %[v32],(%[dst_addr_fast])+\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" move.l %[v32],(%[dst_addr])+\n" \
+			" move.l %[v32],(%[dst_addr_fast])+\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w (%[src_addr])+,%[v32]\n" \
+			" move.w %[v32],(%[dst_addr])+\n" \
+			" move.w %[v32],(%[dst_addr_fast])+\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [dst_addr_fast]"+a"(dst_addr_fast), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l (%2)+,%3\n" \
-			" move.l %3,(%0)+\n" \
-			" move.l %3,(%1)+\n" \
-			: "=a"(dst_addr32), "=a"(dst_addr_fast32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(dst_addr_fast32), "2"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr; \
-		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32; \
-		dst_addr_fast = (PIXEL *)dst_addr_fast32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add; \
 		dst_addr_fast += dst_line_add
 #else
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w (%1)+,(%0)+\n" \
-			: "=a"(dst_addr), "=a"(src_addr) \
-			: "0"(dst_addr), "1"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l (%[src_addr])+,(%[dst_addr])+\n" \
+			" move.l (%[src_addr])+,(%[dst_addr])+\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w (%[src_addr])+,(%[dst_addr])+\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l (%1)+,(%0)+\n" \
-			: "=a"(dst_addr32), "=a"(src_addr32) \
-			: "0"(dst_addr32), "1"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add
 #endif
 
+	(void) dst_addr_fast;
+
 	x = w;
 	y = h;
 	while (y--)
 	{
-		x4 = x >> 2;
-		SET_PIXEL32_ADDR;
-		while (x4--)
-		{
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-		}
-		SET_PIXEL_ADDR;
-		xR = x & 3;
-		while (xR--)
-		{
-			COPY_PIXEL;
-		}
+		COPY_LOOP;
 		NEXTLINE;
     }
 
-#undef COPY_PIXEL
-#undef COPY_2PIXEL
-#undef SET_PIXEL32_ADDR
-#undef SET_PIXEL_ADDR
+#undef COPY_LOOP
 #undef NEXTLINE
 }
 
@@ -729,97 +684,88 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
         short int w, short int h)
 {
 	short int x, y, x4, xR;
-	PIXEL_32 *src_addr32;
-	PIXEL_32 *dst_addr32;
-	PIXEL v;
 	PIXEL_32 v32;
-#ifdef BOTH
-	PIXEL_32 *dst_addr_fast32;
-#endif
-
-	(void) dst_addr_fast;
 
 #ifdef BOTH
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w (%2)+,%3\n" \
-			" or.w (%1),%3\n" \
-			" move.w %3,(%0)+\n" \
-			" move.w %3,(%1)+\n" \
-			: "=a"(dst_addr), "=a"(dst_addr_fast), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(dst_addr_fast), "2"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" or.l %[v32],(%[dst_addr])+\n" \
+			" or.l %[v32],(%[dst_addr_fast])+\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" or.l %[v32],(%[dst_addr])+\n" \
+			" or.l %[v32],(%[dst_addr_fast])+\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w (%[src_addr])+,%[v32]\n" \
+			" or.w %[v32],(%[dst_addr])+\n" \
+			" or.w %[v32],(%[dst_addr_fast])+\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [dst_addr_fast]"+a"(dst_addr_fast), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l (%2)+,%3\n" \
-			" or.l (%1),%3\n" \
-			" move.l %3,(%0)+\n" \
-			" move.l %3,(%1)+\n" \
-			: "=a"(dst_addr32), "=a"(dst_addr_fast32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(dst_addr_fast32), "2"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr; \
-		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32; \
-		dst_addr_fast = (PIXEL *)dst_addr_fast32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add; \
 		dst_addr_fast += dst_line_add
 #else
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w (%1)+,%2\n" \
-			" or.w %2,(%0)+\n" \
-			: "=a"(dst_addr), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" or.l %[v32],(%[dst_addr])+\n" \
+			" move.l (%[src_addr])+,%[v32]\n" \
+			" or.l %[v32],(%[dst_addr])+\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w (%[src_addr])+,%[v32]\n" \
+			" or.w %[v32],(%[dst_addr])+\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l (%1)+,%2\n" \
-			" or.l %2,(%0)+\n" \
-			: "=a"(dst_addr32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add
 #endif
 
+	(void) dst_addr_fast;
+
 	x = w;
 	y = h;
 	while (y--)
 	{
-		x4 = x >> 2;
-		SET_PIXEL32_ADDR;
-		while (x4--)
-		{
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-		}
-		SET_PIXEL_ADDR;
-		xR = x & 3;
-		while (xR--)
-		{
-			COPY_PIXEL;
-		}
+		COPY_LOOP;
 		NEXTLINE;
     }
 
-#undef COPY_PIXEL
-#undef COPY_2PIXEL
-#undef SET_PIXEL32_ADDR
-#undef SET_PIXEL_ADDR
+#undef COPY_LOOP
 #undef NEXTLINE
 }
 
@@ -893,93 +839,84 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
                    short int w, short int h)
 {
 	short int x, y, x4, xR;
-	PIXEL_32 *src_addr32;
-	PIXEL_32 *dst_addr32;
 #ifdef BOTH
-	PIXEL_32 *dst_addr_fast32;
-	PIXEL v;
 	PIXEL_32 v32;
-#endif
 
-	(void) dst_addr_fast;
-
-#ifdef BOTH
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w -(%2),%3\n" \
-			" move.w %3,-(%0)\n" \
-			" move.w %3,-(%1)\n" \
-			: "=a"(dst_addr), "=a"(dst_addr_fast), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(dst_addr_fast), "2"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" move.l %[v32],-(%[dst_addr])\n" \
+			" move.l %[v32],-(%[dst_addr_fast])\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" move.l %[v32],-(%[dst_addr])\n" \
+			" move.l %[v32],-(%[dst_addr_fast])\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w -(%[src_addr]),%[v32]\n" \
+			" move.w %[v32],-(%[dst_addr])\n" \
+			" move.w %[v32],-(%[dst_addr_fast])\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [dst_addr_fast]"+a"(dst_addr_fast), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l -(%2),%3\n" \
-			" move.l %3,-(%0)\n" \
-			" move.l %3,-(%1)\n" \
-			: "=a"(dst_addr32), "=a"(dst_addr_fast32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(dst_addr_fast32), "2"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr; \
-		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32; \
-		dst_addr_fast = (PIXEL *)dst_addr_fast32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add; \
 		dst_addr_fast += dst_line_add
 #else
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w -(%1),-(%0)\n" \
-			: "=a"(dst_addr), "=a"(src_addr) \
-			: "0"(dst_addr), "1"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l -(%[src_addr]),-(%[dst_addr])\n" \
+			" move.l -(%[src_addr]),-(%[dst_addr])\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w -(%[src_addr]),-(%[dst_addr])\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l -(%1),-(%0)\n" \
-			: "=a"(dst_addr32), "=a"(src_addr32) \
-			: "0"(dst_addr32), "1"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add
 #endif
 
+	(void) dst_addr_fast;
+
 	x = w;
 	y = h;
 	while (y--)
 	{
-		x4 = x >> 2;
-		SET_PIXEL32_ADDR;
-		while (x4--)
-		{
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-		}
-		SET_PIXEL_ADDR;
-		xR = x & 3;
-		while (xR--)
-		{
-			COPY_PIXEL;
-		}
+		COPY_LOOP;
 		NEXTLINE;
     }
 
-#undef COPY_PIXEL
-#undef COPY_2PIXEL
-#undef SET_PIXEL32_ADDR
-#undef SET_PIXEL_ADDR
+#undef COPY_LOOP
 #undef NEXTLINE
 }
 
@@ -990,97 +927,88 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
                  short int w, short int h)
 {
 	short int x, y, x4, xR;
-	PIXEL_32 *src_addr32;
-	PIXEL_32 *dst_addr32;
-	PIXEL v;
 	PIXEL_32 v32;
-#ifdef BOTH
-	PIXEL_32 *dst_addr_fast32;
-#endif
-
-	(void) dst_addr_fast;
 
 #ifdef BOTH
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w -(%2),%3\n" \
-			" or.w -(%1),%3\n" \
-			" move.w %3,(%1)\n" \
-			" move.w %3,-(%0)\n" \
-			: "=a"(dst_addr), "=a"(dst_addr_fast), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(dst_addr_fast), "2"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" or.l %[v32],-(%[dst_addr])\n" \
+			" or.l %[v32],-(%[dst_addr_fast])\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" or.l %[v32],-(%[dst_addr])\n" \
+			" or.l %[v32],-(%[dst_addr_fast])\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w -(%[src_addr]),%[v32]\n" \
+			" or.w %[v32],-(%[dst_addr])\n" \
+			" or.w %[v32],-(%[dst_addr_fast])\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [dst_addr_fast]"+a"(dst_addr_fast), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l -(%2),%3\n" \
-			" or.l -(%1),%3\n" \
-			" move.l %3,-(%1)\n" \
-			" move.l %3,-(%0)\n" \
-			: "=a"(dst_addr32), "=a"(dst_addr_fast32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(dst_addr_fast32), "2"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr; \
-		dst_addr_fast32 = (PIXEL_32 *)dst_addr_fast
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32; \
-		dst_addr_fast = (PIXEL *)dst_addr_fast32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add; \
 		dst_addr_fast += dst_line_add
 #else
-#define COPY_PIXEL \
+#define COPY_LOOP \
 		__asm__ __volatile__( \
-			" move.w -(%1),%2\n" \
-			" or.w %2,-(%0)\n" \
-			: "=a"(dst_addr), "=a"(src_addr), "=d"(v) \
-			: "0"(dst_addr), "1"(src_addr) \
+			" move.w %[x],%[x4]\n" \
+			" move.w %[x],%[xR]\n" \
+			" asr.w #2,%[x4]\n" \
+			" and.w #3,%[xR]\n" \
+			" jbra 2f\n" \
+			"1:\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" or.l %[v32],-(%[dst_addr])\n" \
+			" move.l -(%[src_addr]),%[v32]\n" \
+			" or.l %[v32],-(%[dst_addr])\n" \
+			"2:\n" \
+			" dbra %[x4],1b\n" \
+			" jbra 4f\n" \
+			"3:\n" \
+			" move.w -(%[src_addr]),%[v32]\n" \
+			" or.w %[v32],-(%[dst_addr])\n" \
+			"4:\n" \
+			" dbra %[xR],3b\n" \
+			: [dst_addr]"+a"(dst_addr), \
+			  [src_addr]"+a"(src_addr), \
+			  [x4]"=d"(x4), \
+			  [xR]"=d"(xR), \
+			  [v32]"=d"(v32) \
+			: [x]"d"(x) \
 			: "cc", "memory")
-#define COPY_2PIXEL \
-		__asm__ __volatile__( \
-			" move.l -(%1),%2\n" \
-			" or.l %2,-(%0)\n" \
-			: "=a"(dst_addr32), "=a"(src_addr32), "=d"(v32) \
-			: "0"(dst_addr32), "1"(src_addr32) \
-			: "cc", "memory")
-#define SET_PIXEL32_ADDR \
-		src_addr32 = (PIXEL_32 *)src_addr; \
-		dst_addr32 = (PIXEL_32 *)dst_addr
-#define SET_PIXEL_ADDR \
-		src_addr = (PIXEL *)src_addr32; \
-		dst_addr = (PIXEL *)dst_addr32
 #define NEXTLINE \
 		src_addr += src_line_add; \
 		dst_addr += dst_line_add
 #endif
 
+	(void) dst_addr_fast;
+
 	x = w;
 	y = h;
 	while (y--)
 	{
-		x4 = x >> 2;
-		SET_PIXEL32_ADDR;
-		while (x4--)
-		{
-			COPY_2PIXEL;
-			COPY_2PIXEL;
-		}
-		SET_PIXEL_ADDR;
-		xR = x & 3;
-		while (xR--)
-		{
-			COPY_PIXEL;
-		}
+		COPY_LOOP;
 		NEXTLINE;
     }
 
-#undef COPY_PIXEL
-#undef COPY_2PIXEL
-#undef SET_PIXEL32_ADDR
-#undef SET_PIXEL_ADDR
+#undef COPY_LOOP
 #undef NEXTLINE
 }
 
