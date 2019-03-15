@@ -66,7 +66,8 @@ Driver *me = 0;							/* Access to this seems to be needed */
 Device device;
 short *loaded_palette = 0;
 static unsigned char tos_colours[] = { 0, 255, 1, 2, 4, 6, 3, 5, 7, 8, 9, 10, 12, 14, 11, 13 };
-int accelerate, oldmouse;
+static int accelerate;
+static int oldmouse;
 
 
 long tokenize(const char *ptr)
@@ -357,7 +358,7 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 	else
 		wk->r.get_pixel = c_get_pixel;
 
-	if (accelerate & A_LINE)
+	if ((accelerate & A_LINE) && line_draw_r)
 	{
 		fallback_line = wk->r.line;		/* Remember the original (internal) function */
 		if (accel_s & A_LINE)			/* Look for assembly... */
@@ -365,7 +366,7 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 		else if (accel_c & A_LINE)		/* ...and C accelerator functions */
 			wk->r.line = c_line;
 	}
-	if (accelerate & A_EXPAND)
+	if ((accelerate & A_EXPAND) && expand_area_r)
 	{
 		fallback_expand = wk->r.expand;
 		if (accel_s & A_EXPAND)
@@ -373,7 +374,7 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 		else if (accel_c & A_EXPAND)
 			wk->r.expand = c_expand;
 	}
-	if (accelerate & A_FILL)
+	if ((accelerate & A_FILL) && fill_area_r)
 	{
 		fallback_fill = wk->r.fill;
 		if (accel_s & A_FILL)
@@ -381,7 +382,7 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 		else if (accel_c & A_FILL)
 			wk->r.fill = &c_fill;
 	}
-	if (accelerate & A_FILLPOLY)
+	if ((accelerate & A_FILLPOLY) && fill_poly_r)
 	{
 		fallback_fillpoly = wk->r.fillpoly;
 		if (accel_s & A_FILLPOLY)
@@ -389,7 +390,7 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 		else if (accel_c & A_FILLPOLY)
 			wk->r.fillpoly = c_fillpoly;
 	}
-	if (accelerate & A_BLIT)
+	if ((accelerate & A_BLIT) && blit_area_r)
 	{
 		fallback_blit = wk->r.blit;
 		if (accel_s & A_BLIT)
@@ -397,7 +398,7 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 		else if (accel_c & A_BLIT)
 			wk->r.blit = c_blit;
 	}
-	if (accelerate & A_TEXT)
+	if ((accelerate & A_TEXT) && text_area_r)
 	{
 		fallback_text = wk->r.text;
 		if (accel_s & A_TEXT)
@@ -407,7 +408,7 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 	}
 	if (!oldmouse)
 	{
-		if (accelerate & A_MOUSE)
+		if ((accelerate & A_MOUSE) && mouse_draw_r)
 		{
 			wk->mouse.type = 1;			/* Should this be here? */
 			if (accel_s & A_MOUSE)
