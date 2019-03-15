@@ -45,7 +45,7 @@ long CDECL (*fill_area_r)(Virtual *vwk, long x, long y, long w, long h, short *p
 long CDECL (*fill_poly_r)(Virtual *vwk, short points[], long n, short index[], long moves, short *pattern, long colour, long mode, long interior_style) = 0;
 long CDECL (*blit_area_r)(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation) = c_blit_area;
 long CDECL (*text_area_r)(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets) = 0;
-long CDECL (*mouse_draw_r)(Workstation *wk, long x, long y, Mouse *mouse) = 0;
+long CDECL (*mouse_draw_r)(Workstation *wk, long x, long y, Mouse *mouse) = c_mouse_draw;
 
 long CDECL (*get_colour_r)(Virtual *vwk, long colour) = c_get_colour;
 void CDECL (*get_colours_r)(Virtual *vwk, long colour, long *foreground, long *background) = 0;
@@ -53,12 +53,14 @@ void CDECL (*set_colours_r)(Virtual *vwk, long start, long entries, unsigned sho
 
 long wk_extend = 0;
 short accel_s = 0;
-short accel_c = A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX | A_BLIT | A_FILL | A_EXPAND | A_LINE;
+short accel_c = A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX | A_BLIT | A_FILL | A_EXPAND | A_LINE | A_MOUSE;
 
 Mode *graphics_mode = &mode[0];
 
 short debug = 0;
 short shadow = 0;
+short fix_shape = 0;
+short no_restore = 0;
 
 #if 0
 short cache_img = 0;
@@ -98,7 +100,9 @@ static Option const options[] = {
 	{"screencache", &cache_from_screen, 1},	/* screencache, turn on caching of images blitted from the screen */
 #endif
 	{"shadow", &shadow, 1},				/* shadow, use a FastRAM buffer */
-	{"debug", &debug, 2}				/* debug, turn on debugging aids */
+	{"debug", &debug, 2},				/* debug, turn on debugging aids */
+	{"fixshape", &fix_shape, 1},		/* fixed shape; do not allow mouse shape changes */
+	{"norestore", &no_restore, 1},
 };
 
 
@@ -393,6 +397,12 @@ long CDECL initialize(Virtual *vwk)
 #endif
 	if (!wk->screen.shadow.address)
 		driver_name[20] = 0;
+
+	if (wk->mouse.type)
+	{
+		wk->mouse.position.x = (wk->screen.coordinates.max_x - wk->screen.coordinates.min_x + 1) >> 1;
+		wk->mouse.position.y = (wk->screen.coordinates.max_y - wk->screen.coordinates.min_y + 1) >> 1;
+	}
 
 	return 1;
 }
