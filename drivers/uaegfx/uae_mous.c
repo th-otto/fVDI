@@ -26,9 +26,6 @@
 #include "uaegfx.h"
 #include "uaelib.h"
 
-/* External data and functions */
-extern Driver *me;
-
 /* We must remember if the mouse is visible or not */
 static int mouse_visible = 0;
 
