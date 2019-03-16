@@ -8,22 +8,27 @@
 #include "os.h"
 
 /* color bit organization */
-static char none[] = { 0 };
-static char r_8[] = { 8 };
-static char g_8[] = { 8 };
-static char b_8[] = { 8 };
-static char r_16[] = { 5, 3, 4, 5, 6, 7 };
-static char g_16[] = { 6, 13, 14, 15, 0, 1, 2 };
-static char b_16[] = { 5, 8, 9, 10, 11, 12 };
-static char r_16f[] = { 5, 11, 12, 13, 14, 15 };
-static char g_16f[] = { 6, 5, 6, 7, 8, 9, 10 };
-static char b_16f[] = { 5, 0, 1, 2, 3, 4 };
-static char r_32[] = { 8, 16, 17, 18, 19, 20, 21, 22, 23 };
-static char g_32[] = { 8, 8, 9, 10, 11, 12, 13, 14, 15 };
-static char b_32[] = { 8, 0, 1, 2, 3, 4, 5, 6, 7 };
-static char r_32f[] = { 8, 8, 9, 10, 11, 12, 13, 14, 15 };
-static char g_32f[] = { 8, 16, 17, 18, 19, 20, 21, 22, 23 };
-static char b_32f[] = { 8, 24, 25, 26, 27, 28, 29, 30, 31 };
+static char const none[]  = { 0 };
+
+static char const r_8[]   = { 8 };
+static char const g_8[]   = { 8 };
+static char const b_8[]   = { 8 };
+
+static char const r_16[]  = { 5, 3, 4, 5, 6, 7 };
+static char const g_16[]  = { 6, 13, 14, 15, 0, 1, 2 };
+static char const b_16[]  = { 5, 8, 9, 10, 11, 12 };
+
+static char const r_16f[] = { 5, 11, 12, 13, 14, 15 };
+static char const g_16f[] = { 6, 5, 6, 7, 8, 9, 10 };
+static char const b_16f[] = { 5, 0, 1, 2, 3, 4 };
+
+static char const r_32[]  = { 8, 16, 17, 18, 19, 20, 21, 22, 23 };
+static char const g_32[]  = { 8,  8,  9, 10, 11, 12, 13, 14, 15 };
+static char const b_32[]  = { 8,  0,  1,  2,  3,  4,  5,  6,  7 };
+
+static char const r_32f[] = { 8,  8,  9, 10, 11, 12, 13, 14, 15 };
+static char const g_32f[] = { 8, 16, 17, 18, 19, 20, 21, 22, 23 };
+static char const b_32f[] = { 8, 24, 25, 26, 27, 28, 29, 30, 31 };
 
 
 /**
@@ -56,7 +61,7 @@ static char b_32f[] = { 8, 24, 25, 26, 27, 28, 29, 30, 31 };
  *           0x01 - usual bit order
  *           0x80 - Intel byte order
  **/
-static Mode mode[7] =							/* FIXME: big and little endian differences. */
+static Mode const mode[] =							/* FIXME: big and little endian differences. */
 {
 	/* ... 0, interleaved, hardware clut, usual bit order */
 	{  1, CHECK_PREVIOUS, { r_8, g_8, b_8, none, none, none }, 0, 0, 1, 1 },
@@ -67,7 +72,12 @@ static Mode mode[7] =							/* FIXME: big and little endian differences. */
 	/* ... 0, packed pixels, software clut (none), usual bit order */
 	{ 16, CHECK_PREVIOUS | CHUNKY | TRUE_COLOUR, { r_16f, g_16f, b_16f, none, none, none }, 0, 2, 2, 1 },
 	{ 24, CHECK_PREVIOUS | CHUNKY | TRUE_COLOUR, { r_32f, g_32f, b_32f, none, none, none }, 0, 2, 2, 1 },
-	{ 32, CHECK_PREVIOUS | CHUNKY | TRUE_COLOUR, { r_32, g_32, b_32, none, none, none }, 0, 2, 2, 1 }
+	{ 32, CHECK_PREVIOUS | CHUNKY | TRUE_COLOUR, { r_32f, g_32f, b_32f, none, none, none }, 0, 2, 2, 1 },
+
+	/* ... 0, packed pixels, software clut (none), fb layout */
+	{ 16, CHECK_PREVIOUS | CHUNKY | TRUE_COLOUR, { r_16, g_16, b_16, none, none, none }, 0, 2, 2, 0x81 },
+	{ 24, CHECK_PREVIOUS | CHUNKY | TRUE_COLOUR, { r_32, g_32, b_32, none, none, none }, 0, 2, 2, 0x81 },
+	{ 32, CHECK_PREVIOUS | CHUNKY | TRUE_COLOUR, { r_32, g_32, b_32, none, none, none }, 0, 2, 2, 0x81 }
 };
 
 
@@ -111,11 +121,10 @@ void CDECL (*set_colours_r)(Virtual *vwk, long start, long entries, unsigned sho
 long wk_extend = 0;
 short accel_s = 0;
 short accel_c = A_SET_PIX | A_GET_PIX | A_MOUSE | A_LINE | A_BLIT | A_FILL | A_EXPAND | A_FILLPOLY | A_SET_PAL | A_GET_COL | A_TEXT;
-Mode *graphics_mode = &mode[1];
-
-short debug = 0;
+const Mode *graphics_mode = &mode[1];
 
 static short irq = 0;
+static short fb_scrninfo;
 
 static long set_mode(const char **ptr);
 static long set_scrninfo(const char **ptr);
@@ -182,17 +191,17 @@ static int set_bpp(int bpp)
 	case 16:
 		driver_name[27] = '1';
 		driver_name[28] = '6';
-		graphics_mode = &mode[4];
+		graphics_mode = fb_scrninfo ? &mode[7] : &mode[4];
 		break;
 	case 24:
 		driver_name[27] = '2';
 		driver_name[28] = '4';
-		graphics_mode = &mode[5];
+		graphics_mode = fb_scrninfo ? &mode[8] : &mode[5];
 		break;
 	case 32:
 		driver_name[27] = '3';
 		driver_name[28] = '2';
-		graphics_mode = &mode[6];
+		graphics_mode = fb_scrninfo ? &mode[9] : &mode[6];
 		break;
 	}
 
@@ -288,33 +297,13 @@ static long set_scrninfo(const char **ptr)
 
 	if (access->funcs.equal(token, "fb"))
 	{
-		mode[4].bits.red = r_16;
-		mode[4].bits.green = g_16;
-		mode[4].bits.blue = b_16;
-		mode[4].org = 0x81;
-		mode[5].bits.red = r_32;
-		mode[5].bits.green = g_32;
-		mode[5].bits.blue = b_32;
-		mode[5].org = 0x81;
-		mode[6].bits.red = r_32;
-		mode[6].bits.green = g_32;
-		mode[6].bits.blue = b_32;
-		mode[6].org = 0x81;
+		fb_scrninfo = 1;
 	} else
 	{
-		mode[4].bits.red = r_16f;
-		mode[4].bits.green = g_16f;
-		mode[4].bits.blue = b_16f;
-		mode[4].org = 0x01;
-		mode[5].bits.red = r_32f;
-		mode[5].bits.green = g_32f;
-		mode[5].bits.blue = b_32f;
-		mode[5].org = 0x01;
-		mode[6].bits.red = r_32f;
-		mode[6].bits.green = g_32f;
-		mode[6].bits.blue = b_32f;
-		mode[6].org = 0x01;
+		fb_scrninfo = 0;
 	}
+
+	resolution.bpp = set_bpp(resolution.bpp);
 
 	if (me && me->device)
 		setup_scrninfo(me->device, graphics_mode);

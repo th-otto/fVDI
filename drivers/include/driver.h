@@ -42,12 +42,12 @@
 #endif
 
 typedef struct _MBits {
-	char *red;
-	char *green;
-	char *blue;
-	char *alpha;
-	char *genlock;
-	char *unused;
+	const char *red;
+	const char *green;
+	const char *blue;
+	const char *alpha;
+	const char *genlock;
+	const char *unused;
 } MBits;
 
 typedef struct _Mode {
@@ -55,7 +55,7 @@ typedef struct _Mode {
 	short flags;
 	MBits bits;
 	short code;		/* 0, DEPTH_SUPPORT_565, ? */
-	short format;		/* 0 (interleaved), 2 (packed pixels) */
+	short format;	/* 0 (interleaved), 2 (packed pixels) */
 	short clut;		/* 1 (hardware), 2 (software) */
 	short org;		/* 1 (usual bit order), 0x81 (Falcon 5+6+5 bit order, but Intel byte order), ? */
 } Mode;
@@ -80,13 +80,15 @@ extern short *loaded_palette;
 extern short default_vdi_colors[256][3];
 extern long wk_extend;
 extern Device device;
+extern short debug;
+
 
 long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *);
 
 /*
  * from various spec.c
  */
-extern Mode *graphics_mode;
+extern const Mode *graphics_mode;
 extern short accel_s;	/* Bit vector of available assembly acceleration routines */
 extern short accel_c;	/* The same for C versions */
 extern char driver_name[];
@@ -116,10 +118,8 @@ long check_token(char *, const char **);
 long CDECL setup(long, long);
 Virtual *CDECL opnwk(Virtual *);
 void CDECL clswk(Virtual *);
-void setup_scrninfo(Device *device, Mode *graphics_mode);
+void setup_scrninfo(Device *device, const Mode *graphics_mode);
 long tokenize(const char *ptr);
-
-void setup_scrninfo(Device *device, Mode *graphics_mode);
 
 void CDECL initialize_palette(Virtual *vwk, long start, long entries, short requested[][3], Colour palette[]);
 void CDECL c_initialize_palette(Virtual *vwk, long start, long entries, short requested[][3], Colour palette[]);

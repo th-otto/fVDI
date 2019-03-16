@@ -508,8 +508,7 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 {
 	Workstation *wk;
 	short *addr, *addr_fast;
-	long colours;
-	short foreground, background;
+	long foreground, background;
   	int line_add;
 	long pos;
 	short *table;
@@ -529,9 +528,7 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 		return -1;			/* Don't know about anything yet */
 	}
 
-	colours = c_get_colour(vwk, colour);
-	foreground = colours;
-	background = colours >> 16;
+	c_get_colours(vwk, colour, &foreground, &background);
 
 	wk = vwk->real_address;
 

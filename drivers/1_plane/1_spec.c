@@ -22,15 +22,14 @@
 #endif
 
 
-char red[] = {6};
-char green[] = {6};
-char blue[] = {6};
-char none[] = {0};
+static char const red[]   = { 6 };
+static char const green[] = { 6 };
+static char const blue[]  = { 6 };
+static char const none[]  = { 0 };
 
-Mode mode[1] =
-	{{1, CHECK_PREVIOUS, {red, green, blue, none, none, none}, 0, 0, 1, 1}};
-
-extern Device device;
+static Mode const mode[1] = {
+	{ 1, CHECK_PREVIOUS, { red, green, blue, none, none, none }, 0, 0, 1, 1 }
+};
 
 char driver_name[] = "Monochrome (shadow)";
 
@@ -53,19 +52,10 @@ short accel_s = A_MOUSE | A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX |
                 A_TEXT | A_BLIT | A_FILL | A_EXPAND | A_LINE;
 short accel_c = 0;
 
-#if 0
-short graphics_mode = CHECK_PREVIOUS;
-#else
-Mode *graphics_mode = &mode[0];
-#endif
+const Mode *graphics_mode = &mode[0];
 
-short colour_bits = 18;
-
-int shadow = 0;
-
-short debug = 0;
-
-short depth = 0;
+static short shadow = 0;
+static short depth = 0;
 
 
 /*

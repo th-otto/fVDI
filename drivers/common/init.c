@@ -22,6 +22,8 @@
 #include "relocate.h"
 #include "driver.h"
 
+short debug = 0;
+
 
 #define MAX_PALETTE	256
 #define Min(x,y)	(((x) <= (y)) ? (x) : (y))
@@ -109,10 +111,10 @@ long tokenize(const char *ptr)
 }
 
 
-void setup_scrninfo(Device * device, Mode * graphics_mode)
+void setup_scrninfo(Device *device, const Mode *graphics_mode)
 {
 	int i;
-	MBits *gmbits;
+	const MBits *gmbits;
 
 	device->format = graphics_mode->format;
 	device->clut = graphics_mode->clut;

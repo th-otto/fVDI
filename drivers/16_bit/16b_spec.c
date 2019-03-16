@@ -19,21 +19,23 @@
 #include "../bitplane/bitplane.h"
 #include "string/memset.h"
 
-char r_16[] = { 5, 11, 12, 13, 14, 15 };
-char g_16[] = { 6,  5,  6,  7,  8,  9, 10 };
-char b_16[] = { 5,  0,  1,  2,  3,  4 };
-char none[] = { 0 };
+static char const r_16[] = { 5, 11, 12, 13, 14, 15 };
+static char const g_16[] = { 6,  5,  6,  7,  8,  9, 10 };
+static char const b_16[] = { 5,  0,  1,  2,  3,  4 };
+static char const none[] = { 0 };
 
 #if 0
-char red[] = { 5, 11, 12, 13, 14, 15 };
-char green[] = { 5, 6, 7, 8, 9, 10 };
-char blue[] = { 5, 0, 1, 2, 3, 4 };
-char alpha[] = { 0 };
-char genlock[] = { 0 };
-char unused[] = { 1, 5 };
+static char const red[]     = { 5, 11, 12, 13, 14, 15 };
+static char const green[]   = { 5,  6,  7,  8,  9, 10 };
+static char const blue[]    = { 5,  0,  1,  2,  3,  4 };
+static char const alpha[]   = { 0 };
+static char const genlock[] = { 0 };
+static char const unused[]  = { 1, 5 };
 #endif
 
-Mode mode[1] = { {16, CHUNKY | CHECK_PREVIOUS | TRUE_COLOUR, {r_16, g_16, b_16, none, none, none}, 0, 2, 2, 1} };
+static Mode const mode[1] = {
+	{ 16, CHUNKY | CHECK_PREVIOUS | TRUE_COLOUR, { r_16, g_16, b_16, none, none, none }, 0, 2, 2, 1 }
+};
 
 char driver_name[] = "Falcon TC 2001-03-24 (shadow)";
 
@@ -55,9 +57,8 @@ long wk_extend = 0;
 short accel_s = 0;
 short accel_c = A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX | A_BLIT | A_FILL | A_EXPAND | A_LINE | A_MOUSE;
 
-Mode *graphics_mode = &mode[0];
+const Mode *graphics_mode = &mode[0];
 
-short debug = 0;
 short shadow = 0;
 short fix_shape = 0;
 short no_restore = 0;
@@ -400,8 +401,8 @@ long CDECL initialize(Virtual *vwk)
 
 	if (wk->mouse.type)
 	{
-		wk->mouse.position.x = (wk->screen.coordinates.max_x - wk->screen.coordinates.min_x + 1) >> 1;
-		wk->mouse.position.y = (wk->screen.coordinates.max_y - wk->screen.coordinates.min_y + 1) >> 1;
+		wk->mouse.position.x = ((wk->screen.coordinates.max_x - wk->screen.coordinates.min_x + 1) >> 1) + wk->screen.coordinates.min_x;
+		wk->mouse.position.y = ((wk->screen.coordinates.max_y - wk->screen.coordinates.min_y + 1) >> 1) + wk->screen.coordinates.min_y;
 	}
 
 	return 1;

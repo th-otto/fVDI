@@ -701,8 +701,7 @@ long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
 {
 	Workstation *wk;
 	short *addr, *addr_fast;
-	long colours;
-	short foreground, background;
+	long foreground, background;
   	int line_add;
 	long pos;
 	int x_step, y_step;
@@ -718,9 +717,7 @@ long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
 	if (!clip_line(vwk, &x1, &y1, &x2, &y2))
 		return 1;
 
-	colours = c_get_colour(vwk, colour);
-	foreground = colours;
-	background = colours >> 16;
+	c_get_colours(vwk, colour, &foreground, &background);
 
 	wk = vwk->real_address;
 

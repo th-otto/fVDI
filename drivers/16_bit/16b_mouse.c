@@ -55,14 +55,14 @@ long CDECL c_mouse_draw(Workstation *wk, long x, long y, Mouse *mouse)
 		if (*pp != old_colours)
 		{
 			Colour *global_palette;
-			unsigned short *realp;
+			PIXEL *realp;
 			
 			old_colours = *pp;
-			/* c_get_colour(wk, *pp, &foreground, &background); */
+			/* c_get_colours(wk, *pp, &foreground, &background); */
 			global_palette = wk->screen.palette.colours;
-			realp = (unsigned short *)&global_palette[wk->mouse.colour.foreground].real;
+			realp = (PIXEL *)&global_palette[wk->mouse.colour.foreground].real;
 			foreground = *realp;
-			realp = (unsigned short *)&global_palette[wk->mouse.colour.background].real;
+			realp = (PIXEL *)&global_palette[wk->mouse.colour.background].real;
 			background = *realp;
 		}
 

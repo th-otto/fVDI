@@ -48,7 +48,8 @@ c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
     UWORD msk;
     int plane;
     UWORD linemask;             /* Linestyle bits */
-    UWORD color;                /* Color index */
+    long color;                 /* Color index */
+	long dummy;
 
 #if 0
     if (line->y1 == line->y2) {
@@ -65,10 +66,7 @@ c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
     if (!clip_line(vwk, &x1, &y1, &x2, &y2))
       return 1;
 
-    c_get_colours(vwk, colour, (short *)&color, (short *)&plane); /* Dummy background */
-#if 0
-    color = colour & 0xffff;
-#endif
+    c_get_colours(vwk, colour, &color, &dummy);
     linemask = pattern;                 /* To avoid compiler warning */
 
     /* Make x axis always going up */

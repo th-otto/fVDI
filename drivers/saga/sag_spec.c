@@ -28,15 +28,14 @@
 #include <os.h>
 #include "string/memset.h"
 
-char r_16[] = {5, 11, 12, 13, 14, 15};
-char g_16[] = {6,  5,  6,  7,  8,  9, 10};
-char b_16[] = {5,  0,  1,  2,  3,  4};
-char none[] = {0};
+static char const r_16[] = { 5, 11, 12, 13, 14, 15 };
+static char const g_16[] = { 6,  5,  6,  7,  8,  9, 10 };
+static char const b_16[] = { 5,  0,  1,  2,  3,  4 };
+static char const none[] = { 0 };
 
-Mode mode[1] =
-	{{16, CHUNKY | CHECK_PREVIOUS | TRUE_COLOUR, {r_16, g_16, b_16, none, none, none}, 0,  2, 2, 1}};
-
-extern Device device;
+static Mode const mode[1] = {
+	{ 16, CHUNKY | CHECK_PREVIOUS | TRUE_COLOUR, { r_16, g_16, b_16, none, none, none }, 0,  2, 2, 1 }
+};
 
 char driver_name[] = "SAGA";
 
@@ -52,11 +51,6 @@ struct {
 	short width;
 	short height;
 } pixel;
-
-extern Driver *me;
-extern Access *access;
-
-extern short *loaded_palette;
 
 long CDECL (*write_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y, long colour) = c_write_pixel;
 long CDECL (*read_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y) = c_read_pixel;
@@ -92,9 +86,8 @@ long wk_extend = 0;
 short accel_s = 0;
 short accel_c = A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX | A_BLIT | A_FILL | A_EXPAND | A_LINE | A_MOUSE;
 
-Mode *graphics_mode = &mode[0];
+const Mode *graphics_mode = &mode[0];
 
-short debug = 0;
 
 static char *get_num(char *token, short *num)
 {

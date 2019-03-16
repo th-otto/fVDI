@@ -94,7 +94,7 @@ void CDECL GETNAME(Virtual * vwk, long colour, long *foreground, long *backgroun
 			back_pal = global_palette;
 	}
 
-	pp = (PIXEL *) &fore_pal[(short) colour].real;;
+	pp = (PIXEL *) &fore_pal[(short) colour].real;
 	tc_word = *pp;
 
 #if NOVA

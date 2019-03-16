@@ -1,5 +1,3 @@
-extern short debug;
-
 long CDECL c_get_colour_8(Virtual *vwk, long colour);
 void CDECL c_get_colours_8(Virtual *vwk, long colour, long *foreground, long *background);
 void CDECL c_set_colours_8(Virtual *vwk, long start, long entries, unsigned short *requested, Colour palette[]);

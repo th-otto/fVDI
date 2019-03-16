@@ -349,8 +349,7 @@ long CDECL c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *
 {
 	Workstation *wk;
 	PIXEL *src_addr, *dst_addr, *dst_addr_fast;
-	long colours;
-	short foreground, background;
+	long foreground, background;
 	int src_wrap, dst_wrap;
 	int src_line_add, dst_line_add;
 	unsigned long src_pos, dst_pos;
@@ -358,9 +357,7 @@ long CDECL c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *
 
 	wk = vwk->real_address;
 
-	colours = c_get_colour(vwk, colour);
-	foreground = colours;
-	background = colours >> 16;
+	c_get_colours(vwk, colour, &foreground, &background);
 
 	src_wrap = (long)src->wdwidth * 2;		/* Always monochrome */
 	src_addr = src->address;

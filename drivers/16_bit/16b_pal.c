@@ -56,6 +56,35 @@ long CDECL c_get_colour(Virtual *vwk, long colour)
 }
 
 
+void CDECL c_get_colours(Virtual *vwk, long colour, long *foreground, long *background)
+{
+	Colour *local_palette, *global_palette;
+	Colour *fore_pal, *back_pal;
+	unsigned short *realp;
+
+	local_palette = vwk->palette;
+	if (local_palette && !((long)local_palette & 1))	/* Complete local palette? */
+		fore_pal = back_pal = local_palette;
+	else {						/* Global or only negative local */
+		local_palette = (Colour *)((long)local_palette & 0xfffffffeL);
+		global_palette = vwk->real_address->screen.palette.colours;
+		if (local_palette && ((short)colour < 0))
+			fore_pal = local_palette;
+		else
+			fore_pal = global_palette;
+		if (local_palette && ((colour >> 16) < 0))
+			back_pal = local_palette;
+		else
+			back_pal = global_palette;
+	}
+
+	realp = (unsigned short *)&fore_pal[(short)colour].real;
+	*foreground = *realp;
+	realp = (unsigned short *)&back_pal[colour >> 16].real;
+	*background = *realp;
+}
+
+
 void CDECL c_set_colours(Virtual *vwk, long start, long entries, unsigned short *requested, Colour palette[])
 {
 	unsigned short colour;
