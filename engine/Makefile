@@ -166,8 +166,6 @@ $(top_srcdir)/include/types.inc: $(top_srcdir)/include/fvdi.h
 	$(AM_V_GEN)(echo "*****"; \
 	  echo "* fVDI structure declarations, by Johan Klockars"; \
 	  echo "*"; \
-	  echo "* \$$Id\$$"; \
-	  echo "*"; \
 	  echo "* GENERATED AUTOMATICALLY by structer from fvdi.h"; \
 	  echo "* -- DO NOT EDIT --"; \
 	  echo "*"; \

@@ -1,8 +1,6 @@
 #
 # Makefile for C struct to assembly equ converter
 #
-# $Id: Makefile,v 1.3 2005-07-01 09:51:44 johan Exp $
-#
 # Copyright 2002, Johan Klockars
 # This software is licensed under the GNU General Public License.
 # Please, see LICENSE.TXT for further information.

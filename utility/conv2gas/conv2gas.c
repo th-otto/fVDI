@@ -3,8 +3,6 @@
  * This is an ugly hack, but it does its job for now.
  * Might be improved later, perhaps.
  *
- * $Id: conv2gas.c,v 1.1 2004-10-17 21:44:11 johan Exp $
- *
  * Copyright 2004, Johan Klockars
  * This software is licensed under the GNU General Public License.
  * Please, see LICENSE.TXT for further information.

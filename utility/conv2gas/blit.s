@@ -1,8 +1,6 @@
 *****
 * fVDI blit type functions
 *
-* $Id: blit.s,v 1.14 2006-11-26 07:30:56 standa Exp $
-*
 * Copyright 1997-2002, Johan Klockars 
 * This software is licensed under the GNU General Public License.
 * Please, see LICENSE.TXT for further information.

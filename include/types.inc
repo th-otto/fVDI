@@ -1,8 +1,6 @@
 *****
 * fVDI structure declarations, by Johan Klockars
 *
-* $Id$
-*
 * GENERATED AUTOMATICALLY by structer from fvdi.h
 * -- DO NOT EDIT --
 *

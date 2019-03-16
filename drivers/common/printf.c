@@ -1,8 +1,6 @@
 /*
  * fVDI generic device driver printf support
  *
- * $Id$
- *
  * This file is put in the public domain.
  * It's not copyrighted or under any sort of license.
  */
