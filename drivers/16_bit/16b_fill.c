@@ -12,7 +12,12 @@
  */
 
 #include "fvdi.h"
+#include "driver.h"
 #include "../bitplane/bitplane.h"
+
+#define PIXEL		short
+#define PIXEL_SIZE	sizeof(PIXEL)
+#define PIXEL_32    long
 
 /*
  * Make it as easy as possible for the C compiler.
@@ -25,11 +30,12 @@
  */
 
 #ifdef BOTH
-static void s_fill_replace(short *addr, short *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, short foreground, short background)
+static void s_fill_replace(PIXEL *addr, PIXEL *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, PIXEL foreground, PIXEL background)
 {
 	int i, j;
-	unsigned int pattern_word, mask;
+	unsigned short pattern_word, mask;
 
+	(void) addr_fast;
 	i = y;
 	h = y + h;
 	x = 1 << (15 - (x & 0x000f));
@@ -80,11 +86,12 @@ static void s_fill_replace(short *addr, short *addr_fast, int line_add, short *p
 	}
 }
 
-static void s_fill_transparent(short *addr, short *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, short foreground, short background)
+static void s_fill_transparent(PIXEL *addr, PIXEL *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, PIXEL foreground, PIXEL background)
 {
 	int i, j;
-	unsigned int pattern_word, mask;
+	unsigned short pattern_word, mask;
 
+	(void) addr_fast;
 	(void) background;
 	i = y;
 	h = y + h;
@@ -134,11 +141,13 @@ static void s_fill_transparent(short *addr, short *addr_fast, int line_add, shor
 	}
 }
 
-static void s_fill_xor(short *addr, short *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, short foreground, short background)
+static void s_fill_xor(PIXEL *addr, PIXEL *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, PIXEL foreground, PIXEL background)
 {
 	int i, j;
-	unsigned int pattern_word, mask, v;
+	unsigned short pattern_word, mask;
+	PIXEL v;
 
+	(void) addr_fast;
 	(void) foreground;
 	(void) background;
 	i = y;
@@ -199,11 +208,12 @@ static void s_fill_xor(short *addr, short *addr_fast, int line_add, short *patte
 	}
 }
 
-static void s_fill_revtransp(short *addr, short *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, short foreground, short background)
+static void s_fill_revtransp(PIXEL *addr, PIXEL *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, PIXEL foreground, PIXEL background)
 {
 	int i, j;
-	unsigned int pattern_word, mask;
+	unsigned short pattern_word, mask;
 
+	(void) addr_fast;
 	(void) background;
 	i = y;
 	h = y + h;
@@ -264,10 +274,10 @@ static void s_fill_revtransp(short *addr, short *addr_fast, int line_add, short 
  * when no shadow buffer is available
  */
 
-static void fill_replace(short *addr, short *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, short foreground, short background)
+static void fill_replace(PIXEL *addr, PIXEL *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, PIXEL foreground, PIXEL background)
 {
 	int i, j;
-	unsigned int pattern_word, mask;
+	unsigned short pattern_word, mask;
 
 	(void) addr_fast;
 	i = y;
@@ -320,10 +330,10 @@ static void fill_replace(short *addr, short *addr_fast, int line_add, short *pat
 	}
 }
 
-static void fill_transparent(short *addr, short *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, short foreground, short background)
+static void fill_transparent(PIXEL *addr, PIXEL *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, PIXEL foreground, PIXEL background)
 {
 	int i, j;
-	unsigned int pattern_word, mask;
+	unsigned short pattern_word, mask;
 
 	(void) addr_fast;
 	(void) background;
@@ -375,10 +385,11 @@ static void fill_transparent(short *addr, short *addr_fast, int line_add, short 
 	}
 }
 
-static void fill_xor(short *addr, short *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, short foreground, short background)
+static void fill_xor(PIXEL *addr, PIXEL *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, PIXEL foreground, PIXEL background)
 {
 	int i, j;
-	unsigned int pattern_word, mask, v;
+	unsigned short pattern_word, mask;
+	PIXEL v;
 
 	(void) addr_fast;
 	(void) foreground;
@@ -441,10 +452,10 @@ static void fill_xor(short *addr, short *addr_fast, int line_add, short *pattern
 	}
 }
 
-static void fill_revtransp(short *addr, short *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, short foreground, short background)
+static void fill_revtransp(PIXEL *addr, PIXEL *addr_fast, int line_add, short *pattern, int x, int y, int w, int h, PIXEL foreground, PIXEL background)
 {
 	int i, j;
-	unsigned int pattern_word, mask;
+	unsigned short pattern_word, mask;
 
 	(void) addr_fast;
 	(void) background;
@@ -505,10 +516,10 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
                        short *pattern, long colour, long mode, long interior_style)
 {
 	Workstation *wk;
-	short *addr, *addr_fast;
-	long foreground, background;
-  	int line_add;
-	long pos;
+	PIXEL *addr, *addr_fast;
+	unsigned long foreground, background;
+	long line_add;
+	unsigned long pos;
 	short *table;
 
 	if (w <= 0 || h <= 0)
@@ -537,8 +548,8 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 #ifdef BOTH
 	if ((addr_fast = wk->screen.shadow.address) != 0) {
 
-		addr += pos >> 1;
-		addr_fast += pos >> 1;
+		addr += pos / PIXEL_SIZE;
+		addr_fast += pos / PIXEL_SIZE;
 		switch (mode) {
 		case 1:				/* Replace */
 			s_fill_replace(addr, addr_fast, line_add, pattern, x, y, w, h, foreground, background);
@@ -556,7 +567,7 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h,
 	} else
 #endif
 	{
-		addr += pos >> 1;
+		addr += pos / PIXEL_SIZE;
 		switch (mode) {
 		case 1:				/* Replace */
 			fill_replace(addr, addr_fast, line_add, pattern, x, y, w, h, foreground, background);

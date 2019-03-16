@@ -358,12 +358,7 @@ typedef struct vwk_ {
    } console;
    struct clip_ {
 	short on;
-	struct rectangle_ {
-		short x1;
-		short y1;
-		short x2;
-		short y2;
-	} rectangle;
+	RECT16 rectangle;
    } clip;
    short mode;
    Colour *palette;		/* Odd when only negative (fg/bg) */

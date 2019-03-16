@@ -1033,8 +1033,8 @@ c_expand_area(Virtual * vwk, MFDB * src, long src_x, long src_y,
 			  MFDB * dst, long dst_x, long dst_y, long w, long h, long operation, long colour)
 {
 	struct blit_frame info;				/* Holds some internal info for bit_blt */
-	long foreground;
-	long background;
+	unsigned long foreground;
+	unsigned long background;
 
 	c_get_colours((Virtual *) ((long) vwk & ~1), colour, &foreground, &background);
 

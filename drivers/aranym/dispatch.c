@@ -102,8 +102,8 @@ long CDECL c_mouse_draw(Workstation *wk, long x, long y, Mouse *mouse)
 {
 	if ((long) mouse > 7)
 	{
-		long foreground;
-		long background;
+		unsigned long foreground;
+		unsigned long background;
 		long *fgbg = (long *) &mouse->colour;
 		
 		get_colours_r(me->default_vwk, *fgbg, &foreground, &background);
@@ -120,8 +120,8 @@ long CDECL c_mouse_draw(Workstation *wk, long x, long y, Mouse *mouse)
 
 long CDECL c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour)
 {
-	long foreground;
-	long background;
+	unsigned long foreground;
+	unsigned long background;
 	MFDB *simple_dst;
 
 	simple_dst = simplify(vwk, dst);
@@ -141,8 +141,8 @@ long CDECL c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *
 
 long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style)
 {
-	long foreground;
-	long background;
+	unsigned long foreground;
+	unsigned long background;
 
 	get_colours_r((Virtual *) ((long) vwk & ~1), colour, &foreground, &background);
 
@@ -159,8 +159,8 @@ long CDECL c_blit_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *ds
 long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2, long pattern, long colour, long mode)
 {
 	long rect[4];
-	long foreground;
-	long background;
+	unsigned long foreground;
+	unsigned long background;
 	
 	get_colours_r((Virtual *) ((long) vwk & ~1), colour, &foreground, &background);
 
@@ -171,8 +171,8 @@ long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2, long pa
 long CDECL c_fill_polygon(Virtual *vwk, short points[], long n, short index[], long moves, short *pattern, long colour, long mode, long interior_style)
 {
 	long rect[4];
-	long foreground;
-	long background;
+	unsigned long foreground;
+	unsigned long background;
 
 	get_colours_r((Virtual *) ((long) vwk & ~1), colour, &foreground, &background);
 
@@ -184,8 +184,8 @@ long CDECL c_fill_polygon(Virtual *vwk, short points[], long n, short index[], l
 long CDECL c_text_area(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets)
 {
 	long rect[4];
-	long foreground;
-	long background;
+	unsigned long foreground;
+	unsigned long background;
 	long *font;
 	long w, h, mode;
 	long ret;

@@ -12,8 +12,8 @@
  */
 
 #include "fvdi.h"
-#include "../bitplane/bitplane.h"
 #include "driver.h"
+#include "../bitplane/bitplane.h"
 
 
 /*
@@ -701,7 +701,7 @@ long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
 {
 	Workstation *wk;
 	short *addr, *addr_fast;
-	long foreground, background;
+	unsigned long foreground, background;
   	int line_add;
 	long pos;
 	int x_step, y_step;
