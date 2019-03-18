@@ -218,6 +218,11 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 	memset(_bss_start, 0, _end - _bss_start);
 	
 	access = _access;
+
+	/*
+	 * Initialize the device structure
+	 */
+
 	me = driver;						/* Seems to be needed */
 
 	/*
