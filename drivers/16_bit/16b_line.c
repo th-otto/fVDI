@@ -15,6 +15,9 @@
 #include "driver.h"
 #include "../bitplane/bitplane.h"
 
+#define PIXEL		short
+#define PIXEL_SIZE	sizeof(PIXEL)
+#define PIXEL_32    long
 
 /*
  * Make it as easy as possible for the C compiler.
@@ -27,14 +30,15 @@
  */
 
 #ifdef BOTH
-static void s_line_replace(short *addr, short *addr_fast, int count,
-                      int d, int incrE, int incrNE, int one_step, int both_step,
-                      short foreground, short background)
+static void s_line_replace(PIXEL *addr, PIXEL *addr_fast, int count,
+                    int d, int incrE, int incrNE, int one_step, int both_step,
+                    PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
 	*addr_fast = foreground;
 #endif
 	*addr = foreground;
+	(void) addr_fast;
 	(void) background;
 
 	for(--count; count >= 0; count--) {
@@ -58,12 +62,13 @@ static void s_line_replace(short *addr, short *addr_fast, int count,
 	}
 }
 
-static void s_line_replace_p(short *addr, short *addr_fast, long pattern, int count,
-                        int d, int incrE, int incrNE, int one_step, int both_step,
-                        short foreground, short background)
+static void s_line_replace_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
+                      int d, int incrE, int incrNE, int one_step, int both_step,
+                      PIXEL foreground, PIXEL background)
 {
-	unsigned int mask = 0x8000;
+	unsigned short mask = 0x8000;
 
+	(void) addr_fast;
 	if (pattern & mask) {
 #ifdef BOTH
 		*addr_fast = foreground;
@@ -108,14 +113,15 @@ static void s_line_replace_p(short *addr, short *addr_fast, long pattern, int co
 	}
 }
 
-static void s_line_transparent(short *addr, short *addr_fast, int count,
-                          int d, int incrE, int incrNE, int one_step, int both_step,
-                          short foreground, short background)
+static void s_line_transparent(PIXEL *addr, PIXEL *addr_fast, int count,
+                        int d, int incrE, int incrNE, int one_step, int both_step,
+                        PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
 	*addr_fast = foreground;
 #endif
 	*addr = foreground;
+	(void) addr_fast;
 	(void) background;
 
 	for(--count; count >= 0; count--) {
@@ -139,12 +145,13 @@ static void s_line_transparent(short *addr, short *addr_fast, int count,
 	}
 }
 
-static void s_line_transparent_p(short *addr, short *addr_fast, long pattern, int count,
-                            int d, int incrE, int incrNE, int one_step, int both_step,
-                            short foreground, short background)
+static void s_line_transparent_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
+                          int d, int incrE, int incrNE, int one_step, int both_step,
+                          PIXEL foreground, PIXEL background)
 {
-	unsigned int mask = 0x8000;
+	unsigned short mask = 0x8000;
 
+	(void) addr_fast;
 	(void) foreground;
 	(void) background;
 	if (pattern & mask) {
@@ -181,12 +188,13 @@ static void s_line_transparent_p(short *addr, short *addr_fast, long pattern, in
 	}
 }
 
-static void s_line_xor(short *addr, short *addr_fast, int count,
-                  int d, int incrE, int incrNE, int one_step, int both_step,
-                  short foreground, short background)
+static void s_line_xor(PIXEL *addr, PIXEL *addr_fast, int count,
+                int d, int incrE, int incrNE, int one_step, int both_step,
+                PIXEL foreground, PIXEL background)
 {
 	int v;
 
+	(void) addr_fast;
 	(void) foreground;
 	(void) background;
 #ifdef BOTH
@@ -225,13 +233,14 @@ static void s_line_xor(short *addr, short *addr_fast, int count,
 	}
 }
 
-static void s_line_xor_p(short *addr, short *addr_fast, long pattern, int count,
-                    int d, int incrE, int incrNE, int one_step, int both_step,
-                    short foreground, short background)
+static void s_line_xor_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
+                  int d, int incrE, int incrNE, int one_step, int both_step,
+                  PIXEL foreground, PIXEL background)
 {
 	int v;
-	unsigned int mask = 0x8000;
+	unsigned short mask = 0x8000;
 
+	(void) addr_fast;
 	(void) foreground;
 	(void) background;
 	if (pattern & mask) {
@@ -278,9 +287,9 @@ static void s_line_xor_p(short *addr, short *addr_fast, long pattern, int count,
 	}
 }
 
-static void s_line_revtransp(short *addr, short *addr_fast, int count,
-                        int d, int incrE, int incrNE, int one_step, int both_step,
-                        short foreground, short background)
+static void s_line_revtransp(PIXEL *addr, PIXEL *addr_fast, int count,
+                      int d, int incrE, int incrNE, int one_step, int both_step,
+                      PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
 	*addr_fast = foreground;
@@ -310,12 +319,13 @@ static void s_line_revtransp(short *addr, short *addr_fast, int count,
 	}
 }
 
-static void s_line_revtransp_p(short *addr, short *addr_fast, long pattern, int count,
-                          int d, int incrE, int incrNE, int one_step, int both_step,
-                          short foreground, short background)
+static void s_line_revtransp_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
+                        int d, int incrE, int incrNE, int one_step, int both_step,
+                        PIXEL foreground, PIXEL background)
 {
-	unsigned int mask = 0x8000;
+	unsigned short mask = 0x8000;
 
+	(void) addr_fast;
 	(void) background;
 	if (!(pattern & mask)) {
 #ifdef BOTH
@@ -362,9 +372,9 @@ static void s_line_revtransp_p(short *addr, short *addr_fast, long pattern, int 
  * when no shadow buffer is available
  */
 
-static void line_replace(short *addr, short *addr_fast, int count,
+static void line_replace(PIXEL *addr, PIXEL *addr_fast, int count,
                     int d, int incrE, int incrNE, int one_step, int both_step,
-                    short foreground, short background)
+                    PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
 	*addr_fast = foreground;
@@ -394,11 +404,11 @@ static void line_replace(short *addr, short *addr_fast, int count,
 	}
 }
 
-static void line_replace_p(short *addr, short *addr_fast, long pattern, int count,
+static void line_replace_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                       int d, int incrE, int incrNE, int one_step, int both_step,
-                      short foreground, short background)
+                      PIXEL foreground, PIXEL background)
 {
-	unsigned int mask = 0x8000;
+	unsigned short mask = 0x8000;
 
 	(void) addr_fast;
 	if (pattern & mask) {
@@ -445,9 +455,9 @@ static void line_replace_p(short *addr, short *addr_fast, long pattern, int coun
 	}
 }
 
-static void line_transparent(short *addr, short *addr_fast, int count,
+static void line_transparent(PIXEL *addr, PIXEL *addr_fast, int count,
                         int d, int incrE, int incrNE, int one_step, int both_step,
-                        short foreground, short background)
+                        PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
 	*addr_fast = foreground;
@@ -477,13 +487,14 @@ static void line_transparent(short *addr, short *addr_fast, int count,
 	}
 }
 
-static void line_transparent_p(short *addr, short *addr_fast, long pattern, int count,
+static void line_transparent_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                           int d, int incrE, int incrNE, int one_step, int both_step,
-                          short foreground, short background)
+                          PIXEL foreground, PIXEL background)
 {
-	unsigned int mask = 0x8000;
+	unsigned short mask = 0x8000;
 
 	(void) addr_fast;
+	(void) foreground;
 	(void) background;
 	if (pattern & mask) {
 #ifdef BOTH
@@ -519,9 +530,9 @@ static void line_transparent_p(short *addr, short *addr_fast, long pattern, int 
 	}
 }
 
-static void line_xor(short *addr, short *addr_fast, int count,
+static void line_xor(PIXEL *addr, PIXEL *addr_fast, int count,
                 int d, int incrE, int incrNE, int one_step, int both_step,
-                short foreground, short background)
+                PIXEL foreground, PIXEL background)
 {
 	int v;
 
@@ -564,12 +575,12 @@ static void line_xor(short *addr, short *addr_fast, int count,
 	}
 }
 
-static void line_xor_p(short *addr, short *addr_fast, long pattern, int count,
+static void line_xor_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                   int d, int incrE, int incrNE, int one_step, int both_step,
-                  short foreground, short background)
+                  PIXEL foreground, PIXEL background)
 {
 	int v;
-	unsigned int mask = 0x8000;
+	unsigned short mask = 0x8000;
 
 	(void) addr_fast;
 	(void) foreground;
@@ -618,9 +629,9 @@ static void line_xor_p(short *addr, short *addr_fast, long pattern, int count,
 	}
 }
 
-static void line_revtransp(short *addr, short *addr_fast, int count,
+static void line_revtransp(PIXEL *addr, PIXEL *addr_fast, int count,
                       int d, int incrE, int incrNE, int one_step, int both_step,
-                      short foreground, short background)
+                      PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
 	*addr_fast = foreground;
@@ -650,11 +661,11 @@ static void line_revtransp(short *addr, short *addr_fast, int count,
 	}
 }
 
-static void line_revtransp_p(short *addr, short *addr_fast, long pattern, int count,
+static void line_revtransp_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                         int d, int incrE, int incrNE, int one_step, int both_step,
-                        short foreground, short background)
+                        PIXEL foreground, PIXEL background)
 {
-	unsigned int mask = 0x8000;
+	unsigned short mask = 0x8000;
 
 	(void) addr_fast;
 	(void) background;
@@ -700,7 +711,7 @@ long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
                        long pattern, long colour, long mode)
 {
 	Workstation *wk;
-	short *addr, *addr_fast;
+	PIXEL *addr, *addr_fast;
 	unsigned long foreground, background;
   	int line_add;
 	long pos;
