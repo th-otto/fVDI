@@ -152,7 +152,6 @@ static void s_line_transparent_p(PIXEL *addr, PIXEL *addr_fast, long pattern, in
 	unsigned short mask = 0x8000;
 
 	(void) addr_fast;
-	(void) foreground;
 	(void) background;
 	if (pattern & mask) {
 #ifdef BOTH

@@ -1,10 +1,11 @@
 *****
 * fVDI drawing functions
 *
-* Copyright 1997-2003, Johan Klockars 
+* Copyright 1997-2003, Johan Klockars
 * This software is licensed under the GNU General Public License.
 * Please, see LICENSE.TXT for further information.
 *****
+
 
 transparent	equ	1		; Fall through?
 
@@ -63,7 +64,7 @@ _call_draw_line:
 	jsr	_retry_line
  label .call_dl_done,1
 	addq.l	#8,a7
-	
+
 	movem.l	(a7)+,d2/a2
 	rts
 
@@ -140,7 +141,7 @@ v_bez:
 	used_d1
 	done_return
 
-* v_bez_accel((long)vwk + 1, points, 
+* v_bez_accel((long)vwk + 1, points,
 *             (num_points << 16) | 1, *par->totmoves, xmov,
 *             pattern, vwk->line.colour, vwk->mode);
 _v_bez_accel:
@@ -185,8 +186,8 @@ lib_v_bez:
 * In:	a1	Parameters  lib_v_pline(num_pts, points)
 *	a0	VDI struct
 _lib_v_pline:
-	move.l	4(a7),a0
-	move.l	8(a7),a1
+	move.l	4(a7),a0		; VDI structure
+	move.l	8(a7),a1		; lib_v_pline args
 lib_v_pline:
 ;	use_special_stack
 ;	move.w	#0,d0			; Background colour
@@ -313,23 +314,25 @@ no_arrow:
 
 
 .wide_line:
-	move.l	d0,d1
+	; call allocate_block(0);
+	move.l	d0,d1		; this is the line color
 	clr.l	-(a7)
 	bsr	asm_allocate_block
 	addq.l	#4,a7
 	tst.l	d0
-	beq	.no_wide
+	beq	.no_wide	; fall back to thin line if no memory
 
-	move.l	d0,-(a7)	; For free_block below
+	move.l	d0,-(a7)	; for free_block below
 
-	move.l	d2,-(a7)
+	move.l	d2,-(a7)	; save d2
 
 	moveq	#0,d2
 	move.w	vwk_mode(a0),d2
-	move.l	d2,-(a7)
+	move.l	d2,-(a7)	; push writing mode
 
-	move.l	d0,-(a7)	; For _wide_line call
-	move.l	d1,-(a7)
+	move.l	d0,-(a7)	; this is the address of the allocated block
+	move.l	d1,-(a7)	; color
+
 	moveq	#0,d0
 	move.w	0(a1),d0
 	move.l	d0,-(a7)
@@ -338,10 +341,11 @@ no_arrow:
 	jsr	_wide_line
 	add.w	#24,a7
 
+	move.l	(a7)+,d2	; restore d2
+
 	bsr	asm_free_block	; Block address is already on the stack
 	addq.l	#4,a7
 
-	move.l	(a7)+,d2
 	rts
 
 
@@ -410,7 +414,7 @@ _default_line:
 	sub.w	d1,d3			; d3 = dx
 	bge	.ok1
 	neg.w	d3
-	neg.w	d7	
+	neg.w	d7
 .ok1:
 	sub.w	d2,d4			; d4 = dy
 	bge	.ok2
@@ -674,7 +678,7 @@ v_ellpie:
 	movem.w	0(a2),d0-d1	; Angles
 	move.l	d1,-(a7)
 	move.l	d0,-(a7)
-	
+
 	move.l	ptsin(a1),a2
 	movem.w	4(a2),d0-d1	; Radii
 	move.l	d1,-(a7)
@@ -714,7 +718,7 @@ v_ellipse:
 	movem.w	0(a2),d0-d1	; Center
 	move.l	d1,-(a7)
 	move.l	d0,-(a7)
-	
+
 	move.l	#5,-(a7)	; ellipse
 	move.l	a0,-(a7)
 	jsr	_ellipsearc	; vwk, gdp, xc, yc, xrad, yrad, b_ang, e_ang
@@ -739,7 +743,7 @@ v_rbox:
 	jsr	_rounded_box	; vwk, gdb_code, points
 	add.w	#3*4,a7
 
-	move.l	(a7)+,d2	
+	move.l	(a7)+,d2
 	used_d1
 	done_return			; Should be real_return
 
@@ -774,7 +778,7 @@ v_rfbox:
 	jsr	_rounded_box	; vwk, gdb_code, points
 	add.w	#3*4,a7
 
-	move.l	(a7)+,d2	
+	move.l	(a7)+,d2
 	used_d1
 	done_return			; Should be real_return
 
@@ -1142,7 +1146,7 @@ lib_v_bez_fill:
 	bsr	asm_free_block	; Block address is already on the stack
 	addq.l	#4,a7
 	bra	.no_poly
-		
+
 .normal_fill:
 	add.w	#9*4,a7
 	movem.l	(a7),a0-a1

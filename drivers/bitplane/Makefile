@@ -17,8 +17,8 @@ top_srcdir = ../..
 OPTS = -O2 -fomit-frame-pointer -mshort
 include $(top_srcdir)/CONFIGVARS
 
-CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
-ASFLAGS = $(CPUSWITCH) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
+CFLAGS  = $(CPUOPTS) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
+ASFLAGS = $(CPUOPTS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
 SINCSRC = \
 	$(top_srcdir)/include/macros.inc \
@@ -41,8 +41,8 @@ CSRC = \
 	spec.c \
 	palette.c \
 	fill.c \
-	line.c \
-	blit.c
+	blit.c \
+	line.c
 
 # handle DevPac -> gas conversions
 # defines SSRC_GNU and SINCSRC_GNU variables
@@ -68,6 +68,9 @@ depend: $(CSRC)
 	$(AM_V_at)sed "s#\/usr[^ ]*\.h##g" < depend  > depend2
 	$(AM_V_at)sed "s#^.*: *\$$##"      < depend2 > depend
 	$(AM_V_at)$(RM) depend2
+
+strip:
+	$(STRIP) --strip-all $(TARGET)
 
 clean:: clean_gnu
 	$(RM) $(OBJECTS) depend $(TARGET)

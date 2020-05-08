@@ -46,7 +46,7 @@ char get_token(char **buf, char *token, char end_marker)
 {
 	char ch;
 	int tokenlen = 0;
-	
+
 	for (; **buf; (*buf)++)
 	{
 		if (!isspace(**buf))
@@ -93,17 +93,17 @@ int main(int argc, char **argv)
 	char buf[1024], label[32], token1[32], token2[32], token3[32], *ptr;
 	int delimiter, i, found, tmp;
 	int len;
-	
+
 	if (argc != 2)
 	{
 		printf("labeler <file>\n");
-		exit(1);
+		return 1;
 	}
 
 	if ((infile = fopen(argv[1], "r")) == NULL)
 	{
 		fprintf(stderr, "Could not open %s\n", argv[1]);
-		exit(1);
+		return 1;
 	}
 
 	while (fgets(buf, sizeof(buf), infile))
@@ -114,8 +114,6 @@ int main(int argc, char **argv)
 		if (len > 0 && buf[len - 1] == 0x0d)
 			buf[--len] = '\0';
 		ptr = buf;
-		
-		
 		delimiter = get_token(&ptr, token1, ':');
 
 		found = 0;
@@ -221,4 +219,6 @@ int main(int argc, char **argv)
 		if (!found)
 			printf("%s\n", buf);
 	}
+
+	return 0;
 }

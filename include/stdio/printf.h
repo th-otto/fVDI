@@ -1,5 +1,9 @@
+#ifdef __MSHORT__
 /* Mostly complete, but only simple things tested */
 long DRIVER_EXPORT vsprintf(char *str, const char *format, va_list args)
+#else
+int DRIVER_EXPORT vsprintf(char *str, const char *format, va_list args)
+#endif
 {
 	int mode = 0;
 	char *s, *text, *orig_s, ch;
@@ -321,7 +325,11 @@ long DRIVER_EXPORT vsprintf(char *str, const char *format, va_list args)
 }
 
 
+#ifdef __MSHORT__
 long DRIVER_EXPORT sprintf(char *str, const char *format, ...)
+#else
+int DRIVER_EXPORT sprintf(char *str, const char *format, ...)
+#endif
 {
 	va_list args;
 	long ret;
@@ -333,7 +341,11 @@ long DRIVER_EXPORT sprintf(char *str, const char *format, ...)
 }
 
 
+#ifdef __MSHORT__
 long DRIVER_EXPORT printf(const char *format, ...)
+#else
+int DRIVER_EXPORT printf(const char *format, ...)
+#endif
 {
 	va_list args;
 	char buf[512];

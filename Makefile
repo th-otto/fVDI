@@ -1,4 +1,4 @@
-SUBDIRS = \
+SUBDIRS := \
 	utility/conv2gas \
 	utility/structer \
 	modules/ft2 \

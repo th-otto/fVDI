@@ -16,7 +16,7 @@ top_srcdir = ../..
 
 include $(top_srcdir)/CONFIGVARS
 
-CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -D__GEMLIB_OLDNAMES -DNEW_GEMLIB
+CFLAGS  = $(CPUOPTS) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -D__GEMLIB_OLDNAMES -DNEW_GEMLIB
 
 LIBS += -lgem
 
@@ -46,6 +46,9 @@ depend: $(CSRC)
 	$(AM_V_at)sed "s#\/usr[^ ]*\.h##g" < depend  > depend2
 	$(AM_V_at)sed "s#^.*: *\$$##"      < depend2 > depend
 	$(AM_V_at)$(RM) depend2
+
+strip:
+	$(STRIP) --strip-all $(TARGET)
 
 clean::
 	$(RM) $(OBJECTS) depend $(TARGET)

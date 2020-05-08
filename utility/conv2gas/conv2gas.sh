@@ -10,6 +10,10 @@ sed "s%;.*$%%" $file.tmp >$file.gnu
 mv $file.gnu $file.tmp
 
 # Conditional compilation
+sed "s%^\\([ 	][ 	]*\\)ifnd%\1.ifndef%" $file.tmp >$file.gnu
+mv $file.gnu $file.tmp
+sed "s%^\\([ 	][ 	]*\\)ifd%\1.ifdef%" $file.tmp >$file.gnu
+mv $file.gnu $file.tmp
 sed "s%^\\([ 	][ 	]*\\)ifne%\1.ifne%" $file.tmp >$file.gnu
 mv $file.gnu $file.tmp
 sed "s%^\\([ 	][ 	]*\\)ifeq%\1.ifeq%" $file.tmp >$file.gnu
@@ -22,7 +26,7 @@ sed "s%^\\([ 	][ 	]*\\)endc%\1.endif%" $file.tmp >$file.gnu
 mv $file.gnu $file.tmp
 
 # Constants
-sed "s%^\\([^ 	]*\\)[ 	][ 	]*equ[ 	][ 	]*%	.equiv	\\1,%" $file.tmp >$file.gnu
+sed "s%^\\([^ 	]*\\)[ 	][ 	]*equ[ 	][ 	]*%	.equ \\1,%" $file.tmp >$file.gnu
 mv $file.gnu $file.tmp
 sed "s%^\\([^ 	]*\\)[ 	][ 	]*set[ 	][ 	]*%	.set	\\1,%" $file.tmp >$file.gnu
 mv $file.gnu $file.tmp
@@ -33,6 +37,12 @@ mv $file.gnu $file.tmp
 sed "s%^\\([ 	][ 	]*\\)data%\1.data%" $file.tmp >$file.gnu
 mv $file.gnu $file.tmp
 sed "s%^\\([ 	][ 	]*\\)bss%\1.bss%" $file.tmp >$file.gnu
+mv $file.gnu $file.tmp
+
+# Includes
+sed "s%\.inc\"%.inc.gnu\"%" $file.tmp >$file.gnu
+mv $file.gnu $file.tmp
+sed "s%\\([ 	][ 	]*\\)include%\1.include%" $file.tmp >$file.gnu
 mv $file.gnu $file.tmp
 
 # Hexadecimal numbers

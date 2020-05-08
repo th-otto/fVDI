@@ -83,11 +83,23 @@ extern Access *access;
 #define KEY_WAIT(x)
 #endif
 
-long DRIVER_EXPORT puts(const char *text);
 void DRIVER_EXPORT error(const char *text1, const char *text2);
+
+#ifdef __MSHORT__
+long DRIVER_EXPORT puts(const char *text);
 long DRIVER_EXPORT printf(const char *format, ...) __attribute__((format(printf, 1, 2)));
 long DRIVER_EXPORT sprintf(char *buf, const char *format, ...) __attribute__((format(printf, 2, 3)));
 long DRIVER_EXPORT vsprintf(char *buf, const char *format, va_list args) __attribute__((format(printf, 2, 0)));
+#else
+/*
+ * ugly hack, but freetype is always part of the main executable,
+ * and we get redeclaration errors when we try to declare these as "long"
+ */
+int DRIVER_EXPORT puts(const char *text);
+int DRIVER_EXPORT printf(const char *format, ...) __attribute__((format(printf, 1, 2)));
+int DRIVER_EXPORT sprintf(char *buf, const char *format, ...) __attribute__((format(printf, 2, 3)));
+int DRIVER_EXPORT vsprintf(char *buf, const char *format, va_list args) __attribute__((format(printf, 2, 0)));
+#endif
 
 /*
  * Token handling

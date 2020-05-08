@@ -27,50 +27,42 @@ else
 endif
 
 # Debug build (mainly FreeType2 debugs here)
+ifndef DEBUG
 DEBUG  = no
+endif
 
 # CPU to compile for
-ifeq ($(CPU),)
-CPU    = 040
+ifndef CPU
+CPU    = 020
 endif
+
+ifeq ($(CPU),v4e)
+	CPUOPTS = -mcpu=547x
+else
+	CPUOPTS = -m68$(CPU)
+endif
+
+ASFLAGS = $(CPUOPTS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
 # General compilation and optimization options (CFLAGS)
 WARNINGS = -Wall -W -Wunused -Wundef -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Werror
 ifeq ($(OPTS),)
-OPTS   = -O2 -fomit-frame-pointer -fno-common -g
+OPTS   = -O2 -fomit-frame-pointer -fno-common
 endif
 # OPTS   +=  -mshort
 ifeq ($(DEBUG),yes)
   OPTS += -DFVDI_DEBUG
-endif
-
-ifeq ($(CPU),coldfire)
-CPUSWITCH=-mcpu=5475
+  OPTS += -g
 else
-CPUSWITCH=-m68$(CPU)
+  LDFLAGS = -s
 endif
-
-LDFLAGS = -s
 
 # If building for 68000 (no long multiply instruction),
-# this must be set to point to the gcc library.
-ifeq ($(CPU),000)
- LIBS = `$(CC) $(CPUSWICH) --print-file-name=libgcc.a`
-endif
-
+# we need to link with libgcc.
+LIBS := $(shell $(CC) $(CPUOPTS) --print-file-name=libgcc.a)
 
 # Set these to point to the correct directories for FreeType support!
-#stdlib_srcdir  = $(top_srcdir)/modules/ft2/stdlib
-#ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype-2.1.9
-#ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype-2.1.10
-#ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype-2.2.1
-#ft2_srcdir     = $(top_srcdir)/../freetype2
-#libkern_srcdir = $(top_srcdir)/../freemint/sys/libkern
 ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype
-
-#stdlib_srcdir  =
-#ft2_srcdir     =
-#libkern_srcdir =
 
 ifeq ($(DEBUG),yes)
  FT2_DEBUG_OPTS = -I$(top_srcdir)/modules/ft2/devel

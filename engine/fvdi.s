@@ -2,7 +2,7 @@
 * fVDI v0.96, 020710
 *   Mainly function dispatcher related things
 *
-* Copyright 1997-2002, Johan Klockars 
+* Copyright 1997-2002, Johan Klockars
 * This software is licensed under the GNU General Public License.
 * Please, see LICENSE.TXT for further information.
 *****
@@ -22,7 +22,11 @@ SCREENDEV	equ	7		; Any better ideas?
 xbra_chain	equ	1		; Don't want xref for vdi_address
 stack		equ	1		; nor for vdi_stack and stack_address
 
+ ifne mcoldfire
+STACK_SIZE	equ	8192		; allow more stack for pacf converted routines
+ else
 STACK_SIZE	equ	4096		; Used to be 2048
+ endc
 
 fvdi_magic	equ	1969
 
@@ -72,8 +76,10 @@ _init:
 	move.l	d0,a6		; Program size
 	move.l	a5,d1
 	add.l	d0,d1
+
 	and.w	#$fffe,d1	; Even stack address
 	move.l	d1,a7
+
 	move.l	d0,-(a7)	; Keep d0 bytes
 	move.l	a5,-(a7)	; From address a5
 	move.w	d0,-(a7)	; dummy
@@ -82,6 +88,7 @@ _init:
 	lea	12(a7),a7
 
 	move.l	a5,_basepage
+
 	bsr	_startup	; Initialize
 	tst.l	d0
 	beq	.error
@@ -124,7 +131,9 @@ _trap2_temp:
   ifne FVDI_DEBUG
 	cmp.w	#2,_debug
 	bls	.no_debug1
+
 	movem.l	d0-d2/a0-a2,-(a7)
+
 	move.l	a7,a0
 	add.w	#6*4+8,a0
 	move.l	a0,-(a7)
@@ -132,6 +141,7 @@ _trap2_temp:
 	move.l	d0,-(a7)
 	jsr	_trap2_debug
 	add.w	#12,a7
+
 	movem.l	(a7)+,d0-d2/a0-a2
 .no_debug1:
   endc
@@ -151,13 +161,13 @@ _trap2_temp:
 
 
 	move.l	a2,-(a7)		; Some always needed
-	
+
 	move.l	d1,a2			; a2 - parameter block
 	move.l	control(a2),a2		; a2 - control
 
 	move.w	function(a2),d0		; d0 - function number
 
-	cmp.w	#1,d0			; Don't do anything until the 
+	cmp.w	#1,d0			; Don't do anything until the
 	bne	.no_interest		;  screen workstation is opened.
 
 ; Must not do this when it's only the fVDI startup code that's running
@@ -169,7 +179,7 @@ _trap2_temp:
 ;	tst.w	_fvdi_log
 	move.l	_super,a2
 	tst.w	(a2)				; Log function call if that has (super->fvdi_log.active)
-	beq	.no_log2			;  been requested (only debug version)
+	beq	.no_log2			; been requested (only debug version)
 ;	move.l	_fvdi_log+6,a2
 	move.l	a2,d0
 	move.l	6(a2),a2
@@ -270,7 +280,7 @@ _vdi_dispatch:
 
 dispatch_entry:
 	save_regs			; Some always needed
-	
+
 	move.l	d1,a2			; a2 - parameter block
 	move.l	control(a2),a1		; a1 - control
 
@@ -500,7 +510,11 @@ subroutine_call:
 	move.w	#$ffff,-(a7)		; Mark old stack
 	move.w	#$88,-(a7)		; Set up a 'Trap #2' on the stack
 	pea	.return_here
-	move	sr,-(a7)
+	move.w	sr,-(a7)
+	ifne	mcoldfire
+	move.w	#$4000,-(sp)		; to create a valid ColdFire stack frame,
+					; push a format word on the stack
+	endc
 	bra	dispatch_entry
 .return_here:
 	cmp.w	#$ffff,(a7)+
@@ -577,16 +591,34 @@ _trap14_address:
 _trap14:
 	tst.w	_xbiosfix
 	beq	.continue_trap14
+  ifne mcoldfire
+	; move	usp,a0			; PortAsm doesn't swallow this although it's valid
+	.short	0x4e68
+	; mvz.w	2(sp),d0
+	.short	0x71ef
+	btst	#13,d0			; called from supervisor mode?
+  else
 	move	usp,a0
-	btst	#5,(a7)
-	beq	.correct_a0
-	lea	6(a7),a0
-	tst.w	$59e
-	beq	.correct_a0
-	addq.l	#2,a0
+	btst	#5,(a7)			; called from supervisor mode?
+  endc
+	beq	.correct_a0		; no, continue
+  ifne mcoldfire
+	lea	4(sp),a0		; a0 now points to the program counter field in the exception stack frame
+	; mvz.b	(sp),d0			; extract format field of exception stack frame
+	.short	0x7197
+	lsr.l	#4,d0			; shift bits in place (these are now 4, 5, 6 or 7) depending on original frame offset
+	andi.w	#0x7,d0			; mask out format
+	lea	0(a0,d0.w),a0		; and compute final address
+	bra	.correct_a0
+  else
+	lea	6(a7),a0		; stack offset for 68000
+  endc
+	tst.w	$59e			; > 68000?
+	beq	.correct_a0		; no, we are correct
+	addq.l	#2,a0			; adjust for long stack frame
 .correct_a0:
 	move.w	(a0),d0
-	cmp.w	#2,d0
+	cmp.w	#2,d0			; is it a Physbase() (2), Logbase() (3) or Getrez() (4) call?
 	blo	.continue_trap14
 	cmp.w	#4,d0
 	bhi	.continue_trap14
@@ -615,9 +647,13 @@ _lineA_address:
 * lineA - LineA interceptor
 * Todo:	?
 _lineA:
-	move.l	2(a7),a1
+ ifne mcoldfire
+	move.l	4(a7),a1
+ else
+	move.l 	2(a7),a1		; get linea opcode address
+ endc
 	move.w	(a1),d0
-	and.l	#$fff,d0
+	and.l	#$f,d0			; map out function code
 
   ifne FVDI_DEBUG
 	cmp.w	#2,_debug
@@ -638,7 +674,11 @@ _lineA:
 	move.l	d0,a0
 	move.l	wk_screen_linea(a0),a0
 	addq.l	#2,a1
+ ifne mcoldfire
+	move.l 	a1,4(a7)
+ else
 	move.l	a1,2(a7)
+ endc
 	rte
 
 .continue_lineA:

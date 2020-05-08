@@ -23,37 +23,20 @@ else
  STDLIB_CFLAGS = -I$(top_srcdir)/modules/include
 endif
 
-CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include $(STDLIB_CFLAGS)
-ASFLAGS = $(CPUSWITCH) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include -I$(top_srcdir)/drivers/1_plane
+CFLAGS  = $(CPUOPTS) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include $(STDLIB_CFLAGS)
+ASFLAGS := $(ASFLAGS) -I$(top_srcdir)/drivers/1_plane
 
-LDFLAGS = -s --mprg-flags=0x27
+LDFLAGS += --mprg-flags=0x27
 
 # FreeType2 things
 ifneq ($(ft2_srcdir),)
- ifneq ($(libkern_srcdir),)
-  ifeq ($(CPU),020))
-    LIBKERN_NAME=kern020-60
-  else
-    ifeq ($(CPU),coldfire))
-      LIBKERN_NAME=kernv4e
-    else
-      LIBKERN_NAME=kern$(CPU)
-    endif
-  endif
-  LIBKERN = $(libkern_srcdir)/$(LIBKERN_NAME).a
-  LIBS   := -lft2 -l$(LIBKERN_NAME) $(LIBS)
-  LDFLAGS += -L$(top_srcdir)/modules/ft2 -L$(libkern_srcdir)
-  CFLAGS += -DUSE_LIBKERN
- else
-  LIBKERN = 
-  LIBS   := -lft2 $(LIBS)
-  LDFLAGS += -L$(top_srcdir)/modules/ft2
- endif
+ LIBS   := -lft2 $(LIBS)
+ LDFLAGS += -L$(top_srcdir)/modules/ft2
 
  LIBFT2  = $(top_srcdir)/modules/ft2/libft2.a
- LIBFILES= $(LIBFT2) $(LIBKERN)
+ LIBFILES= $(LIBFT2)
  CFLAGS += -DFT2 -I$(top_srcdir)/modules/ft2/include $(FT2_DEBUG_OPTS) \
-           -I$(ft2_srcdir)/include 
+	   -I$(ft2_srcdir)/include
 endif
 
 
@@ -134,32 +117,14 @@ $(SSRC_GNU): $(SINCSRC_GNU)
 # Engine binary objects
 OBJECTS = $(SSRC_GNU:.gnu=.gnu.o) $(CSRC:.c=.o)
 
-# libkern + stdlib additions
-ifneq ($(stdlib_srcdir),)
- CLIBSRC = \
-	$(stdlib_srcdir)/qsort.c \
-	$(stdlib_srcdir)/msort.c \
-	$(stdlib_srcdir)/mempcpy.c \
-	$(stdlib_srcdir)/strdup.c
-
- SLIBSRC = \
-	$(stdlib_srcdir)/setjmp.S
-
- OBJECTS+= $(CLIBSRC:.c=.o) $(SLIBSRC:.S=.S.o)
-endif
-
 %.S.o: %.S
 	$(AM_V_AS)$(CC) $(ASFLAGS) -Dgas=1 -Dlattice=0 -o $@ -c $<
-
-$(LIBKERN):
-	$(MAKE) -C $(libkern_srcdir)
 
 $(LIBFT2):
 	$(MAKE) -C $(top_srcdir)/modules/ft2
 
 $(TARGET): depend $(OBJECTS) $(LIBFILES)
 	$(AM_V_LD)$(LD) -o $@ -Map=fvdi.map $(OBJECTS) $(LDFLAGS) $(LIBS)
-	@ls -l $@
 
 $(top_srcdir)/include/types.inc: $(top_srcdir)/include/fvdi.h
 	$(MAKE) -C $(top_srcdir)/utility/structer
@@ -205,6 +170,9 @@ depend: $(CSRC)
 	$(AM_V_at)sed "s#\/usr[^ ]*\.h##g" < depend  > depend2
 	$(AM_V_at)sed "s#^.*: *\$$##"      < depend2 > depend
 	$(AM_V_at)$(RM) depend2
+
+strip:
+	$(STRIP) --strip-all $(TARGET)
 
 clean:: clean_gnu
 	$(RM) $(OBJECTS) $(TARGET) fvdi.map depend

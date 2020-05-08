@@ -18,8 +18,8 @@ CPU = 040
 OPTS   = -O2 -fomit-frame-pointer
 include $(top_srcdir)/CONFIGVARS
 
-CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
-ASFLAGS = $(CPUSWITCH) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
+CFLAGS  = $(CPUOPTS) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
+ASFLAGS = $(CPUOPTS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
 SINCSRC = \
 	$(top_srcdir)/include/macros.inc \
@@ -73,6 +73,9 @@ depend: $(CSRC)
 	$(AM_V_at)sed "s#\/usr[^ ]*\.h##g" < depend  > depend2
 	$(AM_V_at)sed "s#^.*: *\$$##"      < depend2 > depend
 	$(AM_V_at)$(RM) depend2
+
+strip:
+	$(STRIP) --strip-all $(TARGET)
 
 clean:: clean_gnu
 	$(RM) $(OBJECTS) $(TARGET) depend

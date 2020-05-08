@@ -38,9 +38,9 @@ include $(top_srcdir)/CONFIGVARS
 WARNINGS += -Wno-cast-function-type
 
 ifneq ($(stdlib_srcdir),)
-CFLAGS = $(CPUSWITCH) -DFT2_BUILD_LIBRARY $(OPTS) $(WARNINGS) -I$(srcdir)/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include -I$(stdlib_srcdir)/include
+CFLAGS = $(CPUOPTS) -DFT2_BUILD_LIBRARY $(OPTS) $(WARNINGS) -I$(srcdir)/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include -I$(stdlib_srcdir)/include
 else
-CFLAGS = $(CPUSWITCH) -DFT2_BUILD_LIBRARY $(OPTS) $(WARNINGS) -I$(srcdir)/include -I$(top_srcdir)/modules/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include
+CFLAGS = $(CPUOPTS) -DFT2_BUILD_LIBRARY $(OPTS) $(WARNINGS) -I$(srcdir)/include -I$(top_srcdir)/modules/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include
 endif
 
 #

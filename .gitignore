@@ -5,6 +5,10 @@
 *.prg
 *.sys
 *.map
+*.cf_gnu
+*.gnue
+*.ino
+*.inf
 depend
 utility/conv2gas/conv2gas
 utility/structer/structer

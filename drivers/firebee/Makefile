@@ -8,12 +8,13 @@
 # gcc >= 2.95.3 (sparemint) version
 #
 
-TARGET = 16_bit.sys
+TARGET = firebee.sys
 
 all: $(TARGET)
 
 top_srcdir = ../..
 
+CPU     = v4e
 OPTS    = -mshort -O2 -fomit-frame-pointer
 include $(top_srcdir)/CONFIGVARS
 
@@ -37,6 +38,11 @@ SSRC = \
 CSRC = \
 	init.c \
 	colours.c \
+	fb_spec.c \
+	firebee.c \
+	modeline_vesa.c \
+	firebee_pll.c \
+	firebee_mouse.c \
 	16_bit.c
 
 # handle DevPac -> gas conversions
@@ -68,10 +74,6 @@ strip:
 	$(STRIP) --strip-all $(TARGET)
 
 clean:: clean_gnu
-	$(RM) $(OBJECTS) depend $(TARGET)
-
-install::
-	mkdir -p $(DESTDIR)/gemsys
-	cp -a $(TARGET) $(DESTDIR)/gemsys/$(TARGET)
+	$(RM) $(OBJECTS) $(TARGET) depend
 
 -include depend

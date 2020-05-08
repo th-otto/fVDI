@@ -1765,24 +1765,3 @@ vdi_colours:
 1a1b1c2a2b2c3a3b3c4c4a4b
 1a1b1c2a2b2c3a3b3c4a4b4c ***
  endc
-
-	end
-
-bacd
-dcba
-
-bcda
-dabc
-bcad
-cbda
-dacb
-
-cabd
-bdca
-
-
-abcd
-abdc
-acbd
-acdb
-adbc

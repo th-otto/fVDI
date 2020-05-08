@@ -14,12 +14,11 @@ all: $(TARGET)
 
 top_srcdir = ../..
 
-#CPU     = 000
 OPTS = -mshort -O2 -fomit-frame-pointer -g
 include $(top_srcdir)/CONFIGVARS
 
-CFLAGS  = $(CPUSWITCH) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
-ASFLAGS = $(CPUSWITCH) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
+CFLAGS  = $(CPUOPTS) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
+ASFLAGS = $(CPUOPTS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
 SINCSRC = \
 	$(top_srcdir)/include/macros.inc \

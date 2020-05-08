@@ -6,6 +6,9 @@ SUBDIRS = \
 	saga \
 	$(empty)
 
+# SUBDIRS += firebee
+# SUBDIRS += radeon
+
 all clean install::
 	for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done
 

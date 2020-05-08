@@ -1496,7 +1496,11 @@ long free_all(void)
 }
 
 
+#ifdef __MSHORT__
 long DRIVER_EXPORT puts(const char *text)
+#else
+int DRIVER_EXPORT puts(const char *text)
+#endif
 {
 	int file;
 
@@ -1810,7 +1814,7 @@ long init_utility(void)
 	real_access.funcs.error = error;
 	real_access.funcs.malloc = fmalloc;
 	real_access.funcs.free = free;
-	real_access.funcs.puts = puts;
+	real_access.funcs.puts = (long DRIVER_EXPORT (*)(const char *text))puts;
 	real_access.funcs.ltoa = ltoa;
 	real_access.funcs.atol = atol;
 	real_access.funcs.get_cookie = get_cookie;
@@ -1824,9 +1828,9 @@ long init_utility(void)
 	real_access.funcs.cache_flush = cache_flush;
 	real_access.funcs.misc = misc;
 	real_access.funcs.event = event;
-	real_access.funcs.printf = printf;
-	real_access.funcs.sprintf = sprintf;
-	real_access.funcs.vsprintf = vsprintf;
+	real_access.funcs.printf = (long int (*)(const char *, ...))printf;
+	real_access.funcs.sprintf = (long int (*)(char *, const char *, ...))sprintf;
+	real_access.funcs.vsprintf = (long int (*)(char *, const char *, void *))vsprintf;
 
 	check_cookies();
 
