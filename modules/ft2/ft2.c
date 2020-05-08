@@ -130,9 +130,9 @@ static char *ft2_error(const char *msg, FT_Error error)
 	{
 		err_msg = "unknown FreeType error";
 	}
-	sprintf(buffer, "%s: %s (%d)\n", msg, err_msg, FT_ERROR_BASE(error));
+	ksprintf(buffer, "%s: %s (%d)\n", msg, err_msg, FT_ERROR_BASE(error));
 #else
-	sprintf(buffer, "%s: (%d)\n", msg, (int)error);
+	ksprintf(buffer, "%s: (%d)\n", msg, (int)error);
 #endif
 	return buffer;
 }
@@ -891,7 +891,7 @@ static FT_Error ft2_load_glyph(Virtual * vwk, Fontheader * font, short ch, c_gly
 			cached->index = FT_Get_Char_Index(face, cc);
 		} else
 		{
-			access->funcs.printf("FT2 MAPPING(%d) THAT SHOULD HAVE NEVER HAPPENED!!!\n", vwk->text.charmap);
+			kprintf("FT2 MAPPING(%d) THAT SHOULD HAVE NEVER HAPPENED!!!\n", vwk->text.charmap);
 			cached->index = ch;
 		}
 	}
@@ -2364,7 +2364,7 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
 		ch = cc;
 	} else
 	{
-		access->funcs.printf("FT2 SRC MAPPING(%d) THAT SHOULD HAVE NEVER HAPPENED!!!\n", src_mode);
+		kprintf("FT2 SRC MAPPING(%d) THAT SHOULD HAVE NEVER HAPPENED!!!\n", src_mode);
 		index = 0;
 	}
 
@@ -2412,4 +2412,16 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
 	}
 	
 	return 0xffff;
+}
+
+
+int sprintf(char *str, const char *format, ...)
+{
+	va_list args;
+	long ret;
+
+	va_start(args, format);
+	ret = kvsprintf(str, format, args);
+	va_end(args);
+	return ret;
 }

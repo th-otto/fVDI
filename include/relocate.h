@@ -59,9 +59,6 @@ typedef struct _Funcs {
 	void DRIVER_EXPORT (*cache_flush)(void);
 	long DRIVER_EXPORT (*misc)(long func, long par, const char *token);
 	void DRIVER_EXPORT (*event)(long id_type, long data);
-	long DRIVER_EXPORT (*printf)(const char *format, ...) __attribute__((format(printf, 1, 2)));
-	long DRIVER_EXPORT (*sprintf)(char *buf, const char *format, ...) __attribute__((format(printf, 2, 3)));
-	long DRIVER_EXPORT (*vsprintf)(char *buf, const char *format, va_list args) __attribute__((format(printf, 2, 0)));
 } Funcs;
 
 typedef struct _Vars {

@@ -1,9 +1,5 @@
-#ifdef __MSHORT__
 /* Mostly complete, but only simple things tested */
-long DRIVER_EXPORT vsprintf(char *str, const char *format, va_list args)
-#else
-int DRIVER_EXPORT vsprintf(char *str, const char *format, va_list args)
-#endif
+long DRIVER_EXPORT kvsprintf(char *str, const char *format, va_list args)
 {
 	int mode = 0;
 	char *s, *text, *orig_s, ch;
@@ -325,34 +321,26 @@ int DRIVER_EXPORT vsprintf(char *str, const char *format, va_list args)
 }
 
 
-#ifdef __MSHORT__
-long DRIVER_EXPORT sprintf(char *str, const char *format, ...)
-#else
-int DRIVER_EXPORT sprintf(char *str, const char *format, ...)
-#endif
+long DRIVER_EXPORT ksprintf(char *str, const char *format, ...)
 {
 	va_list args;
 	long ret;
 
 	va_start(args, format);
-	ret = vsprintf(str, format, args);
+	ret = kvsprintf(str, format, args);
 	va_end(args);
 	return ret;
 }
 
 
-#ifdef __MSHORT__
-long DRIVER_EXPORT printf(const char *format, ...)
-#else
-int DRIVER_EXPORT printf(const char *format, ...)
-#endif
+long DRIVER_EXPORT kprintf(const char *format, ...)
 {
 	va_list args;
 	char buf[512];
 	long ret;
 	
 	va_start(args, format);
-	ret = vsprintf(buf, format, args);
+	ret = kvsprintf(buf, format, args);
 	va_end(args);
 	access->funcs.puts(buf);
 	return ret;

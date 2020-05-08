@@ -73,14 +73,14 @@ long get_driver(void)
             struct generic_interface *ifc = &dt->interfaces[0];
 
             /*
-            printf("BaS driver table found at %p, BaS version is %d.%d\r\n", dt,
+            kprintf("BaS driver table found at %p, BaS version is %d.%d\r\n", dt,
                     dt->bas_version, dt->bas_revision);
             */
 
             while (ifc->type != END_OF_DRIVERS)
             {
                 /*
-                printf("driver\"%s (%s)\" found,\r\n"
+                kprintf("driver\"%s (%s)\" found,\r\n"
                         "interface type is %d (%s),\r\n"
                         "version %d.%d\r\n\r\n",
                         ifc->name, ifc->description, ifc->type, dt_to_str(ifc->type),
@@ -90,7 +90,7 @@ long get_driver(void)
                 if (ifc->type == VIDEO_DRIVER)
                 {
                     /*
-                    printf("\r\nvideo driver found at %p\r\n", ifc);
+                    kprintf("\r\nvideo driver found at %p\r\n", ifc);
                     */
 
                     return (long) ifc->interface.fb;
@@ -101,14 +101,14 @@ long get_driver(void)
         else
         {
             /*
-            printf("driver table not found.\r\n");
+            kprintf("driver table not found.\r\n");
             */
         }
     }
     else
     {
         /*
-        printf("not running on EmuTOS,\r\n(signature 0x%08x instead of 0x%08x\r\n",
+        kprintf("not running on EmuTOS,\r\n(signature 0x%08x instead of 0x%08x\r\n",
                 (uint32_t) sig, 0x45544f53);
         */
     }

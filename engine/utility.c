@@ -850,7 +850,7 @@ void *fmalloc(long size, long type)
 		return (void *) &new[1];
 	} else
 	{
-		printf("fVDI: fatal: M%salloc(%ld=$%lx, $%lx) failed\n", mint | magic | mxalloc ? "x" : "", size, size, type);
+		kprintf("fVDI: fatal: M%salloc(%ld=$%lx, $%lx) failed\n", mint | magic | mxalloc ? "x" : "", size, size, type);
 		return new;
 	}
 }
@@ -1350,8 +1350,8 @@ long free_size(void *addr)
 			}
 			if (current->prev == 0)
 			{
-				puts("BUG!! current->prev == 0");
-				puts("Please comment out nomemlink in fvdi.sys");
+				access->funcs.puts("BUG!! current->prev == 0");
+				access->funcs.puts("Please comment out nomemlink in fvdi.sys");
 				for (;;) ;
 			}
 			current->prev->next = current->next;
@@ -1430,8 +1430,8 @@ void DRIVER_EXPORT free(void *addr)
 			}
 			if (current->prev == 0)
 			{
-				puts("BUG!! current->prev == 0\n");
-				puts("Please comment out nomemlink in fvdi.sys\n");
+				access->funcs.puts("BUG!! current->prev == 0\n");
+				access->funcs.puts("Please comment out nomemlink in fvdi.sys\n");
 				for (;;) ;
 			}
 			current->prev->next = current->next;
@@ -1496,11 +1496,7 @@ long free_all(void)
 }
 
 
-#ifdef __MSHORT__
-long DRIVER_EXPORT puts(const char *text)
-#else
-int DRIVER_EXPORT puts(const char *text)
-#endif
+long DRIVER_EXPORT kputs(const char *text)
 {
 	int file;
 
@@ -1515,8 +1511,8 @@ int DRIVER_EXPORT puts(const char *text)
 			free(debug_file);
 			debug_file = 0;
 			debug_out = -2;
-			puts("Write to debug file failed!\n");
-			puts(text);
+			kputs("Write to debug file failed!\n");
+			kputs(text);
 		}
 		if (file >= 0)
 			Fclose(file);
@@ -1596,11 +1592,11 @@ long DRIVER_EXPORT misc(long func, long par, const char *token)
 
 void DRIVER_EXPORT error(const char *text1, const char *text2)
 {
-	puts("fVDI: ");
-	puts(text1);
+	kputs("fVDI: ");
+	kputs(text1);
 	if (text2)
-		puts(text2);
-	puts("\n");
+		kputs(text2);
+	kputs("\n");
 	if (debug_out < 0)
 	{
 		(void) Cconws("fVDI: ");
@@ -1814,7 +1810,7 @@ long init_utility(void)
 	real_access.funcs.error = error;
 	real_access.funcs.malloc = fmalloc;
 	real_access.funcs.free = free;
-	real_access.funcs.puts = (long DRIVER_EXPORT (*)(const char *text))puts;
+	real_access.funcs.puts = kputs;
 	real_access.funcs.ltoa = ltoa;
 	real_access.funcs.atol = atol;
 	real_access.funcs.get_cookie = get_cookie;
@@ -1828,9 +1824,6 @@ long init_utility(void)
 	real_access.funcs.cache_flush = cache_flush;
 	real_access.funcs.misc = misc;
 	real_access.funcs.event = event;
-	real_access.funcs.printf = (long int (*)(const char *, ...))printf;
-	real_access.funcs.sprintf = (long int (*)(char *, const char *, ...))sprintf;
-	real_access.funcs.vsprintf = (long int (*)(char *, const char *, void *))vsprintf;
 
 	check_cookies();
 

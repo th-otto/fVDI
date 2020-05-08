@@ -125,7 +125,7 @@ long startup(void)
 	List *element;
 	Driver *driver;
 
-	puts("\n");
+	access->funcs.puts("\n");
 
 	if (!init_utility())
 	{									/* Make the utility routines ready for use */
@@ -235,23 +235,23 @@ long startup(void)
 
 	stack_address = (long) vdi_stack;
 
-	printf("fVDI v%d.%d", VERmaj, VERmin);
+	kprintf("fVDI v%d.%d", VERmaj, VERmin);
 	if (BETA)
 	{
-		printf("beta%d", BETA);
+		kprintf("beta%d", BETA);
 	}
-	puts(int_is_short ? "-16bit" : "-32bit");
+	access->funcs.puts(int_is_short ? "-16bit" : "-32bit");
 #ifdef __GNUC__
-	puts("-gcc");
+	access->funcs.puts("-gcc");
 #else
 #ifdef __PUREC__
-	puts("-purec");
+	access->funcs.puts("-purec");
 #endif
 #endif
 #ifdef FT2
-	puts("-FT2");
+	access->funcs.puts("-FT2");
 #endif
-	puts(" now installed.\n");
+	access->funcs.puts(" now installed.\n");
 
 	if (debug)
 	{

@@ -104,7 +104,7 @@ void CDECL bconout_char(long ch)
 #else
 	default:
 		*str = (ch == 32 && inverse) ? '_' : ch;
-		puts(str);
+		kputs(str);
 #endif
 	}
 }

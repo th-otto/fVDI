@@ -33,7 +33,7 @@
 
 
 #ifdef FVDI_DEBUG
-#  define unreachable() printf("%s: \"unreachable\" in %s line %d\n", driver_name, __FILE__, __LINE__)
+#  define unreachable() kprintf("%s: \"unreachable\" in %s line %d\n", driver_name, __FILE__, __LINE__)
 #endif
 #ifndef unreachable
 #  ifdef __GNUC__
@@ -62,7 +62,7 @@ typedef struct _Mode {
 
 #ifdef FVDI_DEBUG
 #define PUTS(x) access->funcs.puts(x)
-#define PRINTF(x) access->funcs.printf x
+#define PRINTF(x) kprintf x
 #define KEY_WAIT(x) key_wait(x)
 #else
 #define PUTS(x)
