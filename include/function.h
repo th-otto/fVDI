@@ -1,9 +1,12 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
+
+#include "fvdi.h"
+
 /*
  * fVDI function declarations
  *
- * Copyright 2003, Johan Klockars 
+ * Copyright 2003, Johan Klockars
  * This software is licensed under the GNU General Public License.
  * Please, see LICENSE.TXT for further information.
  */
@@ -32,12 +35,12 @@ void v_bez_accel(long vwk, short *points, long num_points, long totmoves, short 
 void lib_v_pline(Virtual *, struct v_bez_pars *);
 void c_pline(Virtual *vwk, long num_pts, Fgbg colour, short *points);
 void filled_poly(Virtual *vwk, short p[][2], long n, Fgbg colour, short *pattern, short *points, long mode, long interior_style);
-void filled_poly_m(Virtual * vwk, short p[][2], long n, Fgbg colour, short *pattern, short *points, short index[], long moves, long mode, long interior_style);
+void filled_poly_m(Virtual *vwk, short p[][2], long n, Fgbg colour, short *pattern, short *points, short index[], long moves, long mode, long interior_style);
 void fill_poly(Virtual *vwk, short *p, long n, Fgbg colour, short *pattern, short *points, long mode, long interior_style);
 void fill_area(Virtual *vwk, long x1, long y1, long x2, long y2, Fgbg colour);
 void get_extent(Virtual *vwk, long length, short *text, short points[]);
 void draw_text(Virtual *vwk, long x, long y, short *text, long length, Fgbg colour);
-void hline(void *, int x1, int y1, int y2, Fgbg colour, short *pattern);
+void hline(Virtual *vwk, long x1, long y1, long y2, Fgbg colour, short *pattern, long mode, long interior_style);
 void fill_spans(void *, short *, long n, Fgbg colour, short *pattern, long mode, long interior_style);
 
 
@@ -54,16 +57,16 @@ void CDECL lib_vdi_sp(void *func, Virtual *vwk, short, void *);
 void CDECL lib_vdi_spppp(void *func, Virtual *vwk, short, void *, void *, void *, void *);
 void CDECL lib_vdi_pp(void *func, Virtual *vwk, void *, void *);
 #else
- #ifdef __GNUC__
+#ifdef __GNUC__
 void CDECL lib_vdi_s(void *func, Virtual *vwk, long);
 void CDECL lib_vdi_sp(void *func, Virtual *vwk, long, void *);
 void CDECL lib_vdi_spppp(void *func, Virtual *vwk, long, void *, void *, void *, void *);
 void CDECL lib_vdi_pp(void *func, Virtual *vwk, void *, void *);
- #else
-void lib_vdi_s(void *func, Virtual *vwk, short);
-void lib_vdi_sp(void *func, Virtual *vwk, short, void *);
-void lib_vdi_spppp(void *func, Virtual *vwk, short, void *, void *, void *, void *);
-void lib_vdi_pp(void *func, Virtual *vwk, void *, void *);
+#else
+void CDECL lib_vdi_s(void *func, Virtual *vwk, short);
+void CDECL lib_vdi_sp(void *func, Virtual *vwk, short, void *);
+void CDECL lib_vdi_spppp(void *func, Virtual *vwk, short, void *, void *, void *, void *);
+void CDECL lib_vdi_pp(void *func, Virtual *vwk, void *, void *);
 #define LIB_CALL {"224f4e92";}			/* move.l a7,a1   jsr (a2) */
 #pragma inline lib_vdi_s(a2, a0, (short)) LIB_CALL
 #pragma inline lib_vdi_sp(a2, a0, (short),) LIB_CALL
@@ -79,15 +82,11 @@ void shutdown_vbl_handler(void);
 
 int lib_vst_font(Virtual *vwk, long fontID);
 int lib_vst_point(Virtual *vwk, long height, short *charw, short *charh, short *cellw, short *cellh);
-extern void *lib_vr_trn_fm;
-extern void *lib_vrt_cpyfm;
-extern void *lib_vrt_cpyfm_nocheck;
-extern void *lib_vro_cpyfm;
-extern void lib_vs_clip(Virtual *, short, short *);
-#if 0
-extern void lib_vr_trn_fm(Virtual *, MFDB *, MFDB *);
-#endif
-extern void opnvwk_values(Virtual *, VDIpars *);
+void lib_vrt_cpyfm_nocheck(Virtual *vwk, short mode, short *pxy, MFDB *src, MFDB *dst, short colors[]);
+void lib_vro_cpyfm(Virtual *vwk, short mode, short *pxy, MFDB *src, MFDB *dst);
+void lib_vs_clip(Virtual *, short, short *);
+void lib_vr_trn_fm(Virtual *, MFDB *, MFDB *);
+void opnvwk_values(Virtual *, VDIpars *);
 void CDECL lib_v_bez(Virtual *vwk, struct v_bez_pars *par);
 long lib_vst_load_fonts(Virtual *vwk, long select);
 void lib_vst_unload_fonts(Virtual *vwk, long select);
@@ -121,14 +120,13 @@ extern long        (*external_vqt_extent)(Virtual *vwk, Fontheader *font, short 
 extern long        (*external_vqt_width)(Virtual *vwk, Fontheader *font, long ch);
 extern Fontheader* (*external_vst_point)(Virtual *vwk, long size, short *sizes);
 extern long        (*external_renderer)(Virtual *vwk, unsigned long coords,
-					short *text, long length);
+                    short *text, long length);
 extern void*       (*external_char_bitmap)(Virtual *vwk, Fontheader *font, long ch, short *bitmap_info);
 extern void*       (*external_char_advance)(Virtual *vwk, Fontheader *font, long ch, short *advance_info);
 
 extern void        (*external_xfntinfo)(Virtual *vwk, Fontheader *font, long flags, XFNT_INFO *info);
 extern void        (*external_fontheader)(Virtual *vwk, Fontheader *font, VQT_FHDR *fhdr);
 extern unsigned short (*external_char_index) (Virtual *vwk, Fontheader *font, short *intin);
-#endif
 
 #ifdef FVDI_DEBUG
 void display_output(VDIpars *pars);
@@ -176,3 +174,8 @@ void CDECL v_bit_image(Virtual *vwk, char *filename, long aspect, long scaling, 
  */
 long CDECL default_line(Virtual *vwk, DrvLine *pars);
 long CDECL default_blit(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation);
+void CDECL default_text(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets);
+void CDECL default_fill(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style);
+void CDECL default_expand(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour);
+
+#endif

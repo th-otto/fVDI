@@ -1,7 +1,7 @@
 void DRIVER_EXPORT copymem(const void *s, void *d, long n)
 {
-	char *src,
-	*dest;
+	char *src;
+	char *dest;
 
 	src = (char *) s;
 	dest = (char *) d;
@@ -67,5 +67,3 @@ void *memcpy(void *_dest, const void *_src, size_t n)
 
 	return dest;
 }
-
-

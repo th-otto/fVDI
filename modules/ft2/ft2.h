@@ -9,8 +9,8 @@ void CDECL bitmap_outline(void *src, void *dst, long pitch, long wdwidth, long l
 
 #ifdef FT_DEBUG_MEMORY
 
-extern FT_Int ft_mem_debug_init(FT_Memory memory);
+FT_Int ft_mem_debug_init(FT_Memory memory);
 
-extern void ft_mem_debug_done(FT_Memory memory);
+void ft_mem_debug_done(FT_Memory memory);
 
 #endif

@@ -1,9 +1,10 @@
 #ifndef UTILITY_H
 #define UTILITY_H
+
 /*
  * fVDI utility function declarations
  *
- * Copyright 2003, Johan Klockars 
+ * Copyright 2003, Johan Klockars
  * This software is licensed under the GNU General Public License.
  * Please, see LICENSE.TXT for further information.
  */
@@ -149,4 +150,3 @@ short Icos(short angle);
 #define MAX(x,y)  ((x) > (y) ? (x) : (y))
 
 #endif
-

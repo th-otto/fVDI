@@ -31,7 +31,6 @@
 
 #define ACCEL_ALL	((A_LINE << 1) - 1)		/* Only functions covered by this may be turned off */
 
-
 #ifdef FVDI_DEBUG
 #  define unreachable() kprintf("%s: \"unreachable\" in %s line %d\n", driver_name, __FILE__, __LINE__)
 #endif

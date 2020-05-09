@@ -35,7 +35,9 @@ subdir      = ft2
 
 include $(top_srcdir)/CONFIGVARS
 
-WARNINGS += -Wno-cast-function-type
+# we do not intend to fix any warnings we inherit from the FreeType2 sources
+# consequently, we suppress all warnings here
+WARNINGS += -Wno-cast-function-type -Wno-empty-body
 
 ifneq ($(stdlib_srcdir),)
 CFLAGS = $(CPUOPTS) -DFT2_BUILD_LIBRARY $(OPTS) $(WARNINGS) -I$(srcdir)/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include -I$(stdlib_srcdir)/include
@@ -138,6 +140,7 @@ ftcache.o: $(ft2_srcdir)/src/cache/ftcache.c
 #
 cff.o: $(ft2_srcdir)/src/cff/cff.c
 	$(AM_V_CC)$(CC) -c $(CFLAGS) -o $@ $<
+
 # opentype validator
 otvalid.o: $(ft2_srcdir)/src/otvalid/otvalid.c
 	$(AM_V_CC)$(CC) -c $(CFLAGS) -o $@ $<
@@ -216,12 +219,12 @@ RASTEROBJ = raster.o smooth.o
 #GZOBJ = ftgzip.o
 
 # pcf.o  - needs GZLib and ZLib
-#PCFOBJ = pcf.o 
+#PCFOBJ = pcf.o
 FONTDOBJ = cff.o type1.o type42.o type1cid.o truetype.o bdf.o pfr.o winfnt.o gemfnt.o $(PCFOBJ)
 
 OBJS = $(BASEOBJ) $(AHINTOBJ) $(PSOBJ) $(RASTEROBJ) sfnt.o ftcache.o $(FONTDOBJ) $(GZOBJ)
 
-$(TARGET): $(OBJS) 
+$(TARGET): $(OBJS)
 	$(AM_V_AR)$(AR) cr $@ $(OBJS); $(RANLIB) $@
 
 clean::

@@ -3,7 +3,7 @@
 /*
  * fVDI global variable declarations
  *
- * Copyright 2003, Johan Klockars 
+ * Copyright 2003, Johan Klockars
  * This software is licensed under the GNU General Public License.
  * Please, see LICENSE.TXT for further information.
  */
@@ -33,17 +33,17 @@ extern void (*vdi_address)(void);
 extern void (*trap14_address)(void);
 extern void (*lineA_address)(void);
 
-extern void trap2_temp(void);
-extern void trap14(void);
-extern void lineA(void);
-extern void vdi_dispatch(void);
-extern void eddi_dispatch(void);
-extern void init(void);
-extern void data_start(void);
-extern void bss_start(void);
+void trap2_temp(void);
+void trap14(void);
+void lineA(void);
+void vdi_dispatch(void);
+void eddi_dispatch(void);
+void init(void);
+void data_start(void);
+void bss_start(void);
 
-extern long bconout_address;
-extern void bconout_stub(void);
+extern void *bconout_address;
+void bconout_stub(void);
 
 extern long mint;
 extern long magic;
@@ -53,10 +53,6 @@ extern void* dummy_vdi;
 extern Function default_functions[];
 extern void *default_opcode5[];
 extern void *default_opcode11[];
-
-extern void CDECL default_text(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets);
-extern void CDECL default_fill(Virtual *vwk, long x, long y, long w, long h, short *pattern, long colour, long mode, long interior_style);
-extern void CDECL default_expand(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour);
 
 extern short *pattern_ptrs[];
 extern short solid[];
@@ -94,8 +90,8 @@ extern short xbiosfix;
 extern short singlebend;
 extern short memlink;
 extern short blocks;
-extern long  block_size;
-extern long  log_size;
+extern long block_size;
+extern long log_size;
 extern short arc_split;
 extern short arc_min;
 extern short arc_max;
@@ -133,6 +129,6 @@ extern short pts_in[];
 extern short int_out[];
 extern short pts_out[];
 
-#endif
-
 extern struct Super_data *super;
+
+#endif

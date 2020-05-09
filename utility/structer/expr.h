@@ -69,9 +69,9 @@ void printdefs(List);
 extern int lineno;
 
 int yyparse(void);
-extern void yyerror(const char *);
-extern __attribute__((format(printf, 2, 3))) void error(int lineno, const char *format, ...);
+void yyerror(const char *);
+__attribute__((format(printf, 2, 3))) void error(int lineno, const char *format, ...);
 
-extern void convert(char *, List);
+void convert(char *, List);
 
 #endif

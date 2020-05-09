@@ -32,35 +32,35 @@
 
 #include "modules/ft2.h"
 
-int (*external_init) (void) = ft2_init;
-void (*external_term) (void) = ft2_term;
-Fontheader *(*external_load_font) (Virtual *vwk, const char *font) = ft2_load_font;
-long (*external_vqt_extent) (Virtual *vwk, Fontheader *font, short *text, long length) = ft2_text_width;
-long (*external_vqt_width) (Virtual *vwk, Fontheader *font, long ch) = ft2_char_width;
-long (*external_vst_effects) (Virtual *vwk, Fontheader *font, long effects) = ft2_set_effects;
-Fontheader *(*external_vst_point) (Virtual *vwk, long size, short *sizes) = ft2_vst_point;
-long (*external_renderer) (Virtual *vwk, unsigned long coords, short *text, long length) = ft2_text_render_default;
-void *(*external_char_bitmap) (Virtual *vwk, Fontheader *font, long ch, short *bitmap_info) = ft2_char_bitmap;
-void *(*external_char_advance) (Virtual *vwk, Fontheader *font, long ch, short *advance_info) = ft2_char_advance;
-void (*external_xfntinfo) (Virtual *vwk, Fontheader *font, long flags, XFNT_INFO *info) = ft2_xfntinfo;
-void (*external_fontheader) (Virtual *vwk, Fontheader *font, VQT_FHDR *fhdr) = ft2_fontheader;
-unsigned short (*external_char_index) (Virtual *vwk, Fontheader *font, short *intin) = ft2_char_index;
+int (*external_init)(void) = ft2_init;
+void (*external_term)(void) = ft2_term;
+Fontheader *(*external_load_font)(Virtual *vwk, const char *font) = ft2_load_font;
+long (*external_vqt_extent)(Virtual *vwk, Fontheader *font, short *text, long length) = ft2_text_width;
+long (*external_vqt_width)(Virtual *vwk, Fontheader *font, long ch) = ft2_char_width;
+long (*external_vst_effects)(Virtual *vwk, Fontheader *font, long effects) = ft2_set_effects;
+Fontheader *(*external_vst_point)(Virtual *vwk, long size, short *sizes) = ft2_vst_point;
+long (*external_renderer)(Virtual *vwk, unsigned long coords, short *text, long length) = ft2_text_render_default;
+void *(*external_char_bitmap)(Virtual *vwk, Fontheader *font, long ch, short *bitmap_info) = ft2_char_bitmap;
+void *(*external_char_advance)(Virtual *vwk, Fontheader *font, long ch, short *advance_info) = ft2_char_advance;
+void (*external_xfntinfo)(Virtual *vwk, Fontheader *font, long flags, XFNT_INFO *info) = ft2_xfntinfo;
+void (*external_fontheader)(Virtual *vwk, Fontheader *font, VQT_FHDR *fhdr) = ft2_fontheader;
+unsigned short (*external_char_index)(Virtual *vwk, Fontheader *font, short *intin) = ft2_char_index;
 
 #else
 
-int (*external_init) (void) = 0;
-void (*external_term) (void) = 0;
-Fontheader *(*external_load_font) (Virtual *vwk, const char *font) = 0;
-long (*external_vqt_extent) (Virtual *vwk, Fontheader *font, short *text, long length) = 0;
-long (*external_vqt_width) (Virtual *vwk, Fontheader *font, long ch) = 0;
-long (*external_vst_effects) (Virtual *vwk, Fontheader *font, long effects) = 0;
-Fontheader *(*external_vst_point) (Virtual *vwk, long size, short *sizes) = 0;
-long (*external_renderer) (Virtual *vwk, unsigned long coords, short *text, long length) = 0;
-void *(*external_char_bitmap) (Virtual *vwk, Fontheader *font, long ch, short *bitmap_info) = 0;
-void *(*external_char_advance) (Virtual *vwk, Fontheader *font, long ch, short *advance_info) = 0;
-void (*external_xfntinfo) (Virtual *vwk, Fontheader *font, long flags, XFNT_INFO *info) = 0;
-void (*external_fontheader) (Virtual *vwk, Fontheader *font, VQT_FHDR *fhdr) = 0;
-unsigned short (*external_char_index) (Virtual *vwk, Fontheader *font, short *intin) = 0;
+int (*external_init)(void) = 0;
+void (*external_term)(void) = 0;
+Fontheader *(*external_load_font)(Virtual *vwk, const char *font) = 0;
+long (*external_vqt_extent)(Virtual *vwk, Fontheader *font, short *text, long length) = 0;
+long (*external_vqt_width)(Virtual *vwk, Fontheader *font, long ch) = 0;
+long (*external_vst_effects)(Virtual *vwk, Fontheader *font, long effects) = 0;
+Fontheader *(*external_vst_point)(Virtual *vwk, long size, short *sizes) = 0;
+long (*external_renderer)(Virtual *vwk, unsigned long coords, short *text, long length) = 0;
+void *(*external_char_bitmap)(Virtual *vwk, Fontheader *font, long ch, short *bitmap_info) = 0;
+void *(*external_char_advance)(Virtual *vwk, Fontheader *font, long ch, short *advance_info) = 0;
+void (*external_xfntinfo)(Virtual *vwk, Fontheader *font, long flags, XFNT_INFO *info) = 0;
+void (*external_fontheader)(Virtual *vwk, Fontheader *font, VQT_FHDR *fhdr) = 0;
+unsigned short (*external_char_index)(Virtual *vwk, Fontheader *font, short *intin) = 0;
 
 #endif
 
@@ -81,7 +81,7 @@ short xbiosfix = 0;
 short singlebend = 0;
 short memlink = 1;
 short blocks = BLOCKS;
-long block_size = BLOCK_SIZE * 1024;
+long block_size = BLOCK_SIZE * 1024L;
 long log_size = 1000;
 short arc_split = 16384;  /* 1/4 as many lines as largest ellipse axel radius in pixels */
 short arc_min = 16;       /* Minimum number of lines in an ellipse */
@@ -402,7 +402,7 @@ long use_module(Virtual *vwk, const char **ptr)
 }
 
 
-long specify_cookie(Virtual *vwk, const char **ptr)
+static long specify_cookie(Virtual *vwk, const char **ptr)
 {
     char token[TOKEN_SIZE];
     short nvdi_val, speedo_val, calamus_val;
@@ -447,20 +447,20 @@ long specify_cookie(Virtual *vwk, const char **ptr)
             *ptr = get_token(*ptr, token, TOKEN_SIZE);
 
             if (nvdi_val)
-                nvdi_val = (short) atol(token);
+                nvdi_val = (short)atol(token);
             else if (speedo_val)
-                speedo_val = (short) atol(token);
+                speedo_val = (short)atol(token);
             else if (calamus_val)
-                calamus_val = (short) atol(token);
+                calamus_val = (short)atol(token);
         }
     }
 
     if (nvdi_val)
-        nvdi_cookie = (short) nvdi_val;
+        nvdi_cookie = (short)nvdi_val;
     else if (speedo_val)
-        speedo_cookie = (short) speedo_val;
+        speedo_cookie = (short)speedo_val;
     else if (calamus_val)
-        calamus_cookie = (short) calamus_val;
+        calamus_cookie = (short)calamus_val;
 
     return 1;
 }
@@ -482,13 +482,13 @@ long specify_vqgdos(Virtual *vwk, const char **ptr)
     if ((token[0] == '$') || ((token[0] >= '0') && (token[0] <= '9')))
     {
         value = atol(token);
-        vq_gdos_value[3] = (char) value;
+        vq_gdos_value[3] = (char)value;
         value >>= 8;
-        vq_gdos_value[2] = (char) value;
+        vq_gdos_value[2] = (char)value;
         value >>= 8;
-        vq_gdos_value[1] = (char) value;
+        vq_gdos_value[1] = (char)value;
         value >>= 8;
-        vq_gdos_value[0] = (char) value;
+        vq_gdos_value[0] = (char)value;
     } else
     {
         vq_gdos_value[0] = token[0];
@@ -530,6 +530,7 @@ static long get_pathname(const char **ptr, char *dest)
         break;
     default:
         cat("\\", dest);
+        break;
     }
 
     return 1;
@@ -693,11 +694,11 @@ static long set_width(Virtual *vwk, const char **ptr)
         if (width < 100)
             width = 100;
     } else
-    {                                   /* Negative width - fixed DPI */
+    {                                 /* Negative width - fixed DPI */
         if (-width < 10)
             width = -10;
     }
-    vwk->real_address->screen.pixel.width = width;  /* Currently no other way */
+    vwk->real_address->screen.pixel.width = width;   /* Currently no other way */
 
     return 1;
 }
@@ -722,11 +723,11 @@ static long set_height(Virtual *vwk, const char **ptr)
         if (height < 100)
             height = 100;
     } else
-    {                                   /* Negative height - fixed DPI */
+    {                                 /* Negative height - fixed DPI */
         if (-height < 10)
             height = -10;
     }
-    vwk->real_address->screen.pixel.height = height;    /* Currently no other way */
+    vwk->real_address->screen.pixel.height = height;   /* Currently no other way */
 
     return 1;
 }
@@ -740,7 +741,7 @@ static long set_blocks(Virtual *vwk, const char **ptr)
     if ((*ptr = skip_space(*ptr)) == NULL)
     {
         /* *********** Error, somehow */
-    }   
+    }
     *ptr = get_token(*ptr, token, TOKEN_SIZE);
     blocks = atol(token);
     if (blocks < 2)
@@ -801,7 +802,7 @@ static long set_arc_split(Virtual *vwk, const char **ptr)
         arc_split = 3;
     if (arc_split > 100)
         arc_split = 100;
-    arc_split = (arc_split * 65536L + 50) / 100;    /* Percentage turned into part of 64k for easier calulation */
+    arc_split = (arc_split * 65536L + 50) / 100;  /* Percentage turned into part of 64k for easier calulation */
 
     return 1;
 }
@@ -888,10 +889,11 @@ static long load_palette(Virtual *vwk, const char **ptr)
     long colours;
     int file;
     void *palette;
+	unsigned long magic;
 
     if ((*ptr = skip_space(*ptr)) == NULL)
     {
-        access->funcs.error("No palette file name!", NULL);
+        error("No palette file name!", NULL);
         return -1;
     }
     *ptr = get_token(*ptr, token, TOKEN_SIZE);
@@ -903,14 +905,27 @@ static long load_palette(Virtual *vwk, const char **ptr)
         cat(token, name);
         if ((size = get_size(name)) < 0)
         {
-            access->funcs.error("Can't find palette file!", NULL);
+            error("Can't find palette file!", NULL);
             return -1;
         }
     }
 
+    if ((file = (int) Fopen(name, O_RDONLY)) < 0)
+    {
+        error("Can't open palette file!", NULL);
+        return -1;
+    }
+
+    /* check the "PA01" header bytes) */
+    if (Fread(file, 4, &magic) == 4 && magic == 0x50413031UL)
+    	size -= 4;
+    else
+    	Fseek(file, 0, SEEK_SET);
+
     if (size % (3 * sizeof(short)))
     {
-        access->funcs.error("Wrong palette file size!", NULL);
+        error("Wrong palette file size!", NULL);
+        Fclose(file);
         return -1;
     }
 
@@ -923,20 +938,15 @@ static long load_palette(Virtual *vwk, const char **ptr)
     case 256:
         break;
     default:
-        access->funcs.error("Wrong palette file size!", NULL);
+        error("Wrong palette file size!", NULL);
+        Fclose(file);
         return -1;
     }
 
     if ((palette = malloc(size)) == NULL)
     {
-        access->funcs.error("Can't allocate memory for palette!", NULL);
-        return -1;
-    }
-
-    if ((file = (int) Fopen(name, O_RDONLY)) < 0)
-    {
-        access->funcs.error("Can't open palette file!", NULL);
-        free(palette);
+        error("Can't allocate memory for palette!", NULL);
+        Fclose(file);
         return -1;
     }
 
@@ -944,7 +954,7 @@ static long load_palette(Virtual *vwk, const char **ptr)
 
     Fclose(file);
 
-    vwk->real_address->screen.palette.colours = palette;    /* Currently no other way */
+    vwk->real_address->screen.palette.colours = palette; /* Currently no other way */
 
     return 1;
 }
@@ -958,14 +968,14 @@ static long set_debug_file(Virtual *vwk, const char **ptr)
     (void) vwk;
     if ((*ptr = skip_space(*ptr)) == NULL)
     {
-        access->funcs.error("No debug file name!", NULL);
+        error("No debug file name!", NULL);
         return -1;
     }
     *ptr = get_token(*ptr, token, TOKEN_SIZE);
 
     if ((file = (int) Fcreate(token, 0)) < 0)
     {
-        access->funcs.error("Can't create debug file!", NULL);
+        error("Can't create debug file!", NULL);
         return -1;
     }
 
@@ -974,17 +984,17 @@ static long set_debug_file(Virtual *vwk, const char **ptr)
 
     if (bytes != 19)
     {
-        access->funcs.error("Can't write to debug file!", NULL);
+        error("Can't write to debug file!", NULL);
         return -1;
     }
 
     debug_file = malloc(strlen(token) + 1);
     if (!debug_file)
     {
-        access->funcs.error("Can't store debug file name!", NULL);
+        error("Can't store debug file name!", NULL);
         return -1;
     }
-    strcpy(debug_file, token);
+    copy(token, debug_file);
     debug_out = -3;
 
     return 1;
@@ -1096,7 +1106,7 @@ static long check_token(Virtual *vwk, char *token, const char **ptr)
         xtoken++;
         normal = 0;
         break;
-    case ':':                           /* Label */
+    case ':':    /* Label */
         return 1;
     default:
         normal = 1;
@@ -1109,18 +1119,18 @@ static long check_token(Virtual *vwk, char *token, const char **ptr)
         {
             switch (options[i].type)
             {
-            case -1:                    /* Function call */
+            case -1:     /* Function call */
                 return (options[i].var.vfunc) (vwk, ptr);
-            case 0:                 /* Default 1, set to 0 */
+            case 0:      /* Default 1, set to 0 */
                 *options[i].var.s = 1 - normal;
                 return 1;
-            case 1:                 /* Default 0, set to 1 */
+            case 1:     /* Default 0, set to 1 */
                 *options[i].var.s = normal;
                 return 1;
-            case 2:                 /* Increase */
+            case 2:     /* Increase */
                 *options[i].var.s += -1 + 2 * normal;
                 return 1;
-            case 3:                 /* Single character */
+            case 3:     /* Single character */
                 if ((*ptr = skip_space(*ptr)) == NULL)
                 {
                     /* *********** Error, somehow */
@@ -1128,7 +1138,7 @@ static long check_token(Virtual *vwk, char *token, const char **ptr)
                 *ptr = get_token(*ptr, token, TOKEN_SIZE);
                 *options[i].var.s = token[0];
                 return 1;
-            case 4:                 /* Number */
+            case 4:     /* Number */
                 if ((*ptr = skip_space(*ptr)) == NULL)
                 {
                     /* *********** Error, somehow */
@@ -1250,7 +1260,7 @@ static long load_fonts(Virtual *vwk, const char **ptr)
     if (get_pathname(ptr, fonts) != 1)
         return -1;
 
-    PRINTF(("Fonts:: %s\n", fonts));
+    PRINTF(("Fonts: %s\n", fonts));
 
     /* Initialize FreeType2 module */
     external_init();

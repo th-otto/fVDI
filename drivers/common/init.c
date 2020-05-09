@@ -328,12 +328,12 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 		wk->screen.palette.possibilities = 0;	/* Old modes had less colours */
 #endif
 #endif
-/* Values and transformation table */
-/* Pixel width/height */
-/* Coordinates (what's 'course'?  max/min should be more sophisticated) */
+	/* Values and transformation table */
+	/* Pixel width/height */
+	/* Coordinates (what's 'course'?  max/min should be more sophisticated) */
 	wk->screen.coordinates.max_x = wk->screen.mfdb.width - 1;
 	wk->screen.coordinates.max_y = wk->screen.mfdb.height - 1;
-/* 16x16 op/s */
+	/* 16x16 op/s */
 	wk->various.buttons = 2;
 	wk->various.cursor_movement = 2;
 	wk->various.number_entry = 1;
@@ -465,7 +465,7 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 
 	setup_scrninfo(&device, graphics_mode);
 
-/* Perhaps set up default clipping? */
+	/* Perhaps set up default clipping? */
 
 	return 1;
 }

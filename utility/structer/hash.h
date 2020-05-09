@@ -25,5 +25,3 @@ extern NTentry *new_string(const char *, int);
 extern void hash_stat(int *, int *, int *);
 
 #endif
-
-

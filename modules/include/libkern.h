@@ -18,10 +18,10 @@ typedef unsigned char uchar;
 #endif
 
 #ifndef USE_LIBKERN
-extern int isdigit(int c);
-extern int isxdigit(int c);
-extern int isalnum(int c);
-extern int isspace(int c);
+int isdigit(int c);
+int isxdigit(int c);
+int isalnum(int c);
+int isspace(int c);
 #else
 # define str(x)		_stringify (x)
 # define _stringify(x)	#x
@@ -154,7 +154,5 @@ void *	CDECL memset(void *dst, int ucharfill, ulong size);
 void	CDECL bcopy(const void *src, void *dst, ulong nbytes);
 void	CDECL bzero(void *dst, ulong size);
 #endif
-
-char *memrchr(const void *s, long c, size_t n);
 
 # endif /* _libkern_h */
