@@ -107,7 +107,6 @@ short old_malloc = 0;
 short fall_back = 0;
 short move_mouse = 0;
 short ext_malloc = 0;
-
 #ifdef FVDI_DEBUG 
 short check_mem = 0;
 #endif
@@ -386,19 +385,19 @@ static Driver *init_module(Virtual *vwk, const char **ptr, List **list)
 
 long use_module(Virtual *vwk, const char **ptr)
 {
-	Driver *driver;
+    Driver *driver;
 
-	if ((*ptr = skip_space(*ptr)) == NULL)
-	{
-		access->funcs.error("Bad module specification", NULL);
-		return -1;
-	}
+    if ((*ptr = skip_space(*ptr)) == NULL)
+    {
+        error("Bad module specification", NULL);
+        return -1;
+    }
 
-	driver = init_module(vwk, ptr, &module_list);
-	if (!driver)
-		return -1;
+    driver = init_module(vwk, ptr, &module_list);
+    if (!driver)
+        return -1;
 
-	return 1;
+    return 1;
 }
 
 
@@ -1247,13 +1246,14 @@ static void load_font_dir(Virtual *vwk, char *fonts)
     Fsetdta(olddta);
 }
 
+
 static long load_fonts(Virtual *vwk, const char **ptr)
 {
     char fonts[PATH_SIZE];
 
     if (!external_init)
     {
-        access->funcs.error("Font directory specified without FreeType support!", NULL);
+        error("Font directory specified without FreeType support!", NULL);
         return -1;
     }
 
