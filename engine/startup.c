@@ -119,7 +119,7 @@ long startup(void)
     List *element;
     Driver *driver;
 
-    access->funcs.puts("\n");
+    kputs("\n");
 
     if (!init_utility())
     {

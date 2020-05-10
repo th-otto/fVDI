@@ -107,7 +107,7 @@ short old_malloc = 0;
 short fall_back = 0;
 short move_mouse = 0;
 short ext_malloc = 0;
-#ifdef FVDI_DEBUG 
+#ifdef FVDI_DEBUG
 short check_mem = 0;
 #endif
 short bconout = 0;
@@ -1203,7 +1203,7 @@ static void load_font_dir(Virtual *vwk, char *fonts)
     char *pathtail;
     int error;
     long len;
-    
+
     /* Point past the last char */
     len = length(fonts);
     if ((len + 12) > (PATH_SIZE - 2))
@@ -1232,14 +1232,14 @@ static void load_font_dir(Virtual *vwk, char *fonts)
         } else
         {
             PRINTF(("   Load font: %s\n", fonts));
-    
+
             if ((new_font = external_load_font(vwk, fonts)) != NULL)
             {
                 /* It's assumed that a device has been initialized (driver exists) */
                 if (insert_font(&vwk->real_address->writing.first_font, new_font))
                     vwk->real_address->writing.fonts++;
             }
-        }   
+        }
         error = Fsnext();
     }
 
@@ -1266,7 +1266,7 @@ static long load_fonts(Virtual *vwk, const char **ptr)
     external_init();
 
     load_font_dir(vwk, fonts);
-    
+
     PRINTF(("   Load fonts done: %d\n", vwk->real_address->writing.fonts));
 
     return 1;

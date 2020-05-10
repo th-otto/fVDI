@@ -19,11 +19,48 @@
 #include "nf_ops.h"
 #include "function.h"
 
+/* referenced in simple.s */
+void DRIVER_EXPORT event(long id_type, long data);
+
+
 /*
  * Global variables
  */
 
-Access real_access;
+Access real_access = {
+    {
+        copymem,
+        next_line,
+        skip_space,
+        get_token,
+        equal,
+        length,
+        copy,
+        cat,
+        numeric,
+        atol,
+        error,
+        fmalloc,
+        free,
+        kputs,
+        ltoa,
+        get_cookie,
+        set_cookie,
+        fixup_font,
+        unpack_font,
+        insert_font,
+        get_size,
+        allocate_block,
+        free_block,
+        cache_flush,
+        misc,
+        event
+    },
+    {
+        /* vars: nowhere initialized or accessed? */
+        0, 0
+    }
+};
 Access *access = &real_access;
 
 typedef struct _Circle {
@@ -56,10 +93,6 @@ char *block_chain = 0;
 
 static struct nf_ops _nf_ops = { _nf_get_id, _nf_call, { 0, 0, 0 } };
 static struct nf_ops *nf_ops;
-
-
-/* referenced in simple.s */
-void DRIVER_EXPORT event(long id_type, long data);
 
 
 
@@ -1668,33 +1701,6 @@ void DRIVER_EXPORT event(long id_type, long data)
 long init_utility(void)
 {
     long tmp;
-
-    real_access.funcs.copymem = copymem;
-    real_access.funcs.next_line = next_line;
-    real_access.funcs.skip_space = skip_space;
-    real_access.funcs.get_token = get_token;
-    real_access.funcs.equal = equal;
-    real_access.funcs.length = length;
-    real_access.funcs.copy = copy;
-    real_access.funcs.cat = cat;
-    real_access.funcs.numeric = numeric;
-    real_access.funcs.error = error;
-    real_access.funcs.malloc = fmalloc;
-    real_access.funcs.free = free;
-    real_access.funcs.puts = kputs;
-    real_access.funcs.ltoa = ltoa;
-    real_access.funcs.atol = atol;
-    real_access.funcs.get_cookie = get_cookie;
-    real_access.funcs.set_cookie = set_cookie;
-    real_access.funcs.fixup_font = fixup_font;
-    real_access.funcs.unpack_font = unpack_font;
-    real_access.funcs.insert_font = insert_font;
-    real_access.funcs.get_size = get_size;
-    real_access.funcs.allocate_block = allocate_block;
-    real_access.funcs.free_block = free_block;
-    real_access.funcs.cache_flush = cache_flush;
-    real_access.funcs.misc = misc;
-    real_access.funcs.event = event;
 
     check_cookies();
 

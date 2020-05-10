@@ -464,9 +464,9 @@ Fontheader *ft2_load_font(Virtual *vwk, const char *filename)
          *        e.g. the x.app decides what to call depending on the type of the font. */
 
         font->id = ft2_get_face_id(vwk, face);
-        font->flags = FONTF_EXTERNAL |          /* FT2 handled font */
+        font->flags = FONTF_EXTERNAL |				/* FT2 handled font */
             (FT_IS_SCALABLE(face) ? FONTF_SCALABLE : 0) |
-            (FT_IS_FIXED_WIDTH(face) ? FONTF_MONOSPACED : 0); /* .FNT compatible flag */
+            (FT_IS_FIXED_WIDTH(face) ? FONTF_MONOSPACED : 0);	/* .FNT compatible flag */
         font->extra.filename = strdup(filename);		/* Font filename to load_glyphs on-demand */
         font->extra.index = 0;				/* Index to load, FIXME: how to we load multiple of them */
         font->extra.effects = 0;

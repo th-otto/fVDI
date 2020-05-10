@@ -236,7 +236,7 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *opts)
 	driver->clswk = clswk;
 	driver->default_vwk = 0;			/* Set below */
 	driver->device = &device;
-	driver->module.private = 0;
+	driver->module.priv = 0;
 
 
 	/*

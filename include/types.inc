@@ -336,7 +336,7 @@ driver_module_name	equ	8
 driver_module_initialize	equ	12
 driver_module_setup	equ	16
 driver_module_shutdown	equ	20
-driver_module_private	equ	24
+driver_module_priv	equ	24
 driver_opnwk	equ	28
 driver_clswk	equ	32
 driver_default_vwk	equ	36
