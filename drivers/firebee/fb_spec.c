@@ -26,6 +26,7 @@
 #include "firebee.h"
 #include "video.h"
 #include <os.h>
+#include "string/memset.h"
 
 char r_16[] = {5, 11, 12, 13, 14, 15};
 char g_16[] = {6,  5,  6,  7,  8,  9, 10};
@@ -34,8 +35,6 @@ char none[] = {0};
 
 Mode mode[1] =
 {{16, CHUNKY | CHECK_PREVIOUS | TRUE_COLOUR, {r_16, g_16, b_16, none, none, none}, 0,  2, 2, 1}};
-
-extern Device device;
 
 char driver_name[] = "FBee";
 
@@ -90,8 +89,6 @@ short accel_s = 0;
 short accel_c = A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX | A_BLIT | A_FILL | A_EXPAND | A_LINE | A_MOUSE;
 
 const Mode *graphics_mode = &mode[0];
-
-short debug = 0;
 
 long set_mode(const char **ptr);
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * A 16 bit graphics blit routine, by Johan Klockars.
  *
  * This file is an example of how to write an
@@ -15,8 +15,8 @@
 #include "driver.h"
 #include "../bitplane/bitplane.h"
 
-#define PIXEL       short
-#define PIXEL_SIZE  sizeof(PIXEL)
+#define PIXEL		short
+#define PIXEL_SIZE	sizeof(PIXEL)
 #define PIXEL_32    long
 
 #ifdef FVDI_DEBUG
@@ -28,6 +28,28 @@ static void debug_out(const char *text1, int w, int old_w, int h, int src_x, int
     }
     PRINTF((",%d from %d,%d to %d,%d\n", h, src_x, src_y, dst_x, dst_y));
 }
+#endif
+
+
+#ifdef __mcoldfire__
+#define MOVE_L " move.l "
+#define ASR_L  " asr.l "
+#define AND_L  " and.l "
+#define OR_W(val, ptr, dec, inc) \
+	" move.w " dec "(%[" ptr "])" inc ",%[x4]\n" \
+	" or.l %[" val "],%[x4]\n" \
+	" move.w %[x4],(%[" ptr "])\n"
+#define DBRA(reg, label) \
+        " subq.l #1," reg "\n" \
+        " jbpl " label "\n"
+#define REGL long
+#else
+#define MOVE_L " move.w "
+#define ASR_L  " asr.w "
+#define AND_L  " and.w "
+#define OR_W(val, ptr, dec, inc)   " or.w %[" val "]," dec "(%[" ptr "])" inc "\n"
+#define DBRA(reg, label) " dbra " reg "," label "\n"
+#define REGL short
 #endif
 
 
@@ -101,16 +123,16 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
     PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
     short int w, short int h)
 {
-    short int x, y, x4, xR;
+    REGL x, y, x4, xR;
 #ifdef BOTH
     PIXEL_32 v32;
 
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l (%[src_addr])+,%[v32]\n" \
@@ -120,14 +142,14 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
             " move.l %[v32],(%[dst_addr])+\n" \
             " move.l %[v32],(%[dst_addr_fast])+\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w (%[src_addr])+,%[v32]\n" \
             " move.w %[v32],(%[dst_addr])+\n" \
             " move.w %[v32],(%[dst_addr_fast])+\n" \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [dst_addr_fast]"+a"(dst_addr_fast), \
               [src_addr]"+a"(src_addr), \
@@ -143,21 +165,21 @@ static void s_blit_copy(PIXEL *src_addr, int src_line_add,
 #else
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l (%[src_addr])+,(%[dst_addr])+\n" \
             " move.l (%[src_addr])+,(%[dst_addr])+\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w (%[src_addr])+,(%[dst_addr])+\n" \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [src_addr]"+a"(src_addr), \
               [x4]"=d"(x4), \
@@ -188,16 +210,16 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
         PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
         short int w, short int h)
 {
-    short int x, y, x4, xR;
+    REGL x, y, x4, xR;
     PIXEL_32 v32;
 
 #ifdef BOTH
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l (%[src_addr])+,%[v32]\n" \
@@ -207,14 +229,14 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
             " or.l %[v32],(%[dst_addr])+\n" \
             " or.l %[v32],(%[dst_addr_fast])+\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w (%[src_addr])+,%[v32]\n" \
-            " or.w %[v32],(%[dst_addr])+\n" \
-            " or.w %[v32],(%[dst_addr_fast])+\n" \
+            OR_W("v32","dst_addr","","+") \
+            OR_W("v32","dst_addr_fast","","+") \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [dst_addr_fast]"+a"(dst_addr_fast), \
               [src_addr]"+a"(src_addr), \
@@ -230,10 +252,10 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
 #else
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l (%[src_addr])+,%[v32]\n" \
@@ -241,13 +263,13 @@ static void s_blit_or(PIXEL *src_addr, int src_line_add,
             " move.l (%[src_addr])+,%[v32]\n" \
             " or.l %[v32],(%[dst_addr])+\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w (%[src_addr])+,%[v32]\n" \
-            " or.w %[v32],(%[dst_addr])+\n" \
+            OR_W("v32","dst_addr","","+") \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [src_addr]"+a"(src_addr), \
               [x4]"=d"(x4), \
@@ -343,16 +365,16 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
                      PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
                      short int w, short int h)
 {
-    short int x, y, x4, xR;
+    REGL x, y, x4, xR;
 #ifdef BOTH
     PIXEL_32 v32;
 
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l -(%[src_addr]),%[v32]\n" \
@@ -362,14 +384,14 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
             " move.l %[v32],-(%[dst_addr])\n" \
             " move.l %[v32],-(%[dst_addr_fast])\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w -(%[src_addr]),%[v32]\n" \
             " move.w %[v32],-(%[dst_addr])\n" \
             " move.w %[v32],-(%[dst_addr_fast])\n" \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [dst_addr_fast]"+a"(dst_addr_fast), \
               [src_addr]"+a"(src_addr), \
@@ -385,21 +407,21 @@ s_pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 #else
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l -(%[src_addr]),-(%[dst_addr])\n" \
             " move.l -(%[src_addr]),-(%[dst_addr])\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w -(%[src_addr]),-(%[dst_addr])\n" \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [src_addr]"+a"(src_addr), \
               [x4]"=d"(x4), \
@@ -431,16 +453,16 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
                    PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
                    short int w, short int h)
 {
-    short int x, y, x4, xR;
+    REGL x, y, x4, xR;
     PIXEL_32 v32;
 
 #ifdef BOTH
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l -(%[src_addr]),%[v32]\n" \
@@ -450,14 +472,14 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
             " or.l %[v32],-(%[dst_addr])\n" \
             " or.l %[v32],-(%[dst_addr_fast])\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w -(%[src_addr]),%[v32]\n" \
-            " or.w %[v32],-(%[dst_addr])\n" \
-            " or.w %[v32],-(%[dst_addr_fast])\n" \
+            OR_W("v32","dst_addr","-","") \
+            OR_W("v32","dst_addr_fast","-","") \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [dst_addr_fast]"+a"(dst_addr_fast), \
               [src_addr]"+a"(src_addr), \
@@ -473,10 +495,10 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
 #else
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l -(%[src_addr]),%[v32]\n" \
@@ -484,13 +506,13 @@ s_pan_backwards_or(PIXEL *src_addr, int src_line_add,
             " move.l -(%[src_addr]),%[v32]\n" \
             " or.l %[v32],-(%[dst_addr])\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w -(%[src_addr]),%[v32]\n" \
-            " or.w %[v32],-(%[dst_addr])\n" \
+            OR_W("v32","dst_addr","-","") \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [src_addr]"+a"(src_addr), \
               [x4]"=d"(x4), \
@@ -596,16 +618,16 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
     PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
     short int w, short int h)
 {
-    short int x, y, x4, xR;
+    REGL x, y, x4, xR;
 #ifdef BOTH
     PIXEL_32 v32;
 
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l (%[src_addr])+,%[v32]\n" \
@@ -615,14 +637,14 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
             " move.l %[v32],(%[dst_addr])+\n" \
             " move.l %[v32],(%[dst_addr_fast])+\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w (%[src_addr])+,%[v32]\n" \
             " move.w %[v32],(%[dst_addr])+\n" \
             " move.w %[v32],(%[dst_addr_fast])+\n" \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [dst_addr_fast]"+a"(dst_addr_fast), \
               [src_addr]"+a"(src_addr), \
@@ -638,21 +660,21 @@ static void blit_copy(PIXEL *src_addr, int src_line_add,
 #else
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l (%[src_addr])+,(%[dst_addr])+\n" \
             " move.l (%[src_addr])+,(%[dst_addr])+\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w (%[src_addr])+,(%[dst_addr])+\n" \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [src_addr]"+a"(src_addr), \
               [x4]"=d"(x4), \
@@ -683,16 +705,16 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
         PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
         short int w, short int h)
 {
-    short int x, y, x4, xR;
+    REGL x, y, x4, xR;
     PIXEL_32 v32;
 
 #ifdef BOTH
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l (%[src_addr])+,%[v32]\n" \
@@ -702,14 +724,14 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
             " or.l %[v32],(%[dst_addr])+\n" \
             " or.l %[v32],(%[dst_addr_fast])+\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w (%[src_addr])+,%[v32]\n" \
-            " or.w %[v32],(%[dst_addr])+\n" \
-            " or.w %[v32],(%[dst_addr_fast])+\n" \
+            OR_W("v32","dst_addr","","+")" \
+            OR_W("v32","dst_addr_fast","","+")" \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [dst_addr_fast]"+a"(dst_addr_fast), \
               [src_addr]"+a"(src_addr), \
@@ -725,10 +747,10 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
 #else
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l (%[src_addr])+,%[v32]\n" \
@@ -736,13 +758,13 @@ static void blit_or(PIXEL *src_addr, int src_line_add,
             " move.l (%[src_addr])+,%[v32]\n" \
             " or.l %[v32],(%[dst_addr])+\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w (%[src_addr])+,%[v32]\n" \
-            " or.w %[v32],(%[dst_addr])+\n" \
+            OR_W("v32","dst_addr","","+") \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [src_addr]"+a"(src_addr), \
               [x4]"=d"(x4), \
@@ -838,16 +860,16 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
                    PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
                    short int w, short int h)
 {
-    short int x, y, x4, xR;
+    REGL x, y, x4, xR;
 #ifdef BOTH
     PIXEL_32 v32;
 
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l -(%[src_addr]),%[v32]\n" \
@@ -857,14 +879,14 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
             " move.l %[v32],-(%[dst_addr])\n" \
             " move.l %[v32],-(%[dst_addr_fast])\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w -(%[src_addr]),%[v32]\n" \
             " move.w %[v32],-(%[dst_addr])\n" \
             " move.w %[v32],-(%[dst_addr_fast])\n" \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [dst_addr_fast]"+a"(dst_addr_fast), \
               [src_addr]"+a"(src_addr), \
@@ -880,21 +902,21 @@ pan_backwards_copy(PIXEL *src_addr, int src_line_add,
 #else
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l -(%[src_addr]),-(%[dst_addr])\n" \
             " move.l -(%[src_addr]),-(%[dst_addr])\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w -(%[src_addr]),-(%[dst_addr])\n" \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [src_addr]"+a"(src_addr), \
               [x4]"=d"(x4), \
@@ -926,16 +948,16 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
                  PIXEL *dst_addr, PIXEL *dst_addr_fast, int dst_line_add,
                  short int w, short int h)
 {
-    short int x, y, x4, xR;
+    REGL x, y, x4, xR;
     PIXEL_32 v32;
 
 #ifdef BOTH
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l -(%[src_addr]),%[v32]\n" \
@@ -945,14 +967,14 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
             " or.l %[v32],-(%[dst_addr])\n" \
             " or.l %[v32],-(%[dst_addr_fast])\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w -(%[src_addr]),%[v32]\n" \
-            " or.w %[v32],-(%[dst_addr])\n" \
-            " or.w %[v32],-(%[dst_addr_fast])\n" \
+            OR_W("v32","dst_addr","-","") \
+            OR_W("v32","dst_addr_fast","-","") \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [dst_addr_fast]"+a"(dst_addr_fast), \
               [src_addr]"+a"(src_addr), \
@@ -968,10 +990,10 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
 #else
 #define COPY_LOOP \
         __asm__ __volatile__( \
-            " move.w %[x],%[x4]\n" \
-            " move.w %[x],%[xR]\n" \
-            " asr.w #2,%[x4]\n" \
-            " and.w #3,%[xR]\n" \
+            MOVE_L "%[x],%[x4]\n" \
+            MOVE_L "%[x],%[xR]\n" \
+            ASR_L "#2,%[x4]\n" \
+            AND_L "#3,%[xR]\n" \
             " jbra 2f\n" \
             "1:\n" \
             " move.l -(%[src_addr]),%[v32]\n" \
@@ -979,13 +1001,13 @@ pan_backwards_or(PIXEL *src_addr, int src_line_add,
             " move.l -(%[src_addr]),%[v32]\n" \
             " or.l %[v32],-(%[dst_addr])\n" \
             "2:\n" \
-            " dbra %[x4],1b\n" \
+            DBRA("%[x4]","1b") \
             " jbra 4f\n" \
             "3:\n" \
             " move.w -(%[src_addr]),%[v32]\n" \
-            " or.w %[v32],-(%[dst_addr])\n" \
+            OR_W("v32","dst_addr","-","") \
             "4:\n" \
-            " dbra %[xR],3b\n" \
+            DBRA("%[xR]","3b") \
             : [dst_addr]"+a"(dst_addr), \
               [src_addr]"+a"(src_addr), \
               [x4]"=d"(x4), \
