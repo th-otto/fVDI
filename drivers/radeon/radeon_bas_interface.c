@@ -2,6 +2,8 @@
 #include <mint/osbind.h>
 #include <stdint.h>
 #include <driver_vec.h>
+#include "radeon_bas_interface.h"
+
 
 /*
  * BaS_gcc driver API backdoor.
@@ -11,7 +13,7 @@
  * matches, BaS_gcc returns the API call's result (the address of the internal driver table) in d0.
  * If it's not detected, the call gets forwarded to TOS as normal trap #0 exception.
  */
-struct driver_table *get_bas_drivers(void)
+static struct driver_table *get_bas_drivers(void)
 {
     struct driver_table *ret = NULL;
 

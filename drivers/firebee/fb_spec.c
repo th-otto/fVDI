@@ -90,7 +90,7 @@ short accel_c = A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX | A_BLIT | A_FILL 
 
 const Mode *graphics_mode = &mode[0];
 
-long set_mode(const char **ptr);
+static long set_mode(const char **ptr);
 
 Option options[] = {
     {"debug",      { &debug },             2},  /* debug, turn on debugging aids */
@@ -133,7 +133,7 @@ static int set_bpp(int bpp)
     return bpp;
 }
 
-long set_mode(const char **ptr)
+static long set_mode(const char **ptr)
 {
     char token[80], *tokenptr;
 

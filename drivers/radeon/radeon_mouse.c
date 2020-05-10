@@ -22,13 +22,8 @@
 /*#define ENABLE_KDEBUG*/
 
 #include "fvdi.h"
-
-#define NULL    (void *) 0L
-
-/* External data and functions */
-extern Driver *me;
-extern long CDECL c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation, long colour);
-extern long CDECL c_blit_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *dst, long dst_x, long dst_y, long w, long h, long operation);
+#include "driver.h"
+#include "radeon.h"
 
 /* We must remember if the mouse is visible or not */
 static int mouse_visible = 0;
@@ -37,11 +32,11 @@ static int mouse_visible = 0;
 static Mouse *pmouse;
 
 /* MFDB used to draw the mouse */
-static MFDB mouse_mfdb = { NULL, 16, 16, 1, 1, 1 };
+static MFDB mouse_mfdb = { NULL, 16, 16, 1, 1, 1, { 0, 0, 0 } };
 
 /* We must save the mouse background */
 static short backup_data[16*16];
-static MFDB mouse_backup_mfdb = {backup_data, 16, 16, 1, 0, 16};
+static MFDB mouse_backup_mfdb = { backup_data, 16, 16, 1, 0, 16, { 0, 0, 0 } };
 static short backup_x, backup_y, backup_w, backup_h;
 
 static void clip_mouse(Virtual *vwk, short x, short y, short *pw, short *ph)
@@ -107,7 +102,8 @@ c_mouse_draw(Workstation *wk, long x, long y, Mouse *mouse)
     /* See mouse_timer and wk_r_mouse in engine/mouse.s for parameters meaning */
     Virtual *vwk = me->default_vwk;
 
-    //	KDEBUG(("c_mouse_draw %ld,%ld %p (old=%lu)\n", x & 0xffff, y, mouse, (ULONG)x >> 16));
+    (void) wk;
+    /* KDEBUG(("c_mouse_draw %ld,%ld %p (old=%lu)\n", x & 0xffff, y, mouse, (ULONG)x >> 16)); */
 
     if ((long)mouse > 7) /* Set new mouse cursor shape */
     {
