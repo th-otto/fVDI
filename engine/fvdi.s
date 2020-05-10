@@ -97,12 +97,10 @@ _init:
 	move.l	a6,-(a7)        ; Program size
 	move.w	#$31,-(a7)	; Ptermres
 	trap	#1
-	illegal
 
 .error:
 	move.w	#$0,-(a7)	; Pterm0
 	trap	#1
-	illegal
 
 
 * XBRA chain for Trap #2

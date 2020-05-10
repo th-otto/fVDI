@@ -24,7 +24,6 @@ CFLAGS  = $(CPUOPTS) $(OPTS) $(WARNINGS) -I$(BAS_INCLUDE) -I$(top_srcdir)/includ
 ASFLAGS = $(CPUOPTS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
 SINCSRC = \
-	$(top_srcdir)/include/compiler.inc \
 	$(top_srcdir)/include/macros.inc \
 	$(top_srcdir)/include/types.inc \
 	$(top_srcdir)/include/vdi.inc \
@@ -39,20 +38,15 @@ SSRC = \
 	../common/lineachk.s
 
 CSRC = \
-	../common/init.c \
-	../common/colours.c \
+	init.c \
+	colours.c \
 	radeon_bas_interface.c \
 	radeon_spec.c \
 	radeon.c \
 	modeline_vesa.c \
 	radeon_pll.c \
 	radeon_mouse.c \
-	../16_bit/16b_exp.c \
-	../16_bit/16b_blit.c \
-	../16_bit/16b_line.c \
-	../16_bit/16b_fill.c \
-	../16_bit/16b_scr.c \
-	../16_bit/16b_pal.c
+	16_bit.c
 
 # handle DevPac -> gas conversions
 # defines SSRC_GNU and SINCSRC_GNU variables
@@ -83,6 +77,11 @@ strip:
 	$(STRIP) --strip-all $(TARGET)
 
 clean:: clean_gnu
-	$(RM) $(OBJECTS) $(TARGET) depend
+	$(RM) $(OBJECTS) $(TARGET) depend *.inf *.ino
+
+install::
+	mkdir -p $(DESTDIR)/gemsys
+	cp -a $(TARGET) $(DESTDIR)/gemsys/$(TARGET)
+	cp -a fvdi.sys "$(DESTDIR)/fvdirad.sys"
 
 -include depend

@@ -97,6 +97,8 @@ ifneq ($(ft2_srcdir),)
  CSRC+= \
 	$(top_srcdir)/modules/ft2/ft2.c \
 	$(top_srcdir)/modules/ft2/atari2unicode.c \
+	$(top_srcdir)/modules/ft2/atari2bics.c \
+	$(top_srcdir)/modules/ft2/bics2unicode.c \
 	$(top_srcdir)/modules/ft2/ft2_ftsystem.c
 
  ifeq ($(DEBUG),yes)
@@ -104,10 +106,6 @@ ifneq ($(ft2_srcdir),)
 	$(top_srcdir)/modules/ft2/ft2_ftdebug.c
  endif
 endif
-
-CSRC+= \
-	$(top_srcdir)/modules/ft2/atari2bics.c \
-	$(top_srcdir)/modules/ft2/bics2unicode.c
 
 # Handle DevPac -> gas conversions
 # Defines SSRC_GNU and SINCSRC_GNU variables

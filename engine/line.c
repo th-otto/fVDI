@@ -226,7 +226,7 @@ static void perp_off(int *vx, int *vy, short *q_circle, int num_qc_lines)
 /*
  * draw a filled circle
  */
-static void draw_filled_circle(Virtual *vwk, const int xc, const int yc, const int radius, const int color, short mode)
+static void draw_filled_circle(Virtual *vwk, int xc, int yc, int radius, Fgbg color, short mode)
 {
     /* simplified bresenham */
     int d;
@@ -266,7 +266,7 @@ static void draw_filled_circle(Virtual *vwk, const int xc, const int yc, const i
 }
 
 
-static void do_rounded(Virtual *vwk, short *pts, int numpts, int colour, short *points, long mode)
+static void do_rounded(Virtual *vwk, short *pts, Fgbg colour, long mode)
 {
     if (vwk->line.ends.beginning & ROUNDED)
         draw_filled_circle(vwk, pts[0], pts[1],  vwk->line.width / 2, colour, mode);
@@ -418,7 +418,7 @@ void wide_line(Virtual *vwk, short *pts, long numpts, Fgbg colour, short *points
 
     /* if they are rounded, as well */
     if ((vwk->line.ends.beginning | vwk->line.ends.end) & ROUNDED)
-        do_rounded(vwk, pts, numpts, colour, points, mode);
+        do_rounded(vwk, pts, colour, mode);
 
     /* Initialize the starting point for the loop. */
     j = 0;
