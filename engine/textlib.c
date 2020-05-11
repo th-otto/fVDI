@@ -89,7 +89,7 @@ unsigned short CDECL lib_vqt_char_index(Virtual *vwk, short *intin)
                 {
                     const unsigned short *table = Bics2Unicode;
                     int i;
-                    
+
                     for (i = 0; i < 256; i++)
                         if (table[i] == scr_index)
                             return i;
@@ -212,7 +212,7 @@ void CDECL lib_vqt_fontinfo(Virtual *vwk, short *intout, short *ptsout)
 {
     Fontheader *font = vwk->text.current_font;
     short minchar, maxchar;
-    
+
     if (font->flags & FONTF_EXTERNAL)
     {
         switch (vwk->text.charmap)

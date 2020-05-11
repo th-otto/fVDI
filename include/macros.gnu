@@ -130,11 +130,10 @@ ret\@:
 	movem.l	d0-d2/a0-a2,-(a7)
 	bra	cont\@
 text\@:
-	.ascii	"redirect \number "
+	.ascii	"redirect "
 	.byte	0
 eol\@:
-	.byte	10,13,0
-	.even
+	.byte	10,13,0,0
 	.bss
 numbuf\@:
 	ds.b	10

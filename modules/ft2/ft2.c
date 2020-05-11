@@ -822,7 +822,7 @@ static FT_Error ft2_load_glyph(Virtual *vwk, Fontheader *font, short ch, c_glyph
     if (!cached->index)
     {
         /* vwk->text.charmap  ~  vst_charmap (vst_map_mode()) mapping settings */
-        if (vwk->text.charmap == MAP_ATARI /* ASCII */  && ch >= 0 && ch < 256)
+        if (vwk->text.charmap == MAP_ATARI /* ASCII */ && ch >= 0 && ch < 256)
         {
             unsigned short cc = 0xffff;
 
@@ -2292,7 +2292,7 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
     short dst_mode = intin[2];
     FT_Face face;
     FT_UInt index;
-    
+
     face = ft2_get_face(vwk, font);
     if (!face)
     {
@@ -2381,7 +2381,7 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
         const short *table;
         int i;
         unsigned short cc;
-        
+
         if (spdchar_map_len < 450)
         {
             table = Atari2Bics;
@@ -2404,7 +2404,7 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
     {
         const unsigned short *table = Bics2Unicode;
         int i;
-        
+
         for (i = 0; i < 256; i++)
             if (table[i] == ch)
                 return i;
@@ -2412,7 +2412,7 @@ unsigned short CDECL ft2_char_index(Virtual *vwk, Fontheader *font, short *intin
     {
         /* invalid mapping mode */
     }
-    
+
     return 0xffff;
 }
 
