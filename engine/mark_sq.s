@@ -1,7 +1,7 @@
 *****
 * FenixVDI marker set/query functions
 *
-* Copyright 1997-2000, Johan Klockars 
+* Copyright 1997-2000, Johan Klockars
 * This software is licensed under the GNU General Public License.
 * Please, see LICENSE.TXT for further information.
 *****
@@ -101,6 +101,7 @@ vsm_type:
 	move.l	intout(a1),a2
 	move.w	d0,(a2)
 	done_return
+
 
 * vqm_attributes - Standard Trap function
 * Todo: -

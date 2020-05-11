@@ -10,14 +10,13 @@
 
 
 struct DCSD_BLITARGS {
-	short handle;     /* Virtual screen workstation handle */
-	short mode;       /* vro_cpyfm() mode */
-	signed long x;    /* X position in pixels */
-	signed long y;    /* Y position in pixels */
-	unsigned long w;  /* Width in pixels */
-	unsigned long h;  /* Height in pixels */
+    short handle;     /* Virtual screen workstation handle */
+    short mode;       /* vro_cpyfm() mode */
+    signed long x;    /* X position in pixels */
+    signed long y;    /* Y position in pixels */
+    unsigned long w;  /* Width in pixels */
+    unsigned long h;  /* Height in pixels */
 };
-
 
 struct DCSD_cookie {
 	short version;

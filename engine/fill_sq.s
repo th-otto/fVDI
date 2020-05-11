@@ -1,7 +1,7 @@
 *****
 * fVDI fill set/query functions
 *
-* Copyright 1997-2000, Johan Klockars 
+* Copyright 1997-2000, Johan Klockars
 * This software is licensed under the GNU General Public License.
 * Please, see LICENSE.TXT for further information.
 *****

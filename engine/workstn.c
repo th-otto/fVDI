@@ -1,7 +1,7 @@
 /*
  * fVDI workstation functions
- * 
- * Copyright 2000/2003, Johan Klockars 
+ *
+ * Copyright 2000/2003, Johan Klockars
  * This software is licensed under the GNU General Public License.
  * Please, see LICENSE.TXT for further information.
  */
@@ -13,12 +13,12 @@
 #include "utility.h"
 #include "globals.h"
 
-#define NEG_PAL_N   9                   /* Number of negative palette entries */
+#define NEG_PAL_N	9	/* Number of negative palette entries */
 
 
 Virtual **handle_link = 0;
 
-int lib_vq_extnd(Virtual * vwk, long subfunction, long flag, short *intout, short *ptsout);
+int lib_vq_extnd(Virtual *vwk, long subfunction, long flag, short *intout, short *ptsout);
 
 
 void linea_setup(Workstation *wk)
@@ -54,13 +54,14 @@ void linea_setup(Workstation *wk)
     linea[-0x00c / 2] = width;
     linea[-0x004 / 2] = height;
     if (lineafix)
-    {                                   /* Should cover more really */
+    {
+        /* Should cover more really */
         bitplanes = wk->screen.mfdb.bitplanes;
         linea[-0x306 / 2] = bitplanes;
-        linea[0] = bitplanes;           /* Can this perhaps be done always? */
-        width = (width * bitplanes) >> 3;   /* Bug (<8 planes) here in original */
+        linea[0] = bitplanes;	/* Can this perhaps be done always? */
+        width = (width * bitplanes) >> 3;	/* Bug (<8 planes) here in original */
         linea[1] = width;
-        linea[-1] = width;              /* Really the same? */
+        linea[-1] = width;	/* Really the same? */
     } else if (!init)
     {
         linea[-0x306 / 2] = linea_orig[4];
@@ -68,13 +69,11 @@ void linea_setup(Workstation *wk)
         linea[1] = linea_orig[6];
         linea[-1] = linea_orig[7];
     }
-#if 0
-    linea[-0x256 / 2] = 0;              /* Fix for ImageCopy (requires LineA drawing to be disabled) */
-#endif
-    linea[-0x304 / 2] = wk->screen.look_up_table;   /* 1/0 */
-    linea[-0x266 / 2] = wk->screen.palette.possibilities;   /* 0 */
-    linea[-0x26e / 2] = wk->screen.colour;  /* 1 */
-    linea[-0x29a / 2] = wk->screen.palette.size;    /* 0x100 */
+
+    linea[-0x304 / 2] = wk->screen.look_up_table;		/* 1/0 */
+    linea[-0x266 / 2] = wk->screen.palette.possibilities;	/* 0 */
+    linea[-0x26e / 2] = wk->screen.colour;			/* 1 */
+    linea[-0x29a / 2] = wk->screen.palette.size;		/* 0x100 */
 }
 
 
@@ -107,7 +106,7 @@ static Virtual **find_handle_entry(short hnd)
 
 
 /* Find (or create, if necessary) a free handle */
-static short find_free_handle(Virtual *** handle_entry)
+static short find_free_handle(Virtual ***handle_entry)
 {
     short hnd, handles;
     Virtual ***link, ***last, **handle_table;
@@ -130,7 +129,7 @@ static short find_free_handle(Virtual *** handle_entry)
         {
             PUTS("Looking for free handle in extra table\n");
         }
-        handles += (long) handle_table[-2];
+        handles += (long)handle_table[-2];
         for (; hnd < handles; hnd++)
         {
             if (handle_table[hnd] == non_fvdi_vwk)
@@ -140,18 +139,18 @@ static short find_free_handle(Virtual *** handle_entry)
             }
         }
         last = link;
-        link = (Virtual ***) & handle_table[-1];
+        link = (Virtual ***)&handle_table[-1];
     }
 
-    handle_table = (Virtual **) malloc(64 * sizeof(Virtual *));
+    handle_table = (Virtual **)malloc(64 * sizeof(Virtual *));
     if (handle_table)
     {
-        handles = *(long *) handle_table / sizeof(Virtual *) - 2;
+        handles = *(long *)handle_table / sizeof(Virtual *) - 2;
         if (debug)
         {
             PRINTF(("Allocated space for %d extra handles\n", handles));
         }
-        handle_table[0] = (Virtual *) ((long) handles);
+        handle_table[0] = (Virtual *)((long)handles);
         handle_table[1] = 0;
         for (handles--; handles >= 2; handles--)
             handle_table[handles] = non_fvdi_vwk;
@@ -165,7 +164,7 @@ static short find_free_handle(Virtual *** handle_entry)
 
 
 /* Needs to deal with virtuals on non-screen workstations! */
-void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
+void CDECL v_opnvwk(Virtual *vwk, VDIpars *pars)
 {
     short *intin;
     short hnd, width, height, bitplanes, lwidth, dummy;
@@ -179,7 +178,7 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
     short bit_order;
     unsigned short c;
 
-    pars->control->handle = 0;          /* Assume failure */
+    pars->control->handle = 0;	/* Assume failure */
     if ((hnd = find_free_handle(&handle_entry)) == 0)
     {
         PRINTF(("v_opnvwk: no free handle\n"));
@@ -188,7 +187,7 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
 
     wk = vwk->real_address;
     /* Check if really v_opnbm */
-    if ((pars->control->subfunction != 1) || (pars->control->l_intin < 20))
+    if (pars->control->subfunction != 1 || pars->control->l_intin < 20)
     {
         extra_size = 32;
         if ((new_vwk = malloc(sizeof(Virtual) + extra_size)) == NULL)
@@ -200,9 +199,14 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
         vwk = new_vwk;
     } else
     {
-        mfdb = (MFDB *) pars->control->addr1;
+        mfdb = (MFDB *)pars->control->addr1;
         intin = pars->intin;
 
+        if (!mfdb)
+        {
+            PRINTF(("v_opnbm: NULL mfdb\n"));
+            return;
+        }
         /* Doesn't allow the EdDI v1.1 variant yet */
         colors = *((long *)&intin[15]);
         if (colors != 0 && colors != 2 && colors != (1L << wk->screen.mfdb.bitplanes))
@@ -229,32 +233,32 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
             return;
         }
         
-        extra_size = sizeof(Workstation) + sizeof(Virtual) + 32;    /* 32 - user fill pattern */
+        extra_size = sizeof(Workstation) + sizeof(Virtual) + 32;	/* 32 - user fill pattern */
 
         if (mfdb->address || intin[11] || intin[12])
         {
-            width = mfdb->width;
-            height = mfdb->height;
+            width = intin[11] ? (intin[11] + 1) : mfdb ? mfdb->width : wk->screen.mfdb.width;
+            height = intin[12] ? (intin[12] + 1) : mfdb ? mfdb->height : wk->screen.mfdb.height;
         } else
         {
-            width = wk->screen.mfdb.width;  /* vwk/wk bug here in assembly file */
+            width = wk->screen.mfdb.width;		/* vwk/wk bug here in assembly file */
             height = wk->screen.mfdb.height;
         }
         width = (width + 15) & 0xfff0;
 
-        bitplanes = mfdb->bitplanes;
-        if ((bitplanes != 1) && (bitplanes != wk->screen.mfdb.bitplanes))
+        bitplanes = intin[17] ? intin[17] : mfdb ? mfdb->bitplanes : wk->screen.mfdb.bitplanes;
+        if (bitplanes != 1 && bitplanes != wk->screen.mfdb.bitplanes)
         {
-            if (bitplanes)              /* Only same as physical or one allowed */
+            if (bitplanes)			/* Only same as physical or one allowed */
             {
                 PRINTF(("v_opnbm: unsupported planes %d\n", bitplanes));
                 return;
             }
             bitplanes = wk->screen.mfdb.bitplanes;
         }
-        
-        lwidth = (width >> 3) * bitplanes;  /* >> 4 in assembly file */
-        size = (long) lwidth * height;
+
+        lwidth = (width >> 3) * bitplanes;	/* >> 4 in assembly file */
+        size = (long)lwidth * height;
 
         if (!mfdb->address)
             extra_size += size;
@@ -266,30 +270,30 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
             return;
         }
 
-        new_wk = (Workstation *) ((long) new_vwk + sizeof(Virtual) + 32);
+        new_wk = (Workstation *)((long)new_vwk + sizeof(Virtual) + 32);
         copymem(wk, new_wk, sizeof(Workstation));
 
         if (!mfdb->address)
         {
             mfdb->standard = 0;
-            mfdb->address = (short *) ((long) new_wk + sizeof(Workstation));
+            mfdb->address = (short *)((long)new_wk + sizeof(Workstation));
             memset(mfdb->address, 0, size);
         }
 
         new_wk->screen.mfdb.address = mfdb->address;
         mfdb->width = new_wk->screen.mfdb.width = width;
         mfdb->height = new_wk->screen.mfdb.height = height;
-        mfdb->wdwidth = new_wk->screen.mfdb.wdwidth = (width >> 4); /* Right? */
+        mfdb->wdwidth = new_wk->screen.mfdb.wdwidth = (width >> 4);	/* Right? */
         mfdb->bitplanes = new_wk->screen.mfdb.bitplanes = bitplanes;
         mfdb->reserved[0] = new_wk->screen.mfdb.reserved[0] = 0;
         mfdb->reserved[1] = new_wk->screen.mfdb.reserved[1] = 0;
         mfdb->reserved[2] = new_wk->screen.mfdb.reserved[2] = 0;
         new_wk->screen.mfdb.standard = 0;
-        if (mfdb->standard)             /* Need to convert input MFDB to device dependent format? */
+        if (mfdb->standard)	/* Need to convert input MFDB to device dependent format? */
             lib_vdi_pp(&lib_vr_trn_fm, new_vwk, mfdb, mfdb);
 
         new_wk->screen.type = 0;
-        new_wk->screen.wrap = lwidth;   /* Right? */
+        new_wk->screen.wrap = lwidth;		/* Right? */
         new_wk->screen.shadow.buffer = 0;
         new_wk->screen.shadow.address = 0;
         new_wk->screen.shadow.wrap = 0;
@@ -297,7 +301,7 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
         new_wk->screen.pixel.width = intin[13];
         new_wk->screen.pixel.height = intin[14];
 
-        new_wk->screen.coordinates.course = 0;  /* ? */
+        new_wk->screen.coordinates.course = 0;	/* ? */
         new_wk->screen.coordinates.min_x = 0;
         new_wk->screen.coordinates.min_y = 0;
         new_wk->screen.coordinates.max_x = width - 1;
@@ -312,7 +316,7 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
         new_wk->various.selection = 0;
         new_wk->various.typing = 0;
         new_wk->various.workstation_type = 0;
-        new_wk->mouse.type = 0;         /* Enough? */
+        new_wk->mouse.type = 0;				/* Enough? */
 
         copymem(wk->driver->default_vwk, new_vwk, sizeof(Virtual));
 
@@ -321,16 +325,12 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars * pars)
         wk = new_wk;
     }
 
-    vwk->fill.user.pattern.in_use = (short *) ((long) vwk + sizeof(Virtual));
+    vwk->fill.user.pattern.in_use = (short *)((long)vwk + sizeof(Virtual));
     vwk->fill.user.pattern.extra = 0;
     vwk->fill.user.multiplane = 0;
 
-#if 0
-    opnvwk_values(vwk, pars);           /* Return information about workstation */
-#else
     /* Return information about workstation */
     lib_vq_extnd(vwk, 0, 0, pars->intout, pars->ptsout);
-#endif
 
     pars->control->handle = vwk->standard_handle = hnd;
     *handle_entry = vwk;
@@ -381,46 +381,27 @@ void CDECL v_opnwk(VDIpars *pars)
     Driver *driver;
     Virtual *vwk, **handle_entry;
     Workstation *wk;
-
-#if 0
-    unsigned short *linea, width, height, bitplanes, hnd, oldhnd;
-#else
     unsigned short hnd, oldhnd;
-#endif
 
     /* For now, just assume that any
      * workstation handle >10 is non-fVDI
      */
     if (pars->intin[0] > 10)
     {
-#if 0
-        pars->control->handle = 0;      /* Assume failure */
-        vwk = 0;
-        if ((old_gdos != -2) &&         /* No pass-through without old GDOS */
-            (hnd = find_free_handle(&handle_entry)) && (vwk = malloc(6)) && (oldhnd = call_other(pars, 0)))
-        {                               /* Dummy handle for call */
-            vwk->real_address = non_fvdi_wk;
-            /* Mark as pass-through handle */
-            vwk->standard_handle = oldhnd | 0x8000;
-            *handle_entry = vwk;
-            pars->control->handle = hnd;
-        } else if (vwk)
-        {
-            free(vwk);                  /* Couldn't open */
-        }
-#else
         int failed = 1;
 
-        pars->control->handle = 0;      /* Assume failure */
+        pars->control->handle = 0;	/* Assume failure */
         vwk = 0;
         if (old_gdos != -2)
-        {                               /* No pass-through without old GDOS */
+        {
+            /* No pass-through without old GDOS */
             if ((hnd = find_free_handle(&handle_entry)) != 0)
             {
                 if ((vwk = malloc(6)) != NULL)
                 {
                     if ((oldhnd = call_other(pars, 0)) != 0)
-                    {                   /* Dummy handle for call */
+                    {
+                        /* Dummy handle for call */
                         failed = 0;
                         vwk->real_address = non_fvdi_wk;
                         /* Mark as pass-through handle */
@@ -447,9 +428,9 @@ void CDECL v_opnwk(VDIpars *pars)
         if (failed)
         {
             if (vwk)
-                free(vwk);              /* Couldn't open */
+                free(vwk);		/* Couldn't open */
         }
-#endif
+
         return;
     }
 
@@ -460,42 +441,23 @@ void CDECL v_opnwk(VDIpars *pars)
 
         old_wk_handle = scall_v_opnwk(1, intout, ptsout);
     }
-#if 0
-    if (driver_list->type !=...)        /* Sanity check */
-#endif
-    {
-        driver = (Driver *) driver_list->value;
-#if 0
-        if (driver->flags & 1)
-#endif
-        {
-            if ((vwk = driver->opnwk(default_virtual)) != NULL)
-                ;                           /* Should probably do something */
-            else
-                vwk = driver->default_vwk;
-        }
-    }
-    
+
+    driver = (Driver *)driver_list->value;
+    if ((vwk = driver->opnwk(default_virtual)) != NULL)
+        ;				/* Should probably do something */
+    else
+        vwk = driver->default_vwk;
+
     /* To accomodate mouse drawing (only for one screen wk) */
     screen_wk = wk = vwk->real_address;
 
     linea_setup(wk);
 
-    if (wk->mouse.type && !stand_alone) /* Old mouse? */
+    if (wk->mouse.type && !stand_alone)	/* Old mouse? */
         link_mouse_routines();
 
     if (stand_alone)
         setup_vbl_handler();
-
-#if 0
-    {
-        unsigned short *linea;
-
-        linea = wk->screen.linea;
-        linea[-0x154] = 0;
-        linea[-0x256 / 2] = 0;          /* Fix for ImageCopy (requires LineA drawing to be disabled) */
-    }
-#endif
 
     v_opnvwk(vwk, pars);
 
@@ -509,7 +471,7 @@ void CDECL v_clsvwk(Virtual *vwk, VDIpars *pars)
     short hnd;
 
     hnd = vwk->standard_handle;
-    if (!hnd)                           /* Check if default VDI structure */
+    if (hnd == 0)	/* Check if default VDI structure */
         return;
     else if (hnd < 0)
     {
@@ -519,13 +481,13 @@ void CDECL v_clsvwk(Virtual *vwk, VDIpars *pars)
     {
         if (vwk->fill.user.pattern.extra)
             free(vwk->fill.user.pattern.extra);
-        if (vwk->palette)
-            free((void *) (((long) vwk->palette & ~1) - NEG_PAL_N * sizeof(Colour)));
+        if (vwk->palette != NULL)
+            free((void *)(((long)vwk->palette & ~1) - NEG_PAL_N * sizeof(Colour)));
     }
 
     if (vwk->text.current_font)
-        vwk->text.current_font->extra.ref_count--;  /* Allow the font to be freed if appropriate */
-    free(vwk);                          /* This will work for off-screen bitmaps too, fortunately */
+        vwk->text.current_font->extra.ref_count--; /* Allow the font to be freed if appropriate */
+    free(vwk);	/* This will work for off-screen bitmaps too, fortunately */
 
     /* Reset VDI structure address to default */
     handle_entry = find_handle_entry(hnd);
@@ -545,27 +507,6 @@ void CDECL v_clsvwk(Virtual *vwk, VDIpars *pars)
 /* Needs to be able to deal with multiple fVDI workstations! */
 void CDECL v_clswk(Virtual *vwk, VDIpars *pars)
 {
-#if 0
-    Driver *driver;
-
-    v_clsvwk(vwk, pars);
-
-    unlink_mouse_routines();
-
-    screen_wk = 0;
-#if 0
-    if (driver_list->type !=...)        /* Sanity check */
-#endif
-        driver = (Driver *) driver_list->value;
-#if 0
-    if (driver->flags & 1)
-#endif
-
-        ((void (*)(Virtual *)) (driver->clswk)) (vwk);
-
-    if (old_wk_handle)
-        scall_v_clswk(old_wk_handle);
-#else
     Driver *driver;
     Workstation *wk;
 
@@ -578,22 +519,13 @@ void CDECL v_clswk(Virtual *vwk, VDIpars *pars)
         shutdown_vbl_handler();
 
         screen_wk = 0;
-#if 0
-        if (driver_list->type !=...)    /* Sanity check */
-#endif
-            driver = (Driver *) driver_list->value;
-#if 0
-        if (driver->flags & 1)
-#endif
+        driver = (Driver *)driver_list->value;
 
-            ((void (*)(Virtual *)) (driver->clswk)) (vwk);
+        driver->clswk(vwk);
 
         if (old_wk_handle)
             scall_v_clswk(old_wk_handle);
     }
-#endif
-
-    return;
 }
 
 
@@ -604,20 +536,10 @@ void CDECL vq_devinfo(VDIpars *pars)
      */
     if (pars->intin[0] > 10)
     {
-#if 0
-        unsigned short oldhnd;
-
-        if ((old_gdos != -2) &&         /* No pass-through without old GDOS */
-            (oldhnd = call_other(pars, 0)))
-        {                               /* Dummy handle for call */
-        } else if (vwk)
-        {
-            free(vwk);                  /* Couldn't open */
-        }
-#else
         if (old_gdos != -2)
-        {                               /* No pass-through without old GDOS */
-            call_other(pars, 0);        /* Dummy handle for call */
+        {
+            /* No pass-through without old GDOS */
+            call_other(pars, 0);	/* Dummy handle for call */
 #ifdef FVDI_DEBUG
             {
                 int i;
@@ -638,7 +560,6 @@ void CDECL vq_devinfo(VDIpars *pars)
         {
             PUTS("no old GDOS (vq_devinfo)\n");
         }
-#endif
         return;
     }
 
@@ -658,8 +579,8 @@ int lib_vq_extnd(Virtual *vwk, long subfunction, long flag, short *intout, short
     if (flag == 2 && subfunction == 1)
     {
         copymem_aligned(wk->driver->device, intout, sizeof(Device));
-        ((Device *) intout)->address = wk->screen.mfdb.address;
-        ((Device *) intout)->byte_width = wk->screen.wrap;
+        ((Device *)intout)->address = wk->screen.mfdb.address;
+        ((Device *)intout)->byte_width = wk->screen.wrap;
         return 1;
     } else if (flag)
     {
@@ -682,20 +603,20 @@ int lib_vq_extnd(Virtual *vwk, long subfunction, long flag, short *intout, short
         *intout++ = wk->various.buttons;
         *intout++ = wk->drawing.line.wide.types_possible;
         *intout++ = wk->drawing.line.wide.writing_modes;
-        *intout++ = vwk->clip.on;       /* 19 - originally reserved from here on */
-        *intout++ = 0;                  /* No pixel sizes below (1 - 0.1 um, 2 - 0.01, 3 - 0.001 */
-        *intout++ = 0;                  /* Pixel width */
-        *intout++ = 0;                  /* Pixel height */
-        *intout++ = 0;                  /* Horizontal dpi */
-        *intout++ = 0;                  /* Vertical dpi */
-        *intout++ = 0;                  /* Bit image rotation on printer (PC-GEM/3) */
-        *intout++ = 0;                  /* AES buffer address (PC-GEM/3) */
-        *intout++ = 0;                  /*         -    "    -           */
-        *intout++ = 2;                  /* Beziers! */
-        *intout++ = 0;                  /* Unused */
-        *intout++ = 0;                  /* 1 - bitmap scale, 2 - new raster functions, 4 - vr_clip_rects_xxx */
-        *intout++ = 0;                  /* 9 from here used to be reserved */
-        *intout++ = 1;                  /* New style colour routines (at least some of them) */
+        *intout++ = vwk->clip.on;  /* 19 - originally reserved from here on */
+        *intout++ = 0;   /* No pixel sizes below (1 - 0.1 um, 2 - 0.01, 3 - 0.001 */
+        *intout++ = 0;   /* Pixel width */
+        *intout++ = 0;   /* Pixel height */
+        *intout++ = 0;   /* Horizontal dpi */
+        *intout++ = 0;   /* Vertical dpi */
+        *intout++ = 0;   /* Bit image rotation on printer (PC-GEM/3) */
+        *intout++ = 0;   /* AES buffer address (PC-GEM/3) */
+        *intout++ = 0;   /*         -    "    -           */
+        *intout++ = 2;   /* Beziers! */
+        *intout++ = 0;   /* Unused */
+        *intout++ = 0;   /* 1 - bitmap scale, 2 - new raster functions, 4 - vr_clip_rects_xxx */
+        *intout++ = 0;   /* 9 from here used to be reserved */
+        *intout++ = 1;   /* New style colour routines (at least some of them) */
         *intout++ = 0;
         *intout++ = 0;
         *intout++ = 0;
@@ -703,17 +624,17 @@ int lib_vq_extnd(Virtual *vwk, long subfunction, long flag, short *intout, short
         *intout++ = 0;
         *intout++ = 0;
         *intout++ = 0;
-        *intout++ = 0;                  /* Unusable left border */
-        *intout++ = 0;                  /*          upper       */
-        *intout++ = 0;                  /*          right       */
-        *intout++ = 0;                  /*          lower       */
-        *intout++ = 0;                  /* Paper format (default/A3/A4/A5/B5/letter/half/legal/double/broad */
+        *intout++ = 0;   /* Unusable left border */
+        *intout++ = 0;   /*          upper       */
+        *intout++ = 0;   /*          right       */
+        *intout++ = 0;   /*          lower       */
+        *intout++ = 0;   /* Paper format (default/A3/A4/A5/B5/letter/half/legal/double/broad */
 
         *ptsout++ = vwk->clip.rectangle.x1;
         *ptsout++ = vwk->clip.rectangle.y1;
         *ptsout++ = vwk->clip.rectangle.x2;
         *ptsout++ = vwk->clip.rectangle.y2;
-        *ptsout++ = 0;                  /* Reserved from here on */
+        *ptsout++ = 0;   /* Reserved from here on */
         *ptsout++ = 0;
         *ptsout++ = 0;
         *ptsout++ = 0;
@@ -738,7 +659,7 @@ int lib_vq_extnd(Virtual *vwk, long subfunction, long flag, short *intout, short
         *intout++ = wk->drawing.line.wide.width.possibilities;
         *intout++ = wk->drawing.marker.types;
         *intout++ = wk->drawing.marker.size.possibilities;
-        *intout++ = 1;                  /* Fonts */
+        *intout++ = 1;     /* Fonts */
         *intout++ = wk->drawing.fill.patterns;
         *intout++ = wk->drawing.fill.hatches;
         *intout++ = wk->screen.palette.size;

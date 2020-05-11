@@ -1,7 +1,7 @@
 *****
 * FenixVDI line set/query functions
 *
-* Copyright 1997-2000, Johan Klockars 
+* Copyright 1997-2000, Johan Klockars
 * This software is licensed under the GNU General Public License.
 * Please, see LICENSE.TXT for further information.
 *****
@@ -156,7 +156,6 @@ v_bez_con:
 	move.l	control(a1),a2
 	tst.w	L_ptsin(a2)
 	beq		.v_bez_off
-
 	move.w	#1,vwk_bezier_on(a0)
 	move.w	#1,L_intout(a2)
 	move.l	vwk_real_address(a0),a2
