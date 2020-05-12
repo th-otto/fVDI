@@ -12,7 +12,6 @@
 
 #include "driver.h"
 #include "aranym.h"
-#include "nf_ops.h"
 #include "os.h"
 
 /* NF fVDI ID value */
@@ -20,21 +19,16 @@ static long NF_fVDI;
 
 
 /* general NatFeat stuff */
+static long NF_getid = 0x73004e75L;
+static long NF_call  = 0x73014e75L;
 
-static struct nf_ops _nf_ops = { _nf_get_id, _nf_call, { 0, 0, 0 } };
-#define nfGetID(n)	_nf_ops.get_id(n)
-#define nfCall(n)	_nf_ops.call n
+#define nfGetID(n)	(((long CDECL (*)(const char *))&NF_getid)n)
+#define nfCall(n)	(((long CDECL (*)(long, ...))&NF_call)n)
 
 
 int nf_initialize(void)
 {
-	if (!Supexec(_nf_detect))
-	{
-		access->funcs.error("ARAnyM: no NatFeat call present! this driver is", NULL);
-		access->funcs.error("ARAnyM: only useful on emulators", NULL);
-		return 0;
-	}
-	if ((NF_fVDI = nfGetID(NF_ID_FVDI)) == 0)
+	if ((NF_fVDI = nfGetID(("fVDI"))) == 0)
 	{
 		access->funcs.error("ARAnyM: fVDI native feature not present", NULL);
 		return 0;
