@@ -35,14 +35,10 @@ subdir      = ft2
 
 include $(top_srcdir)/CONFIGVARS
 
-# we do not intend to fix any warnings we inherit from the FreeType2 sources
-# consequently, we suppress all warnings here
-WARNINGS += -Wno-cast-function-type -Wno-empty-body
-
 ifneq ($(stdlib_srcdir),)
-CFLAGS = $(CPUOPTS) -DFT2_BUILD_LIBRARY $(OPTS) $(WARNINGS) -I$(srcdir)/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include -I$(stdlib_srcdir)/include
+CFLAGS = $(CPUOPTS) -DFT2_BUILD_LIBRARY $(OPTS) $(FT2_WARNINGS) -I$(srcdir)/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include -I$(stdlib_srcdir)/include
 else
-CFLAGS = $(CPUOPTS) -DFT2_BUILD_LIBRARY $(OPTS) $(WARNINGS) -I$(srcdir)/include -I$(top_srcdir)/modules/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include
+CFLAGS = $(CPUOPTS) -DFT2_BUILD_LIBRARY $(OPTS) $(FT2_WARNINGS) -I$(srcdir)/include -I$(top_srcdir)/modules/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include
 endif
 
 #
@@ -220,12 +216,20 @@ RASTEROBJ = raster.o smooth.o
 
 # pcf.o  - needs GZLib and ZLib
 #PCFOBJ = pcf.o
-FONTDOBJ = cff.o type1.o type42.o type1cid.o truetype.o bdf.o pfr.o winfnt.o gemfnt.o $(PCFOBJ)
+FONTDOBJ = cff.o type1.o type42.o type1cid.o truetype.o bdf.o pfr.o winfnt.o $(PCFOBJ)
+ifneq (,$(wildcard $(ft2_srcdir)/src/gemfonts/gemfnt.c))
+FONTDOBJ += gemfnt.o
+endif
 
 OBJS = $(BASEOBJ) $(AHINTOBJ) $(PSOBJ) $(RASTEROBJ) sfnt.o ftcache.o $(FONTDOBJ) $(GZOBJ)
 
+ifneq ($(ft2_srcdir),)
 $(TARGET): $(OBJS)
-	$(AM_V_AR)$(AR) cr $@ $(OBJS); $(RANLIB) $@
+	$(AM_V_AR)$(AR) crs $@ $(OBJS)
+else
+$(TARGET):
+	@:
+endif
 
 clean::
 	$(RM) *.o *.a
