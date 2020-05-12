@@ -1726,7 +1726,7 @@ int radeon_pll_clock_program(int clock)
 {
     int i;
 
-    if (clock < 0 || clock >= (int) PLL_NUM_CLOCKS)
+    if (clock < 0 || clock >= (int)PLL_NUM_CLOCKS)
          return -1;
 
     for (i = 0; i < 18; i++) {
@@ -1775,4 +1775,3 @@ int radeon_pll_clock_program(int clock)
 
     return 0;
 }
-

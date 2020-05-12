@@ -22,7 +22,6 @@
 
 #include "fvdi.h"
 #include "driver.h"
-#include "relocate.h"
 #include "firebee.h"
 #include "video.h"
 #include <os.h>
@@ -51,8 +50,6 @@ struct {
     short width;
     short height;
 } pixel;
-
-extern long tokenize(const char *ptr);
 
 long CDECL (*write_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y, long colour) = c_write_pixel;
 long CDECL (*read_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y) = c_read_pixel;
@@ -89,13 +86,6 @@ short accel_s = 0;
 short accel_c = A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX | A_BLIT | A_FILL | A_EXPAND | A_LINE | A_MOUSE;
 
 const Mode *graphics_mode = &mode[0];
-
-static long set_mode(const char **ptr);
-
-Option options[] = {
-    {"debug",      { &debug },             2},  /* debug, turn on debugging aids */
-    {"mode",       { set_mode },          -1},  /* mode WIDTHxHEIGHTxDEPTH@FREQ */
-};
 
 static char *get_num(char *token, short *num)
 {
@@ -137,7 +127,7 @@ static long set_mode(const char **ptr)
 {
     char token[80], *tokenptr;
 
-    if (!(*ptr = access->funcs.skip_space(*ptr)))
+    if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
 	{
         ;		/* *********** Error, somehow */
     }
@@ -155,6 +145,11 @@ static long set_mode(const char **ptr)
 
     return 1;
 }
+
+Option options[] = {
+    {"debug",      { &debug },             2},  /* debug, turn on debugging aids */
+    {"mode",       { set_mode },          -1},  /* mode WIDTHxHEIGHTxDEPTH@FREQ */
+};
 
 /*
  * Handle any driver specific parameters
@@ -194,7 +189,7 @@ long check_token(char *token, const char **ptr)
                     *options[i].var.s += -1 + 2 * normal;
                     return 1;
                 case 3:
-                    if (!(*ptr = access->funcs.skip_space(*ptr)))
+                    if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
                     {
                         ;  /* *********** Error, somehow */
                     }

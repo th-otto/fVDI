@@ -22,7 +22,6 @@
 
 #include "fvdi.h"
 #include "driver.h"
-#include "relocate.h"
 #include "radeon.h"
 #include "video.h"
 #include <os.h>
@@ -59,11 +58,6 @@ struct {
     short height;
 } pixel;
 
-extern short *loaded_palette;
-
-void initialize_palette(Virtual *vwk, long start, long entries, short requested[][3], Colour palette[]);
-void c_initialize_palette(Virtual *vwk, long start, long entries, short requested[][3], Colour palette[]);
-
 long CDECL (*write_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y, long colour) = c_write_pixel;
 long CDECL (*read_pixel_r)(Virtual *vwk, MFDB *mfdb, long x, long y) = c_read_pixel;
 long CDECL (*line_draw_r)(Virtual *vwk, long x1, long y1, long x2, long y2, long pattern, long colour, long mode) = c_line_draw;
@@ -99,14 +93,6 @@ short accel_s = 0;
 short accel_c = A_SET_PAL | A_GET_COL | A_SET_PIX | A_GET_PIX | A_BLIT | A_FILL | A_EXPAND | A_LINE | A_MOUSE;
 
 const Mode *graphics_mode = &mode[0];
-
-static long set_mode(const char **ptr);
-
-Option options[] =
-{
-    {"debug",      { &debug },             2},  /* debug, turn on debugging aids */
-    {"mode",       { set_mode },          -1},  /* mode WIDTHxHEIGHTxDEPTH@FREQ */
-};
 
 static char *get_num(char *token, short *num)
 {
@@ -150,9 +136,9 @@ static long set_mode(const char **ptr)
 {
     char token[80], *tokenptr;
 
-    if (!(*ptr = access->funcs.skip_space(*ptr)))
+    if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
     {
-        ;		/* *********** Error, somehow */
+        ;       /* *********** Error, somehow */
     }
     *ptr = access->funcs.get_token(*ptr, token, 80);
 
@@ -168,6 +154,12 @@ static long set_mode(const char **ptr)
 
     return 1;
 }
+
+Option options[] =
+{
+    {"debug",      { &debug },             2},  /* debug, turn on debugging aids */
+    {"mode",       { set_mode },          -1},  /* mode WIDTHxHEIGHTxDEPTH@FREQ */
+};
 
 /*
  * Handle any driver specific parameters
@@ -212,7 +204,7 @@ long check_token(char *token, const char **ptr)
                     *options[i].var.s += -1 + 2 * normal;
                     return 1;
                 case 3:
-                    if (!(*ptr = access->funcs.skip_space(*ptr)))
+                    if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
                     {
                         ;  /* *********** Error, somehow */
                     }
@@ -320,10 +312,10 @@ long initialize(Virtual *vwk)
 
     screen_address = fbee_alloc_vram(res.width, res.height);
 
-    vwk = me->default_vwk;	/* This is what we're interested in */
+    vwk = me->default_vwk;  /* This is what we're interested in */
     wk = vwk->real_address;
 
-    wk->screen.look_up_table = 0;			/* Was 1 (???)  Shouldn't be needed (graphics_mode) */
+    wk->screen.look_up_table = 0;           /* Was 1 (???)  Shouldn't be needed (graphics_mode) */
     wk->screen.mfdb.standard = 0;
     if (wk->screen.pixel.width > 0)        /* Starts out as screen width */
         wk->screen.pixel.width = (wk->screen.pixel.width * 1000L) / wk->screen.mfdb.width;
@@ -346,12 +338,12 @@ long initialize(Virtual *vwk)
     {
         /* Started from different graphics mode? */
         old_palette_colours = wk->screen.palette.colours;
-        wk->screen.palette.colours = access->funcs.malloc(256L * sizeof(Colour), 3);	/* Assume malloc won't fail. */
+        wk->screen.palette.colours = access->funcs.malloc(256L * sizeof(Colour), 3);    /* Assume malloc won't fail. */
         if (wk->screen.palette.colours)
         {
             wk->screen.palette.size = 256;
             if (old_palette_colours)
-                access->funcs.free(old_palette_colours);	/* Release old (small) palette (a workaround) */
+                access->funcs.free(old_palette_colours);    /* Release old (small) palette (a workaround) */
         }
         else
             wk->screen.palette.colours = old_palette_colours;
@@ -420,17 +412,17 @@ Virtual* opnwk(Virtual *vwk)
     wk->screen.coordinates.max_x = wk->screen.mfdb.width - 1;
     wk->screen.coordinates.max_y = wk->screen.mfdb.height - 1;
 
-    wk->screen.look_up_table = 0;			/* Was 1 (???)	Shouldn't be needed (graphics_mode) */
+    wk->screen.look_up_table = 0;           /* Was 1 (???)  Shouldn't be needed (graphics_mode) */
     wk->screen.mfdb.standard = 0;
 
-    if (pixel.width > 0)			/* Starts out as screen width */
+    if (pixel.width > 0)            /* Starts out as screen width */
         wk->screen.pixel.width = (pixel.width * 1000L) / wk->screen.mfdb.width;
-    else								   /*	or fixed DPI (negative) */
+    else                                   /*   or fixed DPI (negative) */
         wk->screen.pixel.width = 25400 / -pixel.width;
 
-    if (pixel.height > 0)		/* Starts out as screen height */
+    if (pixel.height > 0)       /* Starts out as screen height */
         wk->screen.pixel.height = (pixel.height * 1000L) / wk->screen.mfdb.height;
-    else									/*	 or fixed DPI (negative) */
+    else                                    /*   or fixed DPI (negative) */
         wk->screen.pixel.height = 25400 / -pixel.height;
 
     return 0;
@@ -441,5 +433,5 @@ Virtual* opnwk(Virtual *vwk)
  */
 void clswk(Virtual *vwk)
 {
-	(void) vwk;
+    (void) vwk;
 }

@@ -66,9 +66,9 @@ long get_driver(void)
          * yes, we found the EmuTOS signature
          */
 
-        old_vector = Setexc(0x20, trap0_catcher);			/* catch trap #0 to avoid crash */
-        dt = get_bas_drivers();								/* trap #0 */
-        (void) Setexc(0x20, old_vector);					/* set vector to what it was before */
+        old_vector = Setexc(0x20, trap0_catcher);           /* catch trap #0 to avoid crash */
+        dt = get_bas_drivers();                             /* trap #0 */
+        (void) Setexc(0x20, old_vector);                    /* set vector to what it was before */
 
         if (dt)
         {

@@ -1,4 +1,4 @@
-/* 
+/*
  * A 16 bit graphics line routine, by Johan Klockars.
  *
  * This file is an example of how to write an
@@ -35,82 +35,82 @@ static void s_line_replace(PIXEL *addr, PIXEL *addr_fast, int count,
                     PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
-	*addr_fast = foreground;
+    *addr_fast = foreground;
 #endif
-	*addr = foreground;
-	(void) addr_fast;
-	(void) background;
+    *addr = foreground;
+    (void) addr_fast;
+    (void) background;
 
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			addr_fast += one_step;
+            addr_fast += one_step;
 #endif
-			addr += one_step;
-		} else {
-			d += incrNE;
+            addr += one_step;
+        } else {
+            d += incrNE;
 #ifdef BOTH
-			addr_fast += both_step;
+            addr_fast += both_step;
 #endif
-			addr += both_step;
-		}
+            addr += both_step;
+        }
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
+        *addr = foreground;
+    }
 }
 
 static void s_line_replace_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                       int d, int incrE, int incrNE, int one_step, int both_step,
                       PIXEL foreground, PIXEL background)
 {
-	unsigned short mask = 0x8000;
+    unsigned short mask = 0x8000;
 
-	(void) addr_fast;
-	if (pattern & mask) {
+    (void) addr_fast;
+    if (pattern & mask) {
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	} else {
+        *addr = foreground;
+    } else {
 #ifdef BOTH
-		*addr_fast = background;
+        *addr_fast = background;
 #endif
-		*addr = background;
-	}
-		
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
-#ifdef BOTH
-			addr_fast += one_step;
-#endif
-			addr += one_step;
-		} else {
-			d += incrNE;
-#ifdef BOTH
-			addr_fast += both_step;
-#endif
-			addr += both_step;
-		}
+        *addr = background;
+    }
 
-		if (!(mask >>= 1))
-			mask = 0x8000;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
+#ifdef BOTH
+            addr_fast += one_step;
+#endif
+            addr += one_step;
+        } else {
+            d += incrNE;
+#ifdef BOTH
+            addr_fast += both_step;
+#endif
+            addr += both_step;
+        }
 
-		if (pattern & mask) {
+        if (!(mask >>= 1))
+            mask = 0x8000;
+
+        if (pattern & mask) {
 #ifdef BOTH
-			*addr_fast = foreground;
+            *addr_fast = foreground;
 #endif
-			*addr = foreground;
-		} else {
+            *addr = foreground;
+        } else {
 #ifdef BOTH
-			*addr_fast = background;
+            *addr_fast = background;
 #endif
-			*addr = background;
-		}
-	}
+            *addr = background;
+        }
+    }
 }
 
 static void s_line_transparent(PIXEL *addr, PIXEL *addr_fast, int count,
@@ -118,172 +118,172 @@ static void s_line_transparent(PIXEL *addr, PIXEL *addr_fast, int count,
                         PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
-	*addr_fast = foreground;
+    *addr_fast = foreground;
 #endif
-	*addr = foreground;
-	(void) addr_fast;
-	(void) background;
+    *addr = foreground;
+    (void) addr_fast;
+    (void) background;
 
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			addr_fast += one_step;
+            addr_fast += one_step;
 #endif
-			addr += one_step;
-		} else {
-			d += incrNE;
+            addr += one_step;
+        } else {
+            d += incrNE;
 #ifdef BOTH
-			addr_fast += both_step;
+            addr_fast += both_step;
 #endif
-			addr += both_step;
-		}
+            addr += both_step;
+        }
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
+        *addr = foreground;
+    }
 }
 
 static void s_line_transparent_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                           int d, int incrE, int incrNE, int one_step, int both_step,
                           PIXEL foreground, PIXEL background)
 {
-	unsigned short mask = 0x8000;
+    unsigned short mask = 0x8000;
 
-	(void) addr_fast;
-	(void) background;
-	if (pattern & mask) {
+    (void) addr_fast;
+    (void) background;
+    if (pattern & mask) {
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
-		
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
-#ifdef BOTH
-			addr_fast += one_step;
-#endif
-			addr += one_step;
-		} else {
-			d += incrNE;
-#ifdef BOTH
-			addr_fast += both_step;
-#endif
-			addr += both_step;
-		}
+        *addr = foreground;
+    }
 
-		if (!(mask >>= 1))
-			mask = 0x8000;
-
-		if (pattern & mask) {
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			*addr_fast = foreground;
+            addr_fast += one_step;
 #endif
-			*addr = foreground;
-		}
-	}
+            addr += one_step;
+        } else {
+            d += incrNE;
+#ifdef BOTH
+            addr_fast += both_step;
+#endif
+            addr += both_step;
+        }
+
+        if (!(mask >>= 1))
+            mask = 0x8000;
+
+        if (pattern & mask) {
+#ifdef BOTH
+            *addr_fast = foreground;
+#endif
+            *addr = foreground;
+        }
+    }
 }
 
 static void s_line_xor(PIXEL *addr, PIXEL *addr_fast, int count,
                 int d, int incrE, int incrNE, int one_step, int both_step,
                 PIXEL foreground, PIXEL background)
 {
-	int v;
+    int v;
 
-	(void) addr_fast;
-	(void) foreground;
-	(void) background;
+    (void) addr_fast;
+    (void) foreground;
+    (void) background;
 #ifdef BOTH
-	v = ~*addr_fast;
+    v = ~*addr_fast;
 #else
-	v = ~*addr;
+    v = ~*addr;
 #endif
 #ifdef BOTH
-	*addr_fast = v;
+    *addr_fast = v;
 #endif
-	*addr = v;
+    *addr = v;
 
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			addr_fast += one_step;
+            addr_fast += one_step;
 #endif
-			addr += one_step;
-		} else {
-			d += incrNE;
+            addr += one_step;
+        } else {
+            d += incrNE;
 #ifdef BOTH
-			addr_fast += both_step;
+            addr_fast += both_step;
 #endif
-			addr += both_step;
-		}
+            addr += both_step;
+        }
 #ifdef BOTH
-		v = ~*addr_fast;
+        v = ~*addr_fast;
 #else
-		v = ~*addr;
+        v = ~*addr;
 #endif
 #ifdef BOTH
-		*addr_fast = v;
+        *addr_fast = v;
 #endif
-		*addr = v;
-	}
+        *addr = v;
+    }
 }
 
 static void s_line_xor_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                   int d, int incrE, int incrNE, int one_step, int both_step,
                   PIXEL foreground, PIXEL background)
 {
-	int v;
-	unsigned short mask = 0x8000;
+    int v;
+    unsigned short mask = 0x8000;
 
-	(void) addr_fast;
-	(void) foreground;
-	(void) background;
-	if (pattern & mask) {
+    (void) addr_fast;
+    (void) foreground;
+    (void) background;
+    if (pattern & mask) {
 #ifdef BOTH
-		v = ~*addr_fast;
+        v = ~*addr_fast;
 #else
-		v = ~*addr;
+        v = ~*addr;
 #endif
 #ifdef BOTH
-		*addr_fast = v;
+        *addr_fast = v;
 #endif
-		*addr = v;
-	}
-		
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
-#ifdef BOTH
-			addr_fast += one_step;
-#endif
-			addr += one_step;
-		} else {
-			d += incrNE;
-#ifdef BOTH
-			addr_fast += both_step;
-#endif
-			addr += both_step;
-		}
+        *addr = v;
+    }
 
-		if (!(mask >>= 1))
-			mask = 0x8000;
-
-		if (pattern & mask) {
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			v = ~*addr_fast;
+            addr_fast += one_step;
+#endif
+            addr += one_step;
+        } else {
+            d += incrNE;
+#ifdef BOTH
+            addr_fast += both_step;
+#endif
+            addr += both_step;
+        }
+
+        if (!(mask >>= 1))
+            mask = 0x8000;
+
+        if (pattern & mask) {
+#ifdef BOTH
+            v = ~*addr_fast;
 #else
-			v = ~*addr;
+            v = ~*addr;
 #endif
 #ifdef BOTH
-			*addr_fast = v;
+            *addr_fast = v;
 #endif
-			*addr = v;
-		}
-	}
+            *addr = v;
+        }
+    }
 }
 
 static void s_line_revtransp(PIXEL *addr, PIXEL *addr_fast, int count,
@@ -291,73 +291,73 @@ static void s_line_revtransp(PIXEL *addr, PIXEL *addr_fast, int count,
                       PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
-	*addr_fast = foreground;
+    *addr_fast = foreground;
 #endif
-	*addr = foreground;
-	(void) addr_fast;
-	(void) background;
+    *addr = foreground;
+    (void) addr_fast;
+    (void) background;
 
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			addr_fast += one_step;
+            addr_fast += one_step;
 #endif
-			addr += one_step;
-		} else {
-			d += incrNE;
+            addr += one_step;
+        } else {
+            d += incrNE;
 #ifdef BOTH
-			addr_fast += both_step;
+            addr_fast += both_step;
 #endif
-			addr += both_step;
-		}
+            addr += both_step;
+        }
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
+        *addr = foreground;
+    }
 }
 
 static void s_line_revtransp_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                         int d, int incrE, int incrNE, int one_step, int both_step,
                         PIXEL foreground, PIXEL background)
 {
-	unsigned short mask = 0x8000;
+    unsigned short mask = 0x8000;
 
-	(void) addr_fast;
-	(void) background;
-	if (!(pattern & mask)) {
+    (void) addr_fast;
+    (void) background;
+    if (!(pattern & mask)) {
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
-		
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
-#ifdef BOTH
-			addr_fast += one_step;
-#endif
-			addr += one_step;
-		} else {
-			d += incrNE;
-#ifdef BOTH
-			addr_fast += both_step;
-#endif
-			addr += both_step;
-		}
+        *addr = foreground;
+    }
 
-		if (!(mask >>= 1))
-			mask = 0x8000;
-
-		if (!(pattern & mask)) {
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			*addr_fast = foreground;
+            addr_fast += one_step;
 #endif
-			*addr = foreground;
-		}
-	}
+            addr += one_step;
+        } else {
+            d += incrNE;
+#ifdef BOTH
+            addr_fast += both_step;
+#endif
+            addr += both_step;
+        }
+
+        if (!(mask >>= 1))
+            mask = 0x8000;
+
+        if (!(pattern & mask)) {
+#ifdef BOTH
+            *addr_fast = foreground;
+#endif
+            *addr = foreground;
+        }
+    }
 }
 
 
@@ -376,82 +376,82 @@ static void line_replace(PIXEL *addr, PIXEL *addr_fast, int count,
                     PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
-	*addr_fast = foreground;
+    *addr_fast = foreground;
 #endif
-	*addr = foreground;
-	(void) addr_fast;
-	(void) background;
+    *addr = foreground;
+    (void) addr_fast;
+    (void) background;
 
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			addr_fast += one_step;
+            addr_fast += one_step;
 #endif
-			addr += one_step;
-		} else {
-			d += incrNE;
+            addr += one_step;
+        } else {
+            d += incrNE;
 #ifdef BOTH
-			addr_fast += both_step;
+            addr_fast += both_step;
 #endif
-			addr += both_step;
-		}
+            addr += both_step;
+        }
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
+        *addr = foreground;
+    }
 }
 
 static void line_replace_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                       int d, int incrE, int incrNE, int one_step, int both_step,
                       PIXEL foreground, PIXEL background)
 {
-	unsigned short mask = 0x8000;
+    unsigned short mask = 0x8000;
 
-	(void) addr_fast;
-	if (pattern & mask) {
+    (void) addr_fast;
+    if (pattern & mask) {
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	} else {
+        *addr = foreground;
+    } else {
 #ifdef BOTH
-		*addr_fast = background;
+        *addr_fast = background;
 #endif
-		*addr = background;
-	}
-		
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
-#ifdef BOTH
-			addr_fast += one_step;
-#endif
-			addr += one_step;
-		} else {
-			d += incrNE;
-#ifdef BOTH
-			addr_fast += both_step;
-#endif
-			addr += both_step;
-		}
+        *addr = background;
+    }
 
-		if (!(mask >>= 1))
-			mask = 0x8000;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
+#ifdef BOTH
+            addr_fast += one_step;
+#endif
+            addr += one_step;
+        } else {
+            d += incrNE;
+#ifdef BOTH
+            addr_fast += both_step;
+#endif
+            addr += both_step;
+        }
 
-		if (pattern & mask) {
+        if (!(mask >>= 1))
+            mask = 0x8000;
+
+        if (pattern & mask) {
 #ifdef BOTH
-			*addr_fast = foreground;
+            *addr_fast = foreground;
 #endif
-			*addr = foreground;
-		} else {
+            *addr = foreground;
+        } else {
 #ifdef BOTH
-			*addr_fast = background;
+            *addr_fast = background;
 #endif
-			*addr = background;
-		}
-	}
+            *addr = background;
+        }
+    }
 }
 
 static void line_transparent(PIXEL *addr, PIXEL *addr_fast, int count,
@@ -459,173 +459,173 @@ static void line_transparent(PIXEL *addr, PIXEL *addr_fast, int count,
                         PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
-	*addr_fast = foreground;
+    *addr_fast = foreground;
 #endif
-	*addr = foreground;
-	(void) addr_fast;
-	(void) background;
+    *addr = foreground;
+    (void) addr_fast;
+    (void) background;
 
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			addr_fast += one_step;
+            addr_fast += one_step;
 #endif
-			addr += one_step;
-		} else {
-			d += incrNE;
+            addr += one_step;
+        } else {
+            d += incrNE;
 #ifdef BOTH
-			addr_fast += both_step;
+            addr_fast += both_step;
 #endif
-			addr += both_step;
-		}
+            addr += both_step;
+        }
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
+        *addr = foreground;
+    }
 }
 
 static void line_transparent_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                           int d, int incrE, int incrNE, int one_step, int both_step,
                           PIXEL foreground, PIXEL background)
 {
-	unsigned short mask = 0x8000;
+    unsigned short mask = 0x8000;
 
-	(void) addr_fast;
-	(void) foreground;
-	(void) background;
-	if (pattern & mask) {
+    (void) addr_fast;
+    (void) foreground;
+    (void) background;
+    if (pattern & mask) {
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
-		
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
-#ifdef BOTH
-			addr_fast += one_step;
-#endif
-			addr += one_step;
-		} else {
-			d += incrNE;
-#ifdef BOTH
-			addr_fast += both_step;
-#endif
-			addr += both_step;
-		}
+        *addr = foreground;
+    }
 
-		if (!(mask >>= 1))
-			mask = 0x8000;
-
-		if (pattern & mask) {
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			*addr_fast = foreground;
+            addr_fast += one_step;
 #endif
-			*addr = foreground;
-		}
-	}
+            addr += one_step;
+        } else {
+            d += incrNE;
+#ifdef BOTH
+            addr_fast += both_step;
+#endif
+            addr += both_step;
+        }
+
+        if (!(mask >>= 1))
+            mask = 0x8000;
+
+        if (pattern & mask) {
+#ifdef BOTH
+            *addr_fast = foreground;
+#endif
+            *addr = foreground;
+        }
+    }
 }
 
 static void line_xor(PIXEL *addr, PIXEL *addr_fast, int count,
                 int d, int incrE, int incrNE, int one_step, int both_step,
                 PIXEL foreground, PIXEL background)
 {
-	int v;
+    int v;
 
-	(void) addr_fast;
-	(void) foreground;
-	(void) background;
+    (void) addr_fast;
+    (void) foreground;
+    (void) background;
 #ifdef BOTH
-	v = ~*addr_fast;
+    v = ~*addr_fast;
 #else
-	v = ~*addr;
+    v = ~*addr;
 #endif
 #ifdef BOTH
-	*addr_fast = v;
+    *addr_fast = v;
 #endif
-	*addr = v;
+    *addr = v;
 
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			addr_fast += one_step;
+            addr_fast += one_step;
 #endif
-			addr += one_step;
-		} else {
-			d += incrNE;
+            addr += one_step;
+        } else {
+            d += incrNE;
 #ifdef BOTH
-			addr_fast += both_step;
+            addr_fast += both_step;
 #endif
-			addr += both_step;
-		}
+            addr += both_step;
+        }
 #ifdef BOTH
-		v = ~*addr_fast;
+        v = ~*addr_fast;
 #else
-		v = ~*addr;
+        v = ~*addr;
 #endif
 #ifdef BOTH
-		*addr_fast = v;
+        *addr_fast = v;
 #endif
-		*addr = v;
-	}
+        *addr = v;
+    }
 }
 
 static void line_xor_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                   int d, int incrE, int incrNE, int one_step, int both_step,
                   PIXEL foreground, PIXEL background)
 {
-	int v;
-	unsigned short mask = 0x8000;
+    int v;
+    unsigned short mask = 0x8000;
 
-	(void) addr_fast;
-	(void) foreground;
-	(void) background;
-	if (pattern & mask) {
+    (void) addr_fast;
+    (void) foreground;
+    (void) background;
+    if (pattern & mask) {
 #ifdef BOTH
-		v = ~*addr_fast;
+        v = ~*addr_fast;
 #else
-		v = ~*addr;
+        v = ~*addr;
 #endif
 #ifdef BOTH
-		*addr_fast = v;
+        *addr_fast = v;
 #endif
-		*addr = v;
-	}
-		
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
-#ifdef BOTH
-			addr_fast += one_step;
-#endif
-			addr += one_step;
-		} else {
-			d += incrNE;
-#ifdef BOTH
-			addr_fast += both_step;
-#endif
-			addr += both_step;
-		}
+        *addr = v;
+    }
 
-		if (!(mask >>= 1))
-			mask = 0x8000;
-
-		if (pattern & mask) {
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			v = ~*addr_fast;
+            addr_fast += one_step;
+#endif
+            addr += one_step;
+        } else {
+            d += incrNE;
+#ifdef BOTH
+            addr_fast += both_step;
+#endif
+            addr += both_step;
+        }
+
+        if (!(mask >>= 1))
+            mask = 0x8000;
+
+        if (pattern & mask) {
+#ifdef BOTH
+            v = ~*addr_fast;
 #else
-			v = ~*addr;
+            v = ~*addr;
 #endif
 #ifdef BOTH
-			*addr_fast = v;
+            *addr_fast = v;
 #endif
-			*addr = v;
-		}
-	}
+            *addr = v;
+        }
+    }
 }
 
 static void line_revtransp(PIXEL *addr, PIXEL *addr_fast, int count,
@@ -633,73 +633,73 @@ static void line_revtransp(PIXEL *addr, PIXEL *addr_fast, int count,
                       PIXEL foreground, PIXEL background)
 {
 #ifdef BOTH
-	*addr_fast = foreground;
+    *addr_fast = foreground;
 #endif
-	*addr = foreground;
-	(void) addr_fast;
-	(void) background;
+    *addr = foreground;
+    (void) addr_fast;
+    (void) background;
 
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			addr_fast += one_step;
+            addr_fast += one_step;
 #endif
-			addr += one_step;
-		} else {
-			d += incrNE;
+            addr += one_step;
+        } else {
+            d += incrNE;
 #ifdef BOTH
-			addr_fast += both_step;
+            addr_fast += both_step;
 #endif
-			addr += both_step;
-		}
+            addr += both_step;
+        }
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
+        *addr = foreground;
+    }
 }
 
 static void line_revtransp_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int count,
                         int d, int incrE, int incrNE, int one_step, int both_step,
                         PIXEL foreground, PIXEL background)
 {
-	unsigned short mask = 0x8000;
+    unsigned short mask = 0x8000;
 
-	(void) addr_fast;
-	(void) background;
-	if (!(pattern & mask)) {
+    (void) addr_fast;
+    (void) background;
+    if (!(pattern & mask)) {
 #ifdef BOTH
-		*addr_fast = foreground;
+        *addr_fast = foreground;
 #endif
-		*addr = foreground;
-	}
-		
-	for(--count; count >= 0; count--) {
-		if (d < 0) {
-			d += incrE;
-#ifdef BOTH
-			addr_fast += one_step;
-#endif
-			addr += one_step;
-		} else {
-			d += incrNE;
-#ifdef BOTH
-			addr_fast += both_step;
-#endif
-			addr += both_step;
-		}
+        *addr = foreground;
+    }
 
-		if (!(mask >>= 1))
-			mask = 0x8000;
-
-		if (!(pattern & mask)) {
+    for(--count; count >= 0; count--) {
+        if (d < 0) {
+            d += incrE;
 #ifdef BOTH
-			*addr_fast = foreground;
+            addr_fast += one_step;
 #endif
-			*addr = foreground;
-		}
-	}
+            addr += one_step;
+        } else {
+            d += incrNE;
+#ifdef BOTH
+            addr_fast += both_step;
+#endif
+            addr += both_step;
+        }
+
+        if (!(mask >>= 1))
+            mask = 0x8000;
+
+        if (!(pattern & mask)) {
+#ifdef BOTH
+            *addr_fast = foreground;
+#endif
+            *addr = foreground;
+        }
+    }
 }
 
 #ifdef BOTH_WAS_ON
@@ -709,133 +709,133 @@ static void line_revtransp_p(PIXEL *addr, PIXEL *addr_fast, long pattern, int co
 long CDECL c_line_draw(Virtual *vwk, long x1, long y1, long x2, long y2,
                        long pattern, long colour, long mode)
 {
-	Workstation *wk;
-	PIXEL *addr, *addr_fast;
-	unsigned long foreground, background;
-  	int line_add;
-	long pos;
-	int x_step, y_step;
-	int dx, dy;
-	int one_step, both_step;
-	int d, count;
-	int incrE, incrNE;
+    Workstation *wk;
+    PIXEL *addr, *addr_fast;
+    unsigned long foreground, background;
+    int line_add;
+    long pos;
+    int x_step, y_step;
+    int dx, dy;
+    int one_step, both_step;
+    int d, count;
+    int incrE, incrNE;
 
-	if ((long)vwk & 1) {
-		return -1;			/* Don't know about anything yet */
-	}
+    if ((long)vwk & 1) {
+        return -1;          /* Don't know about anything yet */
+    }
 
-	if (!clip_line(vwk, &x1, &y1, &x2, &y2))
-		return 1;
+    if (!clip_line(vwk, &x1, &y1, &x2, &y2))
+        return 1;
 
-	c_get_colours(vwk, colour, &foreground, &background);
+    c_get_colours(vwk, colour, &foreground, &background);
 
-	wk = vwk->real_address;
+    wk = vwk->real_address;
 
-	pos = (short)y1 * (long)wk->screen.wrap + x1 * 2;
-	addr = wk->screen.mfdb.address;
-	line_add = wk->screen.wrap >> 1;
+    pos = (short)y1 * (long)wk->screen.wrap + x1 * 2;
+    addr = wk->screen.mfdb.address;
+    line_add = wk->screen.wrap >> 1;
 
 
-	x_step = 1;
-	y_step = line_add;
-	
-	dx = x2 - x1;
-	if (dx < 0) {
-		dx = -dx;
-		x_step = -x_step;
-	}
-	dy = y2 - y1;
-	if (dy < 0) {
-		dy = -dy;
-		y_step = -y_step;
-	}
-	
-	if (dx > dy) {
-		count = dx;
-		one_step = x_step;
-		incrE = 2 * dy;
-		incrNE = 2 * dy - 2 * dx;
-		d = 2 * dy - dx;
-	} else {
-		count = dy;
-		one_step = y_step;
-		incrE = 2 * dx;
-		incrNE = 2 * dx - 2 * dy;
-		d = 2 * dx - dy;
-	}
-	both_step = x_step + y_step;
+    x_step = 1;
+    y_step = line_add;
+
+    dx = x2 - x1;
+    if (dx < 0) {
+        dx = -dx;
+        x_step = -x_step;
+    }
+    dy = y2 - y1;
+    if (dy < 0) {
+        dy = -dy;
+        y_step = -y_step;
+    }
+
+    if (dx > dy) {
+        count = dx;
+        one_step = x_step;
+        incrE = 2 * dy;
+        incrNE = 2 * dy - 2 * dx;
+        d = 2 * dy - dx;
+    } else {
+        count = dy;
+        one_step = y_step;
+        incrE = 2 * dx;
+        incrNE = 2 * dx - 2 * dy;
+        d = 2 * dx - dy;
+    }
+    both_step = x_step + y_step;
 
 #ifdef BOTH
-	if ((addr_fast = wk->screen.shadow.address) != 0) {
+    if ((addr_fast = wk->screen.shadow.address) != 0) {
 
-		addr += pos >> 1;
-		addr_fast += pos >> 1;
-		if ((pattern & 0xffff) == 0xffff) {
-			switch (mode) {
-			case 1:				/* Replace */
-				s_line_replace(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 2:				/* Transparent */
-				s_line_transparent(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 3:				/* XOR */
-				s_line_xor(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 4:				/* Reverse transparent */
-				s_line_revtransp(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			}
-		} else {
-			switch (mode) {
-			case 1:				/* Replace */
-				s_line_replace_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 2:				/* Transparent */
-				s_line_transparent_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 3:				/* XOR */
-				s_line_xor_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 4:				/* Reverse transparent */
-				s_line_revtransp_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			}
-		}
-	} else
+        addr += pos >> 1;
+        addr_fast += pos >> 1;
+        if ((pattern & 0xffff) == 0xffff) {
+            switch (mode) {
+            case 1:             /* Replace */
+                s_line_replace(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 2:             /* Transparent */
+                s_line_transparent(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 3:             /* XOR */
+                s_line_xor(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 4:             /* Reverse transparent */
+                s_line_revtransp(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            }
+        } else {
+            switch (mode) {
+            case 1:             /* Replace */
+                s_line_replace_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 2:             /* Transparent */
+                s_line_transparent_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 3:             /* XOR */
+                s_line_xor_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 4:             /* Reverse transparent */
+                s_line_revtransp_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            }
+        }
+    } else
 #endif
-	{
-		addr += pos >> 1;
-		if ((pattern & 0xffff) == 0xffff) {
-			switch (mode) {
-			case 1:				/* Replace */
-				line_replace(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 2:				/* Transparent */
-				line_transparent(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 3:				/* XOR */
-				line_xor(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 4:				/* Reverse transparent */
-				line_revtransp(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			}
-		} else {
-			switch (mode) {
-			case 1:				/* Replace */
-				line_replace_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 2:				/* Transparent */
-				line_transparent_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 3:				/* XOR */
-				line_xor_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			case 4:				/* Reverse transparent */
-				line_revtransp_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
-				break;
-			}
-		}
-	}
-	return 1;		/* Return as completed */
+    {
+        addr += pos >> 1;
+        if ((pattern & 0xffff) == 0xffff) {
+            switch (mode) {
+            case 1:             /* Replace */
+                line_replace(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 2:             /* Transparent */
+                line_transparent(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 3:             /* XOR */
+                line_xor(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 4:             /* Reverse transparent */
+                line_revtransp(addr, addr_fast, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            }
+        } else {
+            switch (mode) {
+            case 1:             /* Replace */
+                line_replace_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 2:             /* Transparent */
+                line_transparent_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 3:             /* XOR */
+                line_xor_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            case 4:             /* Reverse transparent */
+                line_revtransp_p(addr, addr_fast, pattern, count, d, incrE, incrNE, one_step, both_step, foreground, background);
+                break;
+            }
+        }
+    }
+    return 1;       /* Return as completed */
 }
