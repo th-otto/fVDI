@@ -40,7 +40,7 @@
 long basepage;
 static char fake_bp[256];
 
-long old_gdos = -2;
+short old_gdos;
 
 static short initialized = 0;
 
@@ -63,8 +63,8 @@ void CDECL lineA_debug(long opcode, long pc);
 struct fVDI_cookie {
     short version;
     short flags;
-    long CDECL(*remove) (void);
-    long CDECL(*setup) (unsigned long type, long value);
+    long CDECL(*remove)(void);
+    long CDECL(*setup)(unsigned long type, long value);
     struct fVDI_log *log;
 };	/* cookie = {VERSION, 0, remove_fvdi, setup_fvdi, &fvdi_log}; */
 
@@ -214,15 +214,15 @@ long startup(void)
 
     if (booted && !fakeboot && !singlebend)
     {
-        trap2_address = (void (*)(void)) Setexc(34, trap2_temp);    /* Install a temporary trap handler if real boot (really necessary?) */
+        trap2_address = (void (*)(void)) Setexc(34, trap2_temp);	/* Install a temporary trap handler if real boot (really necessary?) */
     } else
     {
-        vdi_address = (void (*)(void)) Setexc(34, vdi_dispatch);    /*   otherwise the dispatcher directly */
+        vdi_address = (void (*)(void)) Setexc(34, vdi_dispatch);	/*   otherwise the dispatcher directly */
     }
 
-    trap14_address = (void (*)(void)) Setexc(46, trap14);       /* Install an XBIOS handler */
+    trap14_address = (void (*)(void)) Setexc(46, trap14);	/* Install an XBIOS handler */
 
-    lineA_address = (void (*)(void)) Setexc(10, lineA); /* Install a LineA handler */
+    lineA_address = (void (*)(void)) Setexc(10, lineA);		/* Install a LineA handler */
 
     if (bconout)
     {
@@ -322,7 +322,7 @@ long startup(void)
     if (!disabled)
     {
         /* dangerous! This is self-modifying code ! Need to cache flush below to be safe */
-        * (short *) ((long) vdi_dispatch + 2) = 0x0073;  /* Finally make fVDI take normal VDI calls */
+        * (short *) ((long) vdi_dispatch + 2) = 0x0073;	/* Finally make fVDI take normal VDI calls */
         Supexec(cache_flush);
         readable->cookie.flags |= ACTIVE;
     }
@@ -544,7 +544,7 @@ void recheck_mtask(void)
 
 
 #ifdef FVDI_DEBUG
-void CDECL vdi_debug(VDIpars * pars, char *vector)
+void CDECL vdi_debug(VDIpars *pars, char *vector)
 {
     static long count = 1;
     static int entered = 0;

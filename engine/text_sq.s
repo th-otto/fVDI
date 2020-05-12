@@ -485,6 +485,8 @@ lib_vqt_ext_name:
 *       a0      VDI struct
 vqt_fontinfo:
 	uses_d1
+	move.l a1,-(a7)
+	move.l d2,-(a7)
 	movem.l	d2/a1,-(a7)
 	movem.l	intout(a1),a1-a2	; Get ptsout too
 	move.l	a2,-(a7)
@@ -492,7 +494,8 @@ vqt_fontinfo:
 	move.l	a0,-(a7)
 	jsr	_lib_vqt_fontinfo
 	lea		12(a7),a7
-	movem.l	(a7)+,d2/a1
+	move.l (a7)+,d2
+	move.l (a7)+,a1
 	used_d1
 	done_return
 

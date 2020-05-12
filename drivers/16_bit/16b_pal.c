@@ -1,4 +1,4 @@
-/* 
+/*
  * 16 bit palette handling routines, by Johan Klockars.
  *
  * This file is an example of how to write an
@@ -16,12 +16,12 @@
 #include "../bitplane/bitplane.h"
 #include "relocate.h"
 
-#define NOVA 0      /* 1 - byte swap 16 bit colour value (NOVA etc) */
+#define NOVA 0		/* 1 - byte swap 16 bit colour value (NOVA etc) */
 
-#define red_bits   5    /* 5 for all normal 16 bit hardware */
-#define green_bits 6    /* 6 for Falcon TC and NOVA 16 bit, 5 for NOVA 15 bit */
-            /* (I think 15 bit Falcon TC disregards the green LSB) */
-#define blue_bits  5    /* 5 for all normal 16 bit hardware */
+#define red_bits   5	/* 5 for all normal 16 bit hardware */
+#define green_bits 6	/* 6 for Falcon TC and NOVA 16 bit, 5 for NOVA 15 bit */
+/* (I think 15 bit Falcon TC disregards the green LSB) */
+#define blue_bits  5	/* 5 for all normal 16 bit hardware */
 
 
 long CDECL c_get_colour(Virtual *vwk, long colour)

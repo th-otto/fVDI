@@ -16,16 +16,10 @@
 #define BOOL int
 #define TRUE 1
 #define FALSE 0
-#define BYTE char
-#define UBYTE unsigned char
-#define WORD short
-#define UWORD unsigned short
-#define LONG long
-#define ULONG unsigned long
 
 
-#define GetMemW(addr) ((ULONG)*(UWORD *)(addr))
-#define SetMemW(addr, val) *(UWORD *)(addr) = val
+#define GetMemW(addr) ((unsigned long)*(unsigned short *)(addr))
+#define SetMemW(addr, val) *(unsigned short *)(addr) = val
 
 
 /*
@@ -39,18 +33,18 @@
  * So, the following code works as follows:
  *
  * 1.  Fill variables with all values for masks, fringes etc.
- * 2.  Decide, if we have the situation of writing just one WORD
+ * 2.  Decide, if we have the situation of writing just one word
  * 3.  In any case we choose the writing mode now
  * 4.  Then loop through the y axis (just one pass for horzline)
  * 5.  Inner loop through the planes
- * 6a. If just one WORD, mask out the bits and process the action
- * 6b. else mask out left fringe, write WORDS, process the right fringe
+ * 6a. If just one word, mask out the bits and process the action
+ * 6b. else mask out left fringe, write words, process the right fringe
  */
 
 static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *patternptr, unsigned short fillcolor, long mode)
 {
-    UWORD leftmask, rightmask, patmsk;
-    UWORD *addr;
+    unsigned short leftmask, rightmask, patmsk;
+    unsigned short *addr;
     int x2 = x1 + w - 1;
     int y2 = y1 + h - 1;
     int dx, y, yinc;
@@ -58,16 +52,16 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
     int leftpart;
     int rightpart;
     int planes;
-    UWORD pattern, bits, help;
+    unsigned short pattern, bits, help;
 
     mode -= 1;
 
     /* Get the pattern with which the line is to be drawn. */
     planes = vwk->real_address->screen.mfdb.bitplanes;
-    dx = x2 - x1 - 16;      /* Width of line - one WORD */
-    addr = (UWORD *)vwk->real_address->screen.mfdb.address;
+    dx = x2 - x1 - 16;      /* Width of line - one word */
+    addr = (unsigned short *) vwk->real_address->screen.mfdb.address;
     addr += (x1 / 16) * vwk->real_address->screen.mfdb.bitplanes;
-    addr += (LONG)y1 * vwk->real_address->screen.wrap / 2;
+    addr += (long)y1 * vwk->real_address->screen.wrap / 2;
 #if 0
     patmsk = vwk->patmsk;                   /* Which pattern to start with */
     patadd = vwk->multifill ? 16 : 0;       /* Multi plane pattern offset */
@@ -81,14 +75,14 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
     rightmask =  0x7fff >> rightpart;   /* Origin for right fringe lookup */
     yinc = vwk->real_address->screen.wrap / 2 - planes;
 
-    /* Check if we have to process just one single WORD on screen */
+    /* Check if we have to process just one single word on screen */
     if (dx + leftpart < 0) {
         switch (mode) {
         case 3:  /* nor */
             for(y = y1; y <= y2; y++ ) {
                 int plane;
                 int patind = patmsk & y;        /* Pattern to start with */
-                UWORD color = fillcolor;
+                unsigned short color = fillcolor;
 
                 /* Init adress counter */
                 for(plane = planes - 1; plane >= 0; plane--) {
@@ -143,7 +137,7 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
             for(y = y1; y <= y2; y++) {
                 int plane;
                 int patind = patmsk & y;        /* Pattern to start with */
-                UWORD color = fillcolor;
+                unsigned short color = fillcolor;
 
                 for(plane = planes - 1; plane >= 0; plane--) {
                     /* Load values fresh for this bitplane */
@@ -174,7 +168,7 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
             for(y = y1; y <= y2; y++) {
                 int patind = patmsk & y;        /* Pattern to start with */
                 int plane;
-                UWORD color = fillcolor;
+                unsigned short color = fillcolor;
 
                 for(plane = planes - 1; plane >= 0; plane--) {
                     /* Load values fresh for this bitplane */
@@ -205,7 +199,7 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
         }
 
     }
-    /* Write the left fringe, then some whole WORDs, then the right fringe */
+    /* Write the left fringe, then some whole words, then the right fringe */
     else {
         leftpart = 16 - leftpart;       /* Precalculate delta for the left */
 
@@ -214,19 +208,19 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
             for(y = y1; y <= y2; y++) {
                 int plane;
                 int patind = patmsk & y;        /* Pattern to start with */
-                UWORD color = fillcolor;
+                unsigned short color = fillcolor;
 
                 /* Init adress counter */
                 for(plane = planes - 1; plane >= 0; plane--) {
                     /* Load values fresh for this bitplane */
-                    UWORD *adr = addr;
+                    unsigned short *adr = addr;
                     int pixels = dx;
                     pattern = patternptr[patind];
 
                     if (color & 0x0001) {
                         int bw;
                         pattern = ~pattern;
-                        /* Check if the line is completely contained within one WORD */
+                        /* Check if the line is completely contained within one word */
 
                         /* Draw the left fringe */
                         if (leftmask) {
@@ -304,7 +298,7 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
 
                 for(plane = planes - 1; plane >= 0; plane--) {
                     /* Load values fresh for this bitplane */
-                    UWORD *adr = addr;
+                    unsigned short *adr = addr;
                     int pixels = dx;
                     int bw;
                     pattern = patternptr[patind];
@@ -348,11 +342,11 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
             for(y = y1; y <= y2; y++) {
                 int plane;
                 int patind = patmsk & y;        /* Pattern to start with */
-                UWORD color = fillcolor;
+                unsigned short color = fillcolor;
 
                 for(plane = planes - 1; plane >= 0; plane--) {
                     /* Load values fresh for this bitplane */
-                    UWORD *adr = addr;
+                    unsigned short *adr = addr;
                     int pixels = dx;
                     pattern = patternptr[patind];
 
@@ -428,12 +422,12 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
             for(y = y1; y <= y2; y++ ) {
                 int patind = patmsk & y;        /* Ppattern to start with */
                 int plane;
-                UWORD color = fillcolor;
+                unsigned short color = fillcolor;
 
                 for(plane = planes - 1; plane >= 0; plane--) {
                     /* Load values fresh for this bitplane */
                     int bw;
-                    UWORD *adr = addr;
+                    unsigned short *adr = addr;
                     int pixels = dx;
                     pattern = 0;
 
@@ -451,7 +445,7 @@ static void draw_rect(Virtual *vwk, long x1, long y1, long w, long h, short *pat
                         adr += planes;
                         pixels -= leftpart;
                     }
-                    /* Full WORDs */
+                    /* Full words */
                     for(bw = pixels >> 4; bw >= 0; bw--) {
                         *adr = pattern;
                         adr += planes;

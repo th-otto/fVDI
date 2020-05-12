@@ -1,7 +1,7 @@
 /*
  * fVDI colour handling
  *
- * Copyright 2005, Johan Klockars 
+ * Copyright 2005, Johan Klockars
  * This software is licensed under the GNU General Public License.
  * Please, see LICENSE.TXT for further information.
  */
@@ -15,7 +15,7 @@
 #define neg_pal_n  9
 
 
-static Colour *get_clut(Virtual * vwk)
+static Colour *get_clut(Virtual *vwk)
 {
     Colour *palette;
     Workstation *wk;
@@ -23,13 +23,15 @@ static Colour *get_clut(Virtual * vwk)
 
     wk = vwk->real_address;
     palette = vwk->palette;
-    if (wk->driver->device->clut == 1)  /* Hardware CLUT? (used to test look_up_table) */
+    if (wk->driver->device->clut == 1)          /* Hardware CLUT? (used to test look_up_table) */
         palette = wk->screen.palette.colours;   /* Actually a common global */
-    else if (!palette || ((long) palette & 1))
-    {                                   /* No or only negative palette allocated? */
+    else if (!palette || ((long)palette & 1))
+    {
+        /* No or only negative palette allocated? */
         addr = malloc((wk->screen.palette.size + neg_pal_n) * sizeof(Colour));
         if (!addr)
-        {                               /* If no memory for local palette, */
+        {
+            /* If no memory for local palette, */
             palette = wk->screen.palette.colours;   /*  modify in global (BAD!) */
             PUTS("Could not allocate space for palette!\n");
         } else

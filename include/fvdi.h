@@ -646,7 +646,7 @@ typedef struct wk_ {
     } vblank;
     struct r_ {
         void CDECL (*set_palette)(Virtual *vwk, DrvPalette *palette_pars);
-    long CDECL (*get_colour)(Virtual *vwk, long colours);
+        long CDECL (*get_colour)(Virtual *vwk, long colours);
         void CDECL (*set_pixel)(Virtual *vwk, MFDB *mfdb, long x, long y, long colour);
         long CDECL (*get_pixel)(Virtual *vwk, MFDB *mfdb, long x, long y);
         long CDECL (*line)(Virtual *vwk, DrvLine *pars);

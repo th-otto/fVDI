@@ -818,6 +818,3 @@ FT_END_HEADER
 
 
 #endif /* __FTOPTION_H__ */
-
-
-/* END */

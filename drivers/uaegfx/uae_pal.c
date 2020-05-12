@@ -37,9 +37,10 @@
 
 long CDECL c_get_colour(Virtual *vwk, long colour)
 {
-	short foreground, background;
 	Colour *local_palette, *global_palette;
 	Colour *fore_pal, *back_pal;
+    unsigned short foreground, background;
+    unsigned short *realp;
 
 	KDEBUG(("c_get_colour colour=%ld\n", colour));
 
@@ -59,9 +60,11 @@ long CDECL c_get_colour(Virtual *vwk, long colour)
 			back_pal = global_palette;
 	}
 
-	foreground = *(short_ALIAS *)&fore_pal[(short)colour].real;
-	background = *(short_ALIAS *)&back_pal[colour >> 16].real;
-	return ((long) background << 16) | (long) foreground;
+    realp = (unsigned short *)&fore_pal[(short)colour].real;
+	foreground = *realp;
+	realp = (unsigned short *)&back_pal[colour >> 16].real;
+	background = *realp;
+	return ((unsigned long) background << 16) | (unsigned long) foreground;
 }
 
 
@@ -71,6 +74,7 @@ void CDECL c_set_colours(Virtual *vwk, long start, long entries, unsigned short 
 	unsigned short component;
 	unsigned long tc_word;
 	int i;
+    short *realp;
 	
 	KDEBUG(("c_set_colours start=%ld entries=%ld\n", start, entries));
 
@@ -99,7 +103,8 @@ void CDECL c_set_colours(Virtual *vwk, long start, long entries, unsigned short 
 			tc_word = ((tc_word & 0x000000ff) << 24) | ((tc_word & 0x0000ff00) <<  8) |
 			          ((tc_word & 0x00ff0000) >>  8) | ((tc_word & 0xff000000) >> 24);
 #endif
-			*(short_ALIAS *)&palette[start + i].real = tc_word;
+			realp = (short *)&palette[start + i].real;
+			*realp = tc_word;
 		}
 	} else {
 		for(i = 0; i < entries; i++) {
@@ -122,8 +127,8 @@ void CDECL c_set_colours(Virtual *vwk, long start, long entries, unsigned short 
 #if NOVA
 			tc_word = (tc_word << 8) | (tc_word >> 8);
 #endif
-			*(short_ALIAS *)&palette[start + i].real = tc_word;
+			realp = (short *)&palette[start + i].real;
+			*realp = tc_word;
 		}
 	}
 }
-

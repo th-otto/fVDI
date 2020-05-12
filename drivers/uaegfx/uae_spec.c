@@ -27,8 +27,6 @@
 #include "relocate.h"
 #include "uaegfx.h"
 #include "uaelib.h"
-
-#include "driver.h"
 #include "string/memset.h"
 
 static char r_16[] = { 5, 11, 12, 13, 14, 15 };
@@ -181,13 +179,13 @@ long check_token(char *token, const char **ptr)
             *options[i].var.s += -1 + 2 * normal;
             return 1;
          case 3:
-           if (!(*ptr = access->funcs.skip_space(*ptr)))
-           {
-              ;  /* *********** Error, somehow */
-           }
-           *ptr = access->funcs.get_token(*ptr, token, 80);
-           *options[i].var.s = token[0];
-           return 1;
+            if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
+            {
+               ;  /* *********** Error, somehow */
+            }
+            *ptr = access->funcs.get_token(*ptr, token, 80);
+            *options[i].var.s = token[0];
+            return 1;
          }
       }
    }

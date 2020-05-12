@@ -228,7 +228,7 @@ $(TARGET): $(OBJS)
 	$(AM_V_AR)$(AR) cr $@ $(OBJS); $(RANLIB) $@
 
 clean::
-	$(RM) $(OBJS) $(TARGET)
+	$(RM) *.o *.a
 
 install::
 	@:

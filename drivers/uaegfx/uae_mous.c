@@ -33,11 +33,11 @@ static int mouse_visible = 0;
 static Mouse *pmouse;
 
 /* MFDB used to draw the mouse */
-static MFDB mouse_mfdb = {NULL, 16, 16, 1, 1, 1, { 0, 0, 0 }};
+static MFDB mouse_mfdb = { NULL, 16, 16, 1, 1, 1, { 0, 0, 0 } };
 
 /* We must save the mouse background */
 static short backup_data[16*16];
-static MFDB mouse_backup_mfdb = {backup_data, 16, 16, 1, 0, 16, { 0, 0, 0 }};
+static MFDB mouse_backup_mfdb = { backup_data, 16, 16, 1, 0, 16, { 0, 0, 0 } };
 static short backup_x, backup_y, backup_w, backup_h;
 
 static void clip_mouse(Virtual *vwk, short x, short y, short *pw, short *ph)
@@ -50,7 +50,7 @@ static void clip_mouse(Virtual *vwk, short x, short y, short *pw, short *ph)
 	*pw = x + w > screen_w ? screen_w - x : w;
 	*ph = y + h > screen_h ? screen_h - y : h;
 }
- 
+
 static long draw_mouse(Virtual *vwk, short x, short y)
 {
 	short w, h;

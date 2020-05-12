@@ -27,6 +27,7 @@
 #include "uaegfx.h"
 #include "uaelib.h"
 
+
 /*
  * Make it as easy as possible for the C compiler.
  * The current code is written to produce reasonable results with Lattice C.
@@ -209,7 +210,7 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h, short *patt
 {
 	Workstation *wk;
 	short *addr, *addr_fast;
-	long colours;
+    long colours;
 	short foreground, background;
   	int line_add;
 	long pos;
@@ -226,8 +227,8 @@ long CDECL c_fill_area(Virtual *vwk, long x, long y, long w, long h, short *patt
 	}
 
 	colours = c_get_colour(vwk, colour);
-	foreground = colours;
-	background = colours >> 16;
+    foreground = colours;
+    background = colours >> 16;
 
 	wk = vwk->real_address;
 

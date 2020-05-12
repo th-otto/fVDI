@@ -30,6 +30,7 @@
 #define PIXEL		short
 #define PIXEL_SIZE	sizeof(PIXEL)
 
+
 /*
  * Make it as easy as possible for the C compiler.
  * The current code is written to produce reasonable results with Lattice C.
@@ -153,7 +154,7 @@ long CDECL c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *
 {
 	Workstation *wk;
 	PIXEL *src_addr, *dst_addr;
-	long colours;
+    long colours;
 	short foreground, background;
 	int src_wrap, dst_wrap;
 	int src_line_add, dst_line_add;
@@ -164,8 +165,8 @@ long CDECL c_expand_area(Virtual *vwk, MFDB *src, long src_x, long src_y, MFDB *
 	wk = vwk->real_address;
 
 	colours = c_get_colour(vwk, colour);
-	foreground = colours;
-	background = colours >> 16;
+    foreground = colours;
+    background = colours >> 16;
 
 	src_wrap = (long)src->wdwidth * 2;		/* Always monochrome */
 	src_addr = src->address;

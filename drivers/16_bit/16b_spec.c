@@ -168,7 +168,7 @@ static long set_mode(const char **ptr)
     if (access->funcs.equal(token, "key"))
         mode_no = access->funcs.misc(0, 0, 0) - '0';    /* Fetch key value */
     else if (!token[1])
-        mode_no = access->funcs.atol(token);    /* Single character mode */
+        mode_no = access->funcs.atol(token);            /* Single character mode */
     if (mode_no != -1)
         tokenptr = preset[mode_no];
     else
@@ -185,8 +185,10 @@ static long set_aesbuf(const char **ptr)
 {
     char token[80];
 
-    if (!(*ptr = access->funcs.skip_space(*ptr)))
+    if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
+    {
         ;                               /* *********** Error, somehow */
+    }
     *ptr = access->funcs.get_token(*ptr, token, 80);
     aes_buffer = access->funcs.atol(token);
 
@@ -197,8 +199,10 @@ static long set_screen(const char **ptr)
 {
     char token[80];
 
-    if (!(*ptr = access->funcs.skip_space(*ptr)))
+    if ((*ptr = access->funcs.skip_space(*ptr)) == NULL)
+    {
         ;                               /* *********** Error, somehow */
+    }
     *ptr = access->funcs.get_token(*ptr, token, 80);
     old_screen = access->funcs.atol(token);
 
@@ -312,9 +316,10 @@ long CDECL initialize(Virtual *vwk)
     if (loaded_palette)
         access->funcs.copymem(loaded_palette, default_vdi_colors, 256 * 3 * sizeof(short));
     if ((old_palette_size = wk->screen.palette.size) != 256)
-    {                                   /* Started from different graphics mode? */
+    {
+        /* Started from different graphics mode? */
         old_palette_colours = wk->screen.palette.colours;
-        wk->screen.palette.colours = (Colour *) access->funcs.malloc(256L * sizeof(Colour), 3); /* Assume malloc won't fail. */
+        wk->screen.palette.colours = (Colour *)access->funcs.malloc(256L * sizeof(Colour), 3); /* Assume malloc won't fail. */
         if (wk->screen.palette.colours)
         {
             wk->screen.palette.size = 256;
@@ -331,18 +336,19 @@ long CDECL initialize(Virtual *vwk)
 
 #if 0
     if ((old_palette_size = wk->screen.palette.size) != 256)
-    {                                   /* Started from different graphics mode? */
+    {
+        /* Started from different graphics mode? */
         wk->screen.palette.size = 256;
         old_palette_colours = wk->screen.palette.colours;
-        wk->screen.palette.colours = (Colour *) access->funcs.malloc(256 * sizeof(Colour), 3);  /* Assume malloc won't fail. */
+        wk->screen.palette.colours = (Colour *)access->funcs.malloc(256 * sizeof(Colour), 3);  /* Assume malloc won't fail. */
         if (wk->screen.palette.colours)
         {
 #if 0
             for (i = 0; i < 256; i += old_palette_size) /* Fill out entire palette with the old colours */
-                access->funcs.copymem(old_palette_colours, &wk->screen.palette.colours[i],
-                    old_palette_size * sizeof(Colour));
+                access->funcs.copymem(old_palette_colours, &wk->screen.palette.colours[i], old_palette_size * sizeof(Colour));
 #else
-            if (*(short *) &c_set_colours != 0x4e75)    /* Look for C... */
+            pp = (short *)c_set_colours;
+            if (*pp != 0x4e75)    /* Look for C... */
                 c_initialize_palette(vwk, 0, 256, default_vdi_colors, wk->screen.palette.colours);
             else
                 initialize_palette(vwk, 0, 256, default_vdi_colors, wk->screen.palette.colours);
@@ -377,11 +383,11 @@ long CDECL initialize(Virtual *vwk)
 #else
         fast_w_bytes = wk->screen.wrap;
 #endif
-        buf = (char *) access->funcs.malloc((long) fast_w_bytes * wk->screen.mfdb.height + 255, 1);
+        buf = (char *)access->funcs.malloc((long)fast_w_bytes * wk->screen.mfdb.height + 255, 1);
         if (buf)
         {
             wk->screen.shadow.buffer = buf;
-            wk->screen.shadow.address = (void *) (((long) buf + 255) & 0xffffff00L);
+            wk->screen.shadow.address = (void *)(((long)buf + 255) & 0xffffff00L);
             wk->screen.shadow.wrap = fast_w_bytes;
         } else
         {

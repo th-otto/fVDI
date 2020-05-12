@@ -24,7 +24,7 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 #endif
 {
 #if !LOCAL_PTR
-	UWORD *dst, *save_w, *mask_start;
+	unsigned short *dst, *save_w, *mask_start;
 #endif
 	long state;
 	static long old_colours = 0;
@@ -59,11 +59,11 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 	if (state && !no_restore && (((long) mouse == 0) || ((long) mouse == 2)))
 	{									/* Move or Hide */
 #if LOCAL_PTR
-		UWORD *dst, *save_w;
+		unsigned short *dst, *save_w;
 #endif
 		short h, wrap;
 		wrap = wk->screen.wrap - PLANES * 2;
-		dst = (UWORD *) ((long) wk->screen.mfdb.address + (state & 0x00ffffffL));
+		dst = (unsigned short *) ((long) wk->screen.mfdb.address + (state & 0x00ffffffL));
 		h = ((unsigned long) state >> 24) & 0x0f;
 		save_w = saved;
 
@@ -98,7 +98,7 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 					*(dst + PLANES - 1) = *save_w++;
 					break;
 				}
-				dst = (UWORD *) ((long) dst + wrap);
+				dst = (unsigned short *) ((long) dst + wrap);
 			} while (--h >= 0);
 		} else
 		{								/* Word */
@@ -123,7 +123,7 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 					*dst++ = *save_w++;
 					break;
 				}
-				dst = (UWORD *) ((long) dst + wrap);
+				dst = (unsigned short *) ((long) dst + wrap);
 			} while (--h >= 0);
 		}
 
@@ -133,9 +133,9 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 	if (((long) mouse == 0) || ((long) mouse == 3))
 	{									/* Move or Show */
 #if LOCAL_PTR
-		UWORD *dst, *save_w, *mask_start;
+		unsigned short *dst, *save_w, *mask_start;
 #endif
-		UWORD cdb_fgbg;
+		unsigned short cdb_fgbg;
 		short h, plane, wrap, shft, op;
 
 #if !NO_W
@@ -193,7 +193,7 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 		}
 
 		wrap = (wk->screen.wrap >> 1) - PLANES;
-		dst = (UWORD *) ((long) wk->screen.mfdb.address +
+		dst = (unsigned short *) ((long) wk->screen.mfdb.address +
 						 (short) y * (long) wk->screen.wrap + (short) (x >> 4) * (long) PLANES * 2);
 
 		save_w = saved;
@@ -214,7 +214,7 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 		{
 		case 0:						/* Long word */
 			{
-				ULONG bits, fg, bg;
+				unsigned long bits, fg, bg;
 
 				cdb_fgbg = colours;
 				shft = 16 - shft;
@@ -230,9 +230,9 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 					plane = PLANES - 1;
 					do
 					{
-						bits = *(ULONG *) dst & 0xffff0000;
-						bits += *(ULONG *) (dst + PLANES) >> 16;
-						*(ULONG *) save_w = bits;
+						bits = *(unsigned long *) dst & 0xffff0000;
+						bits += *(unsigned long *) (dst + PLANES) >> 16;
+						*(unsigned long *) save_w = bits;
 						save_w += 2;
 
 						cdb_fgbg = (cdb_fgbg >> 1) | (cdb_fgbg << 15);
@@ -247,9 +247,9 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 						else
 							bits &= ~fg;
 
-						*(dst + PLANES) = (UWORD) bits;
+						*(dst + PLANES) = (unsigned short) bits;
 						bits = (bits << 16) | (bits >> 16);
-						*dst++ = (UWORD) bits;
+						*dst++ = (unsigned short) bits;
 
 					} while (--plane >= 0);
 					dst += wrap;
@@ -259,7 +259,7 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 
 		case 1:						/* Right word only */
 			{
-				UWORD bits, fg, bg;
+				unsigned short bits, fg, bg;
 
 				cdb_fgbg = colours;
 				shft = 16 - shft;
@@ -300,7 +300,7 @@ static long CDECL c_mouse_draw_8(Workstation * wk, long x, long y, Mouse * mouse
 
 		default:						/* Left word only */
 			{
-				UWORD bits, fg, bg;
+				unsigned short bits, fg, bg;
 
 				cdb_fgbg = colours;
 

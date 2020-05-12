@@ -70,7 +70,4 @@ typedef int BOOL;
 /* Strict aliasing counter-measures */
 typedef short short_ALIAS MAY_ALIAS;
 
-#undef NULL
-#define NULL ((void*)0)
-
 #endif /* TYPES_H */

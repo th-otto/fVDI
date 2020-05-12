@@ -663,9 +663,9 @@ _lineA:
 	addq.l	#8,a7
 	movem.l	(a7)+,d0-d2/a0-a2
 .no_debug2:
+	tst.w	d0
   endc
 
-	tst.w	d0
 	beq	.continue_lineA		; Need for font address in a1
 	move.l	_screen_wk,d0
 	beq	.continue_lineA

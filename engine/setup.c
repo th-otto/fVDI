@@ -54,12 +54,13 @@ Virtual *initialize_vdi(void)
      *                The function table is the only part that actually exists in memory.
      * non_fvdi_vwk - A dummy virtual workstation with the above as 'base'.
      *                Only the pointer to the above and the 'standard handle' (-1) actually exists.
-     *                Used for all unallocated entries in the handled table.
+     *                Used for all unallocated entries in the handle table.
      */
 
     if ((tmp = (char *) malloc(sizeof(Workstation *) + sizeof(short) + 257 * sizeof(Function))) == NULL)
         return 0;
 
+    /* func_tab_start is the offset of the function table in the block just allocated */
     func_tab_start = (long) &((Workstation *) tmp)->function - (long) tmp - sizeof(Function);
     dummy_wk = (Workstation *) (tmp + sizeof(Workstation *) + sizeof(short) - func_tab_start);
     dummy_vwk = (Virtual *) tmp;

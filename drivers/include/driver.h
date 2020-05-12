@@ -90,6 +90,10 @@ long CDECL init(Access *_access, Driver *driver, Virtual *vwk, char *);
 extern const Mode *graphics_mode;
 extern short accel_s;	/* Bit vector of available assembly acceleration routines */
 extern short accel_c;	/* The same for C versions */
+/*
+ * some drivers hack this to match the configuration,
+ * so it can't be const
+ */
 extern char driver_name[];
 
 /*
@@ -110,7 +114,7 @@ extern long CDECL (*blit_area_r)(Virtual *vwk, MFDB *src, long src_x, long src_y
 extern long CDECL (*text_area_r)(Virtual *vwk, short *text, long length, long dst_x, long dst_y, short *offsets);
 extern long CDECL (*mouse_draw_r)(Workstation *wk, long x, long y, Mouse *mouse);
 
-extern void CDECL check_linea(Workstation *);
+void CDECL check_linea(Workstation *);
 
 long CDECL initialize(Virtual *vwk);
 long check_token(char *, const char **);
