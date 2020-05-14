@@ -487,7 +487,6 @@ vqt_fontinfo:
 	uses_d1
 	move.l a1,-(a7)
 	move.l d2,-(a7)
-	movem.l	d2/a1,-(a7)
 	movem.l	intout(a1),a1-a2	; Get ptsout too
 	move.l	a2,-(a7)
 	move.l	a1,-(a7)
