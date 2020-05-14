@@ -35,11 +35,7 @@ subdir      = ft2
 
 include $(top_srcdir)/CONFIGVARS
 
-ifneq ($(stdlib_srcdir),)
-CFLAGS = $(CPUOPTS) -DFT2_BUILD_LIBRARY $(OPTS) $(FT2_WARNINGS) -I$(srcdir)/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include -I$(stdlib_srcdir)/include
-else
 CFLAGS = $(CPUOPTS) -DFT2_BUILD_LIBRARY $(OPTS) $(FT2_WARNINGS) -I$(srcdir)/include -I$(top_srcdir)/modules/include $(FT2_DEBUG_OPTS) -I$(ft2_srcdir)/src -I$(ft2_srcdir)/include
-endif
 
 #
 # FreeType2 library base
@@ -188,6 +184,9 @@ ftbzip2.o: $(ft2_srcdir)/src/bzip2/ftbzip2.c
 ftgzip.o: $(ft2_srcdir)/src/gzip/ftgzip.c
 	$(AM_V_CC)$(CC) -c $(CFLAGS) -o $@ $<
 
+ftlzw.o: $(ft2_srcdir)/src/lzw/ftlzw.c
+	$(AM_V_CC)$(CC) -c $(CFLAGS) -o $@ $<
+
 #
 # FreeType2 library PFR font driver
 #
@@ -212,10 +211,10 @@ PSOBJ = psaux.o psnames.o pshinter.o
 
 RASTEROBJ = raster.o smooth.o
 
-#GZOBJ = ftgzip.o
+GZOBJ = ftgzip.o ftlzw.o
 
 # pcf.o  - needs GZLib and ZLib
-#PCFOBJ = pcf.o
+PCFOBJ = pcf.o
 FONTDOBJ = cff.o type1.o type42.o type1cid.o truetype.o bdf.o pfr.o winfnt.o $(PCFOBJ)
 ifneq (,$(wildcard $(ft2_srcdir)/src/gemfonts/gemfnt.c))
 FONTDOBJ += gemfnt.o

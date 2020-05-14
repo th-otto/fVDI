@@ -355,7 +355,13 @@ _fVDI:
 
 _linea_fonts:
 	movem.l		d2/a2,-(a7)
+
+	ifne mcoldfire
+	dc.w		$a920
+	else
 	dc.w		$a000
+	endc
+
 	move.l		a1,d0
 	movem.l		(a7)+,d2/a2
 	rts

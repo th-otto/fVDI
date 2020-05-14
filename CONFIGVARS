@@ -72,12 +72,6 @@ ifneq (,$(wildcard $(top_srcdir)/modules/ft2/freetype))
 ft2_srcdir     = $(top_srcdir)/modules/ft2/freetype
 endif
 
-ifeq ($(DEBUG),yes)
- FT2_DEBUG_OPTS = -I$(top_srcdir)/modules/ft2/devel
-else
- FT2_DEBUG_OPTS =
-endif
-
 
 #
 # for silent make rules

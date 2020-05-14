@@ -21,7 +21,7 @@
 	xdef	_set_stack_call_lvplp
 	xdef	_set_stack_call_lvppl
 
-	
+
 	text
 
 * long set_stack_call(new_stack, stack_size, function, par1, par2, par3, par4)
@@ -125,7 +125,7 @@ _lib_vdi_pp:
 	move.l	(a7)+,a2
 	rts
  endc
-	
+
 _Mxalloc:
 	move.l	a2,-(a7)
 	move.w	8+4(a7),-(a7)
@@ -255,5 +255,5 @@ _Fsfirst:
 	addq.l	#8,a7
 	move.l	(a7)+,a2
 	rts
-	
+
 	end

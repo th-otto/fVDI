@@ -1,5 +1,5 @@
   ifne gas
-	.include "pixelmac.gnu"
+	include "pixelmac.gnu"
   else
    ifne lattice
 	include "pixelmac.dev"

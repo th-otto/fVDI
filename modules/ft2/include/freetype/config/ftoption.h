@@ -198,7 +198,7 @@ FT_BEGIN_HEADER
    *   Define this macro if you want to enable this 'feature'.  See also the
    *   macro `FT_CONFIG_OPTION_SYSTEM_ZLIB` below.
    */
-/* #define FT_CONFIG_OPTION_USE_ZLIB */
+#define FT_CONFIG_OPTION_USE_ZLIB
 
 
   /**************************************************************************
@@ -634,7 +634,7 @@ FT_BEGIN_HEADER
    * Do not `#undef` this macro here, since the build system might define it
    * for certain configurations only.
    */
-#define TT_CONFIG_OPTION_BYTECODE_INTERPRETER
+/* #define TT_CONFIG_OPTION_BYTECODE_INTERPRETER */
 
 
   /**************************************************************************

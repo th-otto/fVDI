@@ -1,5 +1,5 @@
   ifne gas
-	.include "macros.gnu"
+	include "macros.gnu"
   else
    ifne lattice
 	include "macros.dev"

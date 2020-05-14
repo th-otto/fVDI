@@ -5,7 +5,7 @@ freetype 2.2.1   406171      410414      410160
 freetype 2.5.2   524021      529706      529020
 freetype 2.8.0   516004      522104      521039
 freetype 2.10.1  532490      537092      538098
-                                         
+
                  gcc 4.6.4   gcc 7.5.0   gcc 9.3.1
 
 16_bit.sys:      18501       18070       17779
@@ -23,3 +23,7 @@ TT_CONFIG_OPTION_BYTECODE_INTERPRETER: ~20.5k
 TT_CONFIG_OPTION_BDF: ~1k
 T1_CONFIG_OPTION_NO_MM_SUPPORT: ~3k
 AF_CONFIG_OPTION_CJK: ~5k
+
+BDF module:    ~17k
+PCF module:    ~26k
+WINFNT module: ~3k

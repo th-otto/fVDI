@@ -13,7 +13,7 @@
 	xdef	_Fopen,_Fread,_Fclose,_Fseek,_Fcreate,_Fwrite
 	xdef	_Fsetdta,_Fsfirst,_Fsnext
 	xdef	_Supexec
-	
+
 	xdef	_lib_vdi_s,_lib_vdi_sp,_lib_vdi_spppp,_lib_vdi_pp
 
 	xdef	_set_stack_call_pvlpl
@@ -48,7 +48,7 @@ _set_stack_call_lvppl:
 	move.l	4(a7),a7
 	move.l	a0,-(a7)
 	move.l	a2,-(a7)
-	
+
 	move.l	8(a0),-(a7)
 	lea	4*4+16(a0),a1	; Copy 4 longs worth of actual parameters
 	move.l	-(a1),-(a7)
@@ -90,10 +90,10 @@ __ulmod:
 
 __uldiv:
 	jmp	_uldiv
-	
+
 __ldiv:
 	jmp	_ldiv
-	
+
 __lmul:
 	jmp	_lmul
 
@@ -265,7 +265,7 @@ _Fsfirst:
 	addq.l	#8,a7
 	move.l	(a7)+,a2
 	rts
-	
+
 _Fsnext:
 	move.l	a2,-(a7)
 	move.w	#$4f,-(a7)
@@ -273,5 +273,5 @@ _Fsnext:
 	addq.l	#2,a7
 	move.l	(a7)+,a2
 	rts
-	
+
 	end
