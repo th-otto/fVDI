@@ -396,7 +396,7 @@ FT_BEGIN_HEADER
    * incrementally as the document is parsed, such as the Ghostscript
    * interpreter for the PostScript language.
    */
-#define FT_CONFIG_OPTION_INCREMENTAL
+/* #define FT_CONFIG_OPTION_INCREMENTAL */
 
 
   /**************************************************************************
@@ -745,7 +745,7 @@ FT_BEGIN_HEADER
   /*   }                                                                   */
   /*                                                                       */
 /* if FREETYPE_VERSION < 2006003L */
-/* #define TT_CONFIG_OPTION_UNPATENTED_HINTING */
+#define TT_CONFIG_OPTION_UNPATENTED_HINTING
 
 
   /*************************************************************************/
@@ -959,7 +959,7 @@ FT_BEGIN_HEADER
    * Compile 'autofit' module with CJK (Chinese, Japanese, Korean) script
    * support.
    */
-#define AF_CONFIG_OPTION_CJK
+/* #define AF_CONFIG_OPTION_CJK */
 
 
 
