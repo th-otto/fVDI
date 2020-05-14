@@ -29,13 +29,13 @@
 #include "uaelib.h"
 #include "string/memset.h"
 
-static char r_16[] = { 5, 11, 12, 13, 14, 15 };
-static char g_16[] = { 6,  5,  6,  7,  8,  9, 10 };
-static char b_16[] = { 5,  0,  1,  2,  3,  4 };
-static char none[] = { 0};
+static char const r_16[] = { 5, 11, 12, 13, 14, 15 };
+static char const g_16[] = { 6,  5,  6,  7,  8,  9, 10 };
+static char const b_16[] = { 5,  0,  1,  2,  3,  4 };
+static char const none[] = { 0 };
 
 static Mode const mode[1] = {
-	{ 16, CHUNKY | CHECK_PREVIOUS | TRUE_COLOUR, {r_16, g_16, b_16, none, none, none}, 0,  2, 2, 1 }
+    { 16, CHUNKY | CHECK_PREVIOUS | TRUE_COLOUR, {r_16, g_16, b_16, none, none, none}, 0,  2, 2, 1 }
 };
 
 char driver_name[] = "uaegfx.card";

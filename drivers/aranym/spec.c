@@ -8,23 +8,23 @@
 #include "os.h"
 
 /* color bit organization */
-static char const none[]  = { 0 };
+static char const none[] = { 0 };
 
-static char const r_8[]   = { 8 };
-static char const g_8[]   = { 8 };
-static char const b_8[]   = { 8 };
+static char const r_8[] = { 8 };
+static char const g_8[] = { 8 };
+static char const b_8[] = { 8 };
 
-static char const r_16[]  = { 5, 3, 4, 5, 6, 7 };
-static char const g_16[]  = { 6, 13, 14, 15, 0, 1, 2 };
-static char const b_16[]  = { 5, 8, 9, 10, 11, 12 };
+static char const r_16[] = { 5, 3, 4, 5, 6, 7 };
+static char const g_16[] = { 6, 13, 14, 15, 0, 1, 2 };
+static char const b_16[] = { 5, 8, 9, 10, 11, 12 };
 
 static char const r_16f[] = { 5, 11, 12, 13, 14, 15 };
 static char const g_16f[] = { 6, 5, 6, 7, 8, 9, 10 };
 static char const b_16f[] = { 5, 0, 1, 2, 3, 4 };
 
-static char const r_32[]  = { 8, 16, 17, 18, 19, 20, 21, 22, 23 };
-static char const g_32[]  = { 8,  8,  9, 10, 11, 12, 13, 14, 15 };
-static char const b_32[]  = { 8,  0,  1,  2,  3,  4,  5,  6,  7 };
+static char const r_32[] = { 8, 16, 17, 18, 19, 20, 21, 22, 23 };
+static char const g_32[] = { 8,  8,  9, 10, 11, 12, 13, 14, 15 };
+static char const b_32[] = { 8,  0,  1,  2,  3,  4,  5,  6,  7 };
 
 static char const r_32f[] = { 8,  8,  9, 10, 11, 12, 13, 14, 15 };
 static char const g_32f[] = { 8, 16, 17, 18, 19, 20, 21, 22, 23 };
@@ -80,7 +80,6 @@ static Mode const mode[] =                          /* FIXME: big and little end
     { 32, CHECK_PREVIOUS | CHUNKY | TRUE_COLOUR, { r_32, g_32, b_32, none, none, none }, 0, 2, 2, 0x81 }
 };
 
-
 char driver_name[] = "NatFeat/ARAnyM 2005-01-24 (xx bit)";
 
 static struct {
@@ -128,10 +127,10 @@ static long set_scrninfo(const char **ptr);
 
 
 static Option const options[] = {
-    {"mode", { set_mode }, -1},             /* mode WIDTHxHEIGHTxDEPTH@FREQ */
-    {"scrninfo", { set_scrninfo }, -1},     /* scrninfo fb, make vq_scrninfo return values regarding actual fb layout */
-    {"debug", { &debug }, 2},               /* debug, turn on debugging aids */
-    {"irq", { &irq }, 1}                    /* irq, turn on IRQ handling of events */
+    {"mode", { set_mode }, -1 },            /* mode WIDTHxHEIGHTxDEPTH@FREQ */
+    {"scrninfo", { set_scrninfo }, -1 },    /* scrninfo fb, make vq_scrninfo return values regarding actual fb layout */
+    {"debug", { &debug }, 2 },              /* debug, turn on debugging aids */
+    {"irq", { &irq }, 1 },                  /* irq, turn on IRQ handling of events */
 };
 
 
@@ -245,8 +244,8 @@ static int set_bpp(int bpp)
         get_colours_r = c_get_colours_32;
         get_colour_r = c_get_colour_32;
         break;
-        /* indexed color modes */
     default:
+        /* indexed color modes */
         set_colours_r = c_set_colours_8;
         get_colours_r = c_get_colours_8;
         get_colour_r = c_get_colour_8;

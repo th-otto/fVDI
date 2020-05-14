@@ -36,8 +36,8 @@ SSRC = \
 
 CSRC = \
 	init.c \
-	printf.c \
 	colours.c \
+	printf.c \
 	spec.c \
 	palette.c \
 	fill.c \

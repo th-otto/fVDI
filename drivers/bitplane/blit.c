@@ -70,8 +70,6 @@ struct blit_frame
 #define NFSR    0x40
 #define SKEW    0x0f
 
-#define GetMemW(addr) ((unsigned long) *(unsigned short *)(addr))
-#define SetMemW(addr, val) *(unsigned short *)(addr) = val
 
 
 /* Blitter registers */
@@ -273,12 +271,12 @@ static void do_blit_short(struct blit *blt)
         case 8:
             blt_dst_in = *dst_addr;
             blt_src_out = ((blt_src_out & end_1) | blt_dst_in) ^ end_1;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 3:
             blt_dst_in = *dst_addr;
             blt_src_out = ((blt_src_out ^ blt_dst_in) & end_1) ^ blt_dst_in;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 4:
             *dst_addr &= ~(blt_src_out & end_1);
@@ -306,12 +304,12 @@ static void do_blit_short(struct blit *blt)
         case 11:
             blt_dst_in = *dst_addr ^ end_1;
             blt_src_out = (blt_src_out & end_1) | blt_dst_in;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 12:
             blt_dst_in = *dst_addr | end_1;
             blt_src_out = (blt_src_out & end_1) ^ blt_dst_in;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 15:
             *dst_addr |= end_1;
@@ -426,7 +424,7 @@ static void do_blit(struct blit *blt)
         case 3:
             blt_dst_in = *dst_addr;
             blt_src_out = ((blt_src_out ^ blt_dst_in) & end_1) ^ blt_dst_in;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 4:
             *dst_addr &= ~(blt_src_out & end_1);
@@ -454,12 +452,12 @@ static void do_blit(struct blit *blt)
         case 11:
             blt_dst_in = *dst_addr ^ end_1;
             blt_src_out = (blt_src_out & end_1) | blt_dst_in;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 12:
             blt_dst_in = *dst_addr | end_1;
             blt_src_out = (blt_src_out & end_1) ^ blt_dst_in;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 15:
             *dst_addr |= end_1;
@@ -550,7 +548,7 @@ static void do_blit(struct blit *blt)
                 unreachable();
             }
 
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             dst_addr += dst_x_inc >> 1;
         }
 
@@ -596,12 +594,12 @@ static void do_blit(struct blit *blt)
         case 8:
             blt_dst_in = *dst_addr;
             blt_src_out = ((blt_src_out & end_1) | blt_dst_in) ^ end_1;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 3:
             blt_dst_in = *dst_addr;
             blt_src_out = ((blt_src_out ^ blt_dst_in) & end_1) ^ blt_dst_in;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 4:
             *dst_addr &= ~(blt_src_out & end_1);
@@ -629,12 +627,12 @@ static void do_blit(struct blit *blt)
         case 11:
             blt_dst_in = *dst_addr ^ end_1;
             blt_src_out = (blt_src_out & end_1) | blt_dst_in;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 12:
             blt_dst_in = *dst_addr | end_1;
             blt_src_out = (blt_src_out & end_1) ^ blt_dst_in;
-            SetMemW(dst_addr, blt_src_out);
+            *dst_addr = blt_src_out;
             break;
         case 15:
             *dst_addr |= end_1;

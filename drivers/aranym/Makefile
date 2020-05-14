@@ -59,9 +59,6 @@ OBJECTS = $(SSRC_GNU:.gnu=.gnu.o) $(CSRC:.c=.o)
 $(TARGET): depend $(OBJECTS) $(LIBFILES)
 	$(AM_V_LD)$(LD) -o $@ $(OBJECTS) $(LDFLAGS) $(LIBS)
 
-printf.o: printf.c
-	$(AM_V_CC)$(CC) $(CFLAGS) -DFVDI_DEBUG -c -o $@ $<
-
 depend: $(CSRC)
 #	"$(CC) -MM" does not seem able to keep track of the directory of the
 #	object file, so dependencies of files outside this directory are

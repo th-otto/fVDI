@@ -86,24 +86,7 @@ static const char *const preset[] = {
     "1920x1080x16@60 ",
     "2560x1440x16@60 "
 };
-
-long set_mode(const char **ptr);
 #endif
-
-static Option const options[] = {
-#if 0
-    {"mode",       { set_mode }, -1 },           /* mode key/<n>/WIDTHxHEIGHTxDEPTH@FREQ */
-    {"aesbuf",     { set_aesbuf }, -1 },         /* aesbuf address, set AES background buffer address */
-    {"screen",     { set_screen }, -1 },         /* screen address, set old screen address */
-    {"imgcache",   { &cache_img }, 1 },          /* imgcache, turn on caching of images blitted to the screen */
-    {"screencache", { &cache_from_screen }, 1 }, /* screencache, turn on caching of images blitted from the screen */
-#endif
-    {"shadow",     { &shadow }, 1 },             /* shadow, use a FastRAM buffer */
-    {"debug",      { &debug }, 2 },              /* debug, turn on debugging aids */
-    {"fixshape",   { &fix_shape }, 1 },          /* fixed shape; do not allow mouse shape changes */
-    {"norestore",  { &no_restore }, 1 },
-};
-
 
 #if 0
 static const char *get_num(const char *token, short *num)
@@ -209,6 +192,21 @@ static long set_screen(const char **ptr)
     return 1;
 }
 #endif
+
+
+static Option const options[] = {
+#if 0
+    {"mode",       { set_mode }, -1 },           /* mode key/<n>/WIDTHxHEIGHTxDEPTH@FREQ */
+    {"aesbuf",     { set_aesbuf }, -1 },         /* aesbuf address, set AES background buffer address */
+    {"screen",     { set_screen }, -1 },         /* screen address, set old screen address */
+    {"imgcache",   { &cache_img }, 1 },          /* imgcache, turn on caching of images blitted to the screen */
+    {"screencache", { &cache_from_screen }, 1 }, /* screencache, turn on caching of images blitted from the screen */
+#endif
+    {"shadow",     { &shadow }, 1 },             /* shadow, use a FastRAM buffer */
+    {"debug",      { &debug }, 2 },              /* debug, turn on debugging aids */
+    {"fixshape",   { &fix_shape }, 1 },          /* fixed shape; do not allow mouse shape changes */
+    {"norestore",  { &no_restore }, 1 },
+};
 
 
 /*

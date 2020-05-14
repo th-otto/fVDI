@@ -24,4 +24,6 @@ void copymem_aligned(const void *s, void *d, long n);
 
 #define strlen(s) access->funcs.length(s)
 
+#include "stdio/printf.h"
+
 #endif

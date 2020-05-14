@@ -29,7 +29,7 @@ static char const blue[] = { 6 };
 static char const none[] = { 0 };
 
 static Mode const mode[1] = {
-	{ 1, CHECK_PREVIOUS, { red, green, blue, none, none, none}, 0, 0, 1, 1 }
+    { 1, CHECK_PREVIOUS, { red, green, blue, none, none, none}, 0, 0, 1, 1 }
 };
 
 char driver_name[] = "Bitplane (shadow)";

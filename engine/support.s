@@ -1,7 +1,7 @@
 *****
 * fVDI support routines
 *
-* Copyright 1997-2003, Johan Klockars 
+* Copyright 1997-2003, Johan Klockars
 * This software is licensed under the GNU General Public License.
 * Please, see LICENSE.TXT for further information.
 *****
@@ -96,12 +96,12 @@ asm_call_other:
 	move.l	control(a1),a0
 	move.w	handle(a0),-(a7)	; Remember original handle
 	move.w	d0,handle(a0)		; Point to handle from above (normally default physical workstation)
-	move.w	#$ffff,-(a7)		; Mark old stack
 	moveq	#$73,d0
 
 * Pretend the call was from this code
 * We need to check various values when the normal VDI returns
-
+ ifeq mcoldfire
+	move.w	#$ffff,-(a7)		; Mark old stack
 	move.w	#$88,-(a7)		; In case we're on >='020
 	pea	.vdi_ret(pc)
 	move.w	sr,-(a7)
@@ -119,7 +119,18 @@ asm_call_other:
 	move.w	(a7)+,handle(a0)
 ;	move.l	(a7)+,a0		; Workstation struct
 	rts
-
+ else
+	pea	.vdi_ret(pc)
+	move.w	sr,-(sp)
+	move.w	#0x4000,-(sp)
+	move.l	vdi_address(pc),-(sp)
+	rts
+.vdi_ret:
+	move.l	control(a1),a0
+	move.w	handle(a0),d0
+	move.w	(sp)+,handle(a0)
+	rts
+ endc
 
 * initialize_palette(Virtual *vwk, long start, long n, short requested[][3], Colour palette[])
 * Set palette colours
@@ -174,7 +185,32 @@ _cache_flush:
 	cmp.w	#30,d0
 	beq	is_030
 
+  ifeq	mcoldfire
 	dc.w	$f4f8		; cpusha bc
+  else
+	lea	-3 * 4(sp),sp
+	movem.l	d0-d1/a0,(sp)
+
+	; flush_and_invalidate_caches() stolen from BaS_gcc
+	clr.l	d0
+	clr.l	d1
+	move.l	d0,a0
+1:
+	; push cache line in a0
+	.word	0xf4e8		; cpushl bc,(a0) - portasm does not accept this instruction
+	lea	0x10(a0),a0	; increment index by 1
+	addq.l	#1,d1		; increment counter
+	cmpi.w	#512,d1		; sets done?
+	bne.s	1b		; no
+	clr.l	d1		; set counter to zero again
+	addq.l	#1,d0		; increment to next way
+	move.l	d0,a0		; 
+	cmpi.w	#4,d0		; finished flushing all 4 ways?
+	bne.s	1b
+
+	movem.l	(sp),d0-d1/a0
+	lea	3 * 4(sp),sp
+  endc 			; mcoldfire
 
 cache_end:
 	movem.l	(a7)+,d0-d1

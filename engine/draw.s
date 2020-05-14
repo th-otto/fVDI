@@ -130,7 +130,7 @@ v_bez:
 	addq.l	#2,a2 ; clear reserved intout values
 	clr.l	(a2)
 	clr.l	4(a2)
-	
+
 	move.l	control(a1),a2
 	move.w	#2,L_ptsout(a2)
 	move.w	#6,L_intout(a2)
@@ -259,7 +259,7 @@ c_v_pline:
 	or.w	vwk_line_ends_end(a0),d5
 	and.w	#1,d5
 	beq		no_arrow
-	
+
 	move.l	d0,d1
 	clr.l	-(a7)
 	bsr	asm_allocate_block
@@ -278,7 +278,7 @@ c_v_pline:
 	add.w	#16,a7
 	bsr	asm_free_block
 	addq.l	#8,a7
-	
+
 no_arrow:
 	movem.l	(a7)+,d2-d6
 	rts

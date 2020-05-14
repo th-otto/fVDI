@@ -145,60 +145,60 @@ static long file_cache(Virtual *vwk, const char **ptr);
 static long set_debug_file(Virtual *vwk, const char **ptr);
 
 static Option const options[] = {
-	{"path", { set_path }, -1},				/* path = str, where to look for fonts and drivers */
-	{"fonts", { load_fonts }, -1},			/* fonts = str, where to look for FreeType2 fonts */
-	{"debug", { &debug }, 2},				/* debug, turn on debugging aids */
-	{"waitkey", { wait_key }, -1},			/* waitkey n, wait for key press for n seconds */
-	{"exitkey", { exit_key }, -1},			/* exitkey c, quit fVDI if 'c' was pressed */
-	{"setkey", { &key_pressed }, 3},		/* setkey c, default to 'c' if no key was pressed */
-	{"swapkey", { swap_key }, -1},			/* swapkey, swap current key with the extra one */
-	{"casekey", { case_key }, -1},			/* casekey c label, go to :label if 'c' was pressed */
-	{"goto", { go_to }, -1},				/* goto label, go to :label */
-	{"echo", { echo_text }, -1},			/* echo str, write some text to the display */
-	{"booted", { &booted }, 1},				/* booted, fVDI really runs from the AUTO folder */
-	{"fakeboot", { &fakeboot }, 1},			/* fakeboot, pretend that fVDI runs from the AUTO folder */
-	{"oldmouse", { &oldmouse }, 1},			/* oldmouse, use only the previous VDI for mouse handling */
-	{"nvdifix", { &nvdifix }, 1},			/* nvdifix, patch NVDI for 'background' operation */
-	{"lineafix", { &lineafix }, 1},			/* lineafix, modify more lineA variables than normally */
-	{"xbiosfix", { &xbiosfix }, 1},			/* xbiosfix, return correct screen addresses from the XBIOS */
-	{"nopidalloc", { set_pid }, -1},		/* nopidalloc, don`t modify PID when allocating memory */
-	{"singlebend", { &singlebend }, 1},		/* singlebend, don't bend Trap #2 except at installation */
-	{"nomemlink", { &memlink }, 0},			/* nomemlink, don't maintain a list of allocated blocks of memory */
-	{"keep", { &keep }, 1},					/* keep, doesn't do anything at all currently */
+    {"path", { set_path }, -1 },            /* path = str, where to look for fonts and drivers */
+    {"fonts", { load_fonts }, -1 },         /* fonts = str, where to look for FreeType2 fonts */
+    {"debug", { &debug }, 2 },              /* debug, turn on debugging aids */
+    {"waitkey", { wait_key }, -1 },         /* waitkey n, wait for key press for n seconds */
+    {"exitkey", { exit_key }, -1 },         /* exitkey c, quit fVDI if 'c' was pressed */
+    {"setkey", { &key_pressed }, 3 },       /* setkey c, default to 'c' if no key was pressed */
+    {"swapkey", { swap_key }, -1 },         /* swapkey, swap current key with the extra one */
+    {"casekey", { case_key }, -1 },         /* casekey c label, go to :label if 'c' was pressed */
+    {"goto", { go_to }, -1 },               /* goto label, go to :label */
+    {"echo", { echo_text }, -1 },           /* echo str, write some text to the display */
+    {"booted", { &booted }, 1 },            /* booted, fVDI really runs from the AUTO folder */
+    {"fakeboot", { &fakeboot }, 1 },        /* fakeboot, pretend that fVDI runs from the AUTO folder */
+    {"oldmouse", { &oldmouse }, 1 },        /* oldmouse, use only the previous VDI for mouse handling */
+    {"nvdifix", { &nvdifix }, 1 },          /* nvdifix, patch NVDI for 'background' operation */
+    {"lineafix", { &lineafix }, 1 },        /* lineafix, modify more lineA variables than normally */
+    {"xbiosfix", { &xbiosfix }, 1 },        /* xbiosfix, return correct screen addresses from the XBIOS */
+    {"nopidalloc", { set_pid }, -1 },       /* nopidalloc, don`t modify PID when allocating memory */
+    {"singlebend", { &singlebend }, 1 },    /* singlebend, don't bend Trap #2 except at installation */
+    {"nomemlink", { &memlink }, 0 },        /* nomemlink, don't maintain a list of allocated blocks of memory */
+    {"keep", { &keep }, 1 },                /* keep, doesn't do anything at all currently */
 #if 0
-	{"alias", { &alias }, 0},				/* alias, doesn't do anything at all currently */
+    {"alias", { &alias }, 0 },              /* alias, doesn't do anything at all currently */
 #endif
-	{"disable", { &disabled }, 1},			/* disable, the fVDI magic number is never changed from 1969 to $73 */
-	{"novex", { &no_vex }, 1},				/* novex, disable all the vex_ functions */
-	{"width", { set_width }, -1},			/* width, set screen width in mm */
-	{"height", { set_height }, -1},			/* height, set screen height in mm */
-	{"blocks", { set_blocks }, -1},			/* blocks n, number of memory blocks to allocate */
-	{"blocksize", { set_block_size }, -1},	/* blocksize n, size of memory blocks in kbyte */
-	{"logsize", { set_log_size }, -1},		/* logsize n, size of log in kbyte */
-	{"arcsplit", { set_arc_split }, -1},	/* arcsplit n, % of largest ellipse radius to give # of lines to use */
-	{"arcmin", { set_arc_min }, -1},		/* arcmin n, minimum number of line to use in an ellipse */
-	{"arcmax", { set_arc_max }, -1},		/* arcmax n, maximum number of lines to use in an ellipse */
-	{"palette", { load_palette }, -1},		/* palette filename, loads the palette (3*short per colour) specified */
-	{"debugout", { &debug_out }, 4},		/* debugout n, send all debug (and similar) output to device number n */
-	{"interactive", { &interactive }, 1},	/* interactive, turns on key controlled debugging */
-	{"standalone", { &stand_alone }, 1},	/* standalone, forces fVDI to refrain from relying on an underlying VDI */
-	{"cookie", { specify_cookie }, -1},		/* cookie speedo/nvdi/calamus = value, allows for setting cookie values */
-	{"vqgdos", { specify_vqgdos }, -1},		/* vqgdos str, specify a vq_gdos reply */
-	{"module", { use_module }, -1},			/* module str, specify a module to load */
-	{"silent", { set_silent }, -1},			/* silent n, no debug for VDI call n */
-	{"size", { set_size }, -1},				/* size n, specify a default available font size */
-	{"oldmalloc", { &old_malloc }, 1},		/* oldmalloc, use only the standar Malloc/Free */
-	{"fallback", { &fall_back }, 1},		/* fallback, forces fVDI to open workstation on an underlying VDI */
-	{"movemouse", { &move_mouse }, 1},		/* movemouse, forces fVDI to call its movement vector explicitly */
-	{"extmalloc", { &ext_malloc }, 4},		/* extalloc n, extend all malloc's by n bytes */
-#ifdef FVDI_DEBUG 
-	{"checkmem", { &check_mem }, 4},		/* checkmem n, check memory allocation consistency at every nth VDI call */
+    {"disable", { &disabled }, 1 },         /* disable, the fVDI magic number is never changed from 1969 to $73 */
+    {"novex", { &no_vex }, 1 },             /* novex, disable all the vex_ functions */
+    {"width", { set_width }, -1 },          /* width, set screen width in mm */
+    {"height", { set_height }, -1 },        /* height, set screen height in mm */
+    {"blocks", { set_blocks }, -1 },        /* blocks n, number of memory blocks to allocate */
+    {"blocksize", { set_block_size }, -1 }, /* blocksize n, size of memory blocks in kbyte */
+    {"logsize", { set_log_size }, -1 },     /* logsize n, size of log in kbyte */
+    {"arcsplit", { set_arc_split }, -1 },   /* arcsplit n, % of largest ellipse radius to give # of lines to use */
+    {"arcmin", { set_arc_min }, -1 },       /* arcmin n, minimum number of line to use in an ellipse */
+    {"arcmax", { set_arc_max }, -1 },       /* arcmax n, maximum number of lines to use in an ellipse */
+    {"palette", { load_palette }, -1 },     /* palette filename, loads the palette (3*short per colour) specified */
+    {"debugout", { &debug_out }, 4 },       /* debugout n, send all debug (and similar) output to device number n */
+    {"interactive", { &interactive }, 1 },  /* interactive, turns on key controlled debugging */
+    {"standalone", { &stand_alone }, 1 },   /* standalone, forces fVDI to refrain from relying on an underlying VDI */
+    {"cookie", { specify_cookie }, -1 },    /* cookie speedo/nvdi/calamus = value, allows for setting cookie values */
+    {"vqgdos", { specify_vqgdos }, -1 },    /* vqgdos str, specify a vq_gdos reply */
+    {"module", { use_module }, -1 },        /* module str, specify a module to load */
+    {"silent", { set_silent }, -1 },        /* silent n, no debug for VDI call n */
+    {"size", { set_size }, -1 },            /* size n, specify a default available font size */
+    {"oldmalloc", { &old_malloc }, 1 },     /* oldmalloc, use only the standar Malloc/Free */
+    {"fallback", { &fall_back }, 1 },       /* fallback, forces fVDI to open workstation on an underlying VDI */
+    {"movemouse", { &move_mouse }, 1 },     /* movemouse, forces fVDI to call its movement vector explicitly */
+    {"extmalloc", { &ext_malloc }, 4 },     /* extalloc n, extend all malloc's by n bytes */
+#ifdef FVDI_DEBUG
+    {"checkmem", { &check_mem }, 4 },       /* checkmem n, check memory allocation consistency at every nth VDI call */
 #endif
-	{"preallocate", { pre_allocate }, -1},	/* preallocate n, allocate n kbyte at startup */
-	{"filecache", { file_cache }, -1},		/* filecache n, allocate n kbyte for FreeType2 font files */
-	{"antialias", { &antialiasing }, 1},	/* use FT2 antialiasing */
-	{"debugfile", { set_debug_file }, -1},	/* debugfile str, file to use for debug output */
-	{"bconout", { &bconout }, 1}			/* bconout, enables handling of BConout the the screen in fVDI */
+    {"preallocate", { pre_allocate }, -1 }, /* preallocate n, allocate n kbyte at startup */
+    {"filecache", { file_cache }, -1 },     /* filecache n, allocate n kbyte for FreeType2 font files */
+    {"antialias", { &antialiasing }, 1 },   /* use FT2 antialiasing */
+    {"debugfile", { set_debug_file }, -1 }, /* debugfile str, file to use for debug output */
+    {"bconout", { &bconout }, 1 },          /* bconout, enables handling of BConout the the screen in fVDI */
 };
 
 

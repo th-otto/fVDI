@@ -697,7 +697,6 @@ int isspace(int c)
 #include "stdio/printf.h"
 
 
-
 void qsort(void *base, long nmemb, long size, int (*compar) (const void *, const void *))
 {
     static long incs[16] = { 1391376, 463792, 198768, 86961, 33936, 13776,
