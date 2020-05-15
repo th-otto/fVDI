@@ -959,7 +959,8 @@ FT_BEGIN_HEADER
    * Compile 'autofit' module with CJK (Chinese, Japanese, Korean) script
    * support.
    */
-/* #define AF_CONFIG_OPTION_CJK */
+/* some versions of freetype have a bug and do not compile without this being defined */
+#define AF_CONFIG_OPTION_CJK
 
 
 
