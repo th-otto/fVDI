@@ -1,9 +1,8 @@
 /*
- * saga.h - SAGA specific functions
- * This is part of the SAGA driver for fVDI
- * Most of the code here come from the SAGA Picasso96 driver.
- * https://github.com/ezrec/saga-drivers/tree/master/saga.card
+ * firebee.h - FireBee specific functions
+ * This is part of the FireBee driver for fVDI
  * Glued by Vincent Riviere
+ * Stirred, mixed and shaken by Markus Fröschle
  */
 
 /*
@@ -34,19 +33,13 @@
 #ifndef _FIREBEE_H_
 #define _FIREBEE_H_
 
+#include "fvdi.h"
+#include <stdlib.h>
+#include <stdbool.h>
+
 typedef unsigned char UBYTE;
 typedef unsigned short UWORD;
 typedef unsigned long ULONG;
-typedef int BOOL;
-typedef void VOID;
-typedef ULONG IPTR;
-
-#ifndef NULL
-#define NULL ((void*) 0L)
-#endif
-#define TRUE 1
-#define FALSE 0
-
 
 struct Node
 {
@@ -127,14 +120,14 @@ struct ModeInfo
  * https://github.com/ezrec/saga-drivers/blob/master/saga.card/saga_intern.h
  */
 
-static inline VOID Write32(IPTR addr, ULONG value)
+static inline void Write32(unsigned long addr, unsigned long value)
 {
-    *(volatile ULONG *) addr = value;
+    *(volatile unsigned long *) addr = value;
 }
 
-static inline VOID Write16(IPTR addr, UWORD value)
+static inline void Write16(unsigned long addr, unsigned short value)
 {
-    *(volatile UWORD *) addr = value;
+    *(volatile unsigned short *) addr = value;
 }
 
 /* Test if width or height requires doublescan
@@ -142,17 +135,11 @@ static inline VOID Write16(IPTR addr, UWORD value)
 #define IS_DOUBLEX(w)   ((w) <= 500)
 #define IS_DOUBLEY(h)   ((h) <= 300)
 
-/* saga_pll.c */
-int fbee_pll_clock_count(void);
-int fbee_pll_clock_freq(int id, BOOL is_ntsc, ULONG *freq);
-int fbee_pll_clock_lookup(BOOL is_ntsc, ULONG *freqp);
-int fbee_pll_clock_program(int clock);
-
 /* from modeline_vesa.c */
 extern struct ModeInfo modeline_vesa_entry[];
 extern const int modeline_vesa_entries;
 
-/* from saga.c */
+/* from firebee.c */
 void fbee_fix_mode(struct ModeInfo *mi);
 void fbee_set_clock(const struct ModeInfo *mi);
 void fbee_set_modeline(const struct ModeInfo *mi, UBYTE Format);
