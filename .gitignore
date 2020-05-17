@@ -20,3 +20,4 @@ utility/structer/structer
 struct.tab.c
 struct.tab.h
 lex.yy.c
+.deps
