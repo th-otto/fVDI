@@ -48,7 +48,6 @@ CSRC = \
 	printf.c \
 	fb_spec.c \
 	firebee.c \
-	modeline_vesa.c \
 	firebee_mouse.c \
 	16_bit.c
 
