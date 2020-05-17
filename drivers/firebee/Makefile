@@ -14,19 +14,26 @@ all: $(TARGET)
 
 top_srcdir = ../..
 
-CPU     = v4e
+#CPU     = v4e
 OPTS    = -mshort -O2 -fomit-frame-pointer
 include $(top_srcdir)/CONFIGVARS
 
 CFLAGS  = $(CPUOPTS) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 ASFLAGS = $(CPUOPTS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
+LDEFS = \
+	--defsym _VRAM=0x60000000 \
+	--defsym __MBAR=0xFF000000 \
+	--defsym FPGA_CS2_BASE=0xf0000000 \
+	--defsym _videl_regs=0xffff8200 \
+	--defsym _fb_vd_clut=0xf0000000 \
+	--defsym _fb_vd_cntrl=0xf0000400 \
+	--defsym _fb_vd_border=0xf0000404 \
+	--defsym _fb_vd_pll_config=0xf0000600 \
+	--defsym _fb_vd_frq=0xf0000604 \
+	--defsym _fb_vd_pll_reconfig=0xf0000800
+
 SINCSRC = \
-	$(top_srcdir)/include/macros.inc \
-	$(top_srcdir)/include/types.inc \
-	$(top_srcdir)/include/vdi.inc \
-	$(top_srcdir)/drivers/include/linea.inc \
-	$(top_srcdir)/drivers/include/pixelmac.inc \
 	$(top_srcdir)/drivers/1_plane/1_expand.inc
 
 SSRC = \
@@ -42,13 +49,19 @@ CSRC = \
 	fb_spec.c \
 	firebee.c \
 	modeline_vesa.c \
-	firebee_pll.c \
 	firebee_mouse.c \
 	16_bit.c
 
 # handle DevPac -> gas conversions
 # defines SSRC_GNU and SINCSRC_GNU variables
 include $(top_srcdir)/utility/conv2gas/RULES
+
+SINCSRC_GNU += \
+	$(top_srcdir)/include/types.inc \
+	$(top_srcdir)/include/macros.gnu \
+	$(top_srcdir)/include/vdi.gnu \
+	$(top_srcdir)/drivers/include/linea.gnu \
+	$(top_srcdir)/drivers/include/pixelmac.gnu
 
 # engine binary objects
 ifeq ($(CPU),v4e)
@@ -58,11 +71,10 @@ OBJECTS = $(SSRC_GNU:.s=.o)
 endif
 OBJECTS += $(CSRC:.c=.o)
 
-# need to convert the .inc file as well
 $(OBJECTS): $(SINCSRC_GNU)
 
 $(TARGET): $(OBJECTS) $(LIBFILES)
-	$(AM_V_LD)$(LD) -o $@ $(OBJECTS) $(LDFLAGS) $(LIBS)
+	$(AM_V_LD)$(LD) $(LDEFS) -o $@ $(OBJECTS) $(LDFLAGS) $(LIBS)
 
 include $(top_srcdir)/DEPENDENCIES
 
