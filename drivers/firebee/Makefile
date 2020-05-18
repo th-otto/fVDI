@@ -34,7 +34,7 @@ LDEFS = \
 	--defsym _fb_vd_pll_reconfig=0xf0000800
 
 SINCSRC = \
-	$(top_srcdir)/drivers/1_plane/1_expand.inc
+	$(top_srcdir)/drivers/bitplane/1_expand.inc
 
 SSRC = \
 	../common/c_common.s \
