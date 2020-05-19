@@ -21,7 +21,7 @@ include $(top_srcdir)/CONFIGVARS
 CFLAGS  = $(CPUOPTS) $(OPTS) $(WARNINGS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 ASFLAGS = $(CPUOPTS) -I$(top_srcdir)/include -I$(top_srcdir)/drivers/include
 
-LDEFS = \
+LDEFS=\
 	--defsym _VRAM=0x60000000 \
 	--defsym __MBAR=0xFF000000 \
 	--defsym FPGA_CS2_BASE=0xf0000000 \
@@ -32,6 +32,8 @@ LDEFS = \
 	--defsym _fb_vd_pll_config=0xf0000600 \
 	--defsym _fb_vd_frq=0xf0000604 \
 	--defsym _fb_vd_pll_reconfig=0xf0000800
+
+M68K_ATARI_MINT_LDFLAGS += $(LDEFS) -Wl,-Map,mapfile
 
 SINCSRC = \
 	$(top_srcdir)/drivers/bitplane/1_expand.inc
