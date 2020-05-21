@@ -215,7 +215,12 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars *pars)
             return;
         }
         bitplanes = intin[17];
-        if (bitplanes != 0 && bitplanes != 1 && bitplanes != wk->screen.mfdb.bitplanes)
+        if (bitplanes == 0)
+            bitplanes = mfdb->bitplanes;
+        if (bitplanes == 0)
+            bitplanes = wk->screen.mfdb.bitplanes;
+        /* Only same as physical or one allowed */
+        if (bitplanes != 1 && bitplanes != wk->screen.mfdb.bitplanes)
         {
             PRINTF(("v_opnbm: unsupported planes %d\n", bitplanes));
             return;
@@ -237,25 +242,14 @@ void CDECL v_opnvwk(Virtual *vwk, VDIpars *pars)
 
         if (mfdb->address || intin[11] || intin[12])
         {
-            width = intin[11] ? (intin[11] + 1) : mfdb ? mfdb->width : wk->screen.mfdb.width;
-            height = intin[12] ? (intin[12] + 1) : mfdb ? mfdb->height : wk->screen.mfdb.height;
+            width = intin[11] ? (intin[11] + 1) : wk->screen.mfdb.width;
+            height = intin[12] ? (intin[12] + 1) : wk->screen.mfdb.height;
         } else
         {
-            width = wk->screen.mfdb.width;		/* vwk/wk bug here in assembly file */
+            width = wk->screen.mfdb.width;
             height = wk->screen.mfdb.height;
         }
         width = (width + 15) & 0xfff0;
-
-        bitplanes = intin[17] ? intin[17] : mfdb ? mfdb->bitplanes : wk->screen.mfdb.bitplanes;
-        if (bitplanes != 1 && bitplanes != wk->screen.mfdb.bitplanes)
-        {
-            if (bitplanes)			/* Only same as physical or one allowed */
-            {
-                PRINTF(("v_opnbm: unsupported planes %d\n", bitplanes));
-                return;
-            }
-            bitplanes = wk->screen.mfdb.bitplanes;
-        }
 
         lwidth = (width >> 3) * bitplanes;	/* >> 4 in assembly file */
         size = (long)lwidth * height;
@@ -473,7 +467,7 @@ void CDECL v_clsvwk(Virtual *vwk, VDIpars *pars)
     hnd = vwk->standard_handle;
     if (hnd == 0)	/* Check if default VDI structure */
         return;
-    else if (hnd < 0)
+    if (hnd < 0)
     {
         call_other(pars, hnd & 0x7fff);
         hnd = pars->control->handle;
