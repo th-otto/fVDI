@@ -15,7 +15,6 @@
 	xdef		_set_inout
 	xdef		_vdi,_sub_vdi,_fvdi
 	xdef		_vq_gdos
-	xdef		_linea_fonts
 
 	xdef		_control;
 	xdef		_int_in,_pts_in,_addr_in
