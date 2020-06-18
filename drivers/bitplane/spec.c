@@ -260,13 +260,15 @@ long setup(long type, long value)
 Virtual *CDECL opnwk(Virtual *vwk)
 {
     Workstation *wk;
+    unsigned short *linea;
 
     (void) vwk;
     wk = me->default_vwk->real_address;
     wk->screen.mfdb.address = (void *) Physbase();
 
-    wk->mouse.position.x = ((wk->screen.coordinates.max_x - wk->screen.coordinates.min_x + 1) >> 1) + wk->screen.coordinates.min_x;
-    wk->mouse.position.y = ((wk->screen.coordinates.max_y - wk->screen.coordinates.min_y + 1) >> 1) + wk->screen.coordinates.min_y;
+    linea = wk->screen.linea;
+    wk->mouse.position.x = linea[-0x25a / 2]; /* GCURX */
+    wk->mouse.position.y = linea[-0x258 / 2]; /* GCURY */
 
     return 0;
 }
