@@ -516,7 +516,7 @@ void CDECL v_clswk(Virtual *vwk, VDIpars *pars)
         if (old_wk_handle && !stand_alone)
             scall_v_clswk(old_wk_handle);
 #endif
-	    reset_interrupts();
+        reset_interrupts();
     }
 }
 
